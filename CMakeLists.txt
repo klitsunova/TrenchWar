@@ -8,6 +8,8 @@ set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_PREFIX_PATH "~/Qt/6.2.3/gcc_64/lib/cmake")
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 find_package(Qt6 COMPONENTS
         Core
         Gui

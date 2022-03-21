@@ -3,7 +3,16 @@
 
 #include "game_object.h"
 
-class Soldier : GameObject {
+class Soldier : public GameObject {
+ public:
+  Soldier() = default;
+  ~Soldier() = default;
+  int GetHitPoints();
+  QColor GetColor() override;
+
+ private:
+  int hit_points_ = 100;
+  QColor color_ = Qt::red;
 };
 
 #endif // SOLDIER_H
