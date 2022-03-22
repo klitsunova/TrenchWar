@@ -9,6 +9,7 @@ class Soldier : public GameObject {
   ~Soldier() = default;
   int GetHitPoints();
   QColor GetColor() override;
+  void MoveSoldier();
 
  private:
   int hit_points_ = 100;

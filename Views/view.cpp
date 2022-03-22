@@ -9,4 +9,5 @@ void View::Update(QPainter* painter, const std::vector<GameObject*>& objects) {
     painter->setBrush(QBrush(object->GetColor(), Qt::SolidPattern));
     painter->drawRect(x, y, 10, 10);
   }
+  painter->restore();
 }

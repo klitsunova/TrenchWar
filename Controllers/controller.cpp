@@ -11,20 +11,13 @@ Controller::Controller() {
 }
 
 Controller::~Controller() {
+  delete view_;
   delete soldier_;
   delete terrain_object_;
 }
 
-void Controller::MoveSoldier() {
-  if (soldier_->GetPosition().first) {
-    soldier_->MoveLeft();
-  } else {
-    soldier_->SetRandomPosition();
-  }
-}
-
 void Controller::Tick() {
-  MoveSoldier();
+  soldier_->MoveSoldier();
 }
 
 void Controller::paintEvent(QPaintEvent* event) {

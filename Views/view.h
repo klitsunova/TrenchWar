@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <QPainter>
-#include <QPaintEvent>
+
 #include "Models/GameObjects/game_object.h"
 
 class View {
