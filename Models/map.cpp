@@ -2,10 +2,10 @@
 
 std::vector<std::shared_ptr<GameObject>> Map::GetObjects() const {
   std::vector<std::shared_ptr<GameObject>> objects_;
-  for (const auto& soldier: soldiers_) {
+  for (const auto& soldier : soldiers_) {
     objects_.push_back(soldier);
   }
-  for (const auto& terrain_object: terrain_objects_) {
+  for (const auto& terrain_object : terrain_objects_) {
     objects_.push_back(terrain_object);
   }
   return objects_;

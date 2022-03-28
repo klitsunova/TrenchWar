@@ -16,7 +16,7 @@ void Controller::paintEvent(QPaintEvent* event) {
 }
 
 void Controller::timerEvent(QTimerEvent*) {
-  for (const auto& soldier: map_->GetSoldiers()) {
+  for (const auto& soldier : map_->GetSoldiers()) {
     soldier->MoveSoldier();
   }
   repaint();

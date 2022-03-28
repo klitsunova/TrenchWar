@@ -12,7 +12,7 @@ void View::Update(
     QPainter* painter,
     const std::vector<std::shared_ptr<GameObject>>& objects) {
   painter->save();
-  for (const auto& object: objects) {
+  for (const auto& object : objects) {
     QPoint object_point = object->GetPosition();
     painter->setBrush(QBrush(object->GetColor(), Qt::SolidPattern));
     const int kObjectWidth = 10;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include "GameObjects/soldier.h"
 #include "GameObjects/terrain_object.h"
