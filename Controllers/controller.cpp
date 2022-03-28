@@ -1,5 +1,7 @@
 #include "controller.h"
 
+#include <vector>
+
 Controller::Controller() : timer_(new QBasicTimer) {
   view_ = new View();
   soldier_ = new Soldier();

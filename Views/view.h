@@ -1,5 +1,5 @@
-#ifndef VIEW_H
-#define VIEW_H
+#ifndef VIEWS_VIEW_H
+#define VIEWS_VIEW_H
 
 #include <vector>
 #include <QPainter>
@@ -16,4 +16,4 @@ class View {
   int scale = 4;
 };
 
-#endif // VIEW_H
+#endif  // VIEWS_VIEW_H

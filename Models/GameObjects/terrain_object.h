@@ -1,5 +1,5 @@
-#ifndef TERRAIN_OBJECT_H
-#define TERRAIN_OBJECT_H
+#ifndef MODELS_GAMEOBJECTS_TERRAIN_OBJECT_H
+#define MODELS_GAMEOBJECTS_TERRAIN_OBJECT_H
 
 #include "game_object.h"
 
@@ -12,4 +12,4 @@ class TerrainObject : public GameObject {
   QColor color_ = Qt::black;
 };
 
-#endif // TERRAIN_OBJECT_H
+#endif  // MODELS_GAMEOBJECTS_TERRAIN_OBJECT_H

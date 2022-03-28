@@ -1,7 +1,7 @@
-#ifndef MAP_H
-#define MAP_H
+#ifndef MODELS_MAP_H
+#define MODELS_MAP_H
 
 class Map {
 };
 
-#endif // MAP_H
+#endif  // MODELS_MAP_H

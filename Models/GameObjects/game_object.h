@@ -1,5 +1,5 @@
-#ifndef GAME_OBJECT_H
-#define GAME_OBJECT_H
+#ifndef MODELS_GAMEOBJECTS_GAME_OBJECT_H
+#define MODELS_GAMEOBJECTS_GAME_OBJECT_H
 
 #include <utility>
 #include <QColor>
@@ -26,4 +26,4 @@ class GameObject {
   QColor color_ = Qt::white;
 };
 
-#endif // GAME_OBJECT_H
+#endif  // MODELS_GAMEOBJECTS_GAME_OBJECT_H
