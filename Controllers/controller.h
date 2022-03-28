@@ -1,5 +1,5 @@
-#ifndef CONTROLLERS_CONTROLLER_H
-#define CONTROLLERS_CONTROLLER_H
+#ifndef CONTROLLERS_CONTROLLER_H_
+#define CONTROLLERS_CONTROLLER_H_
 
 #include <vector>
 #include <QBasicTimer>
@@ -26,4 +26,4 @@ class Controller : public QWidget {
   QBasicTimer* timer_;
 };
 
-#endif  // CONTROLLERS_CONTROLLER_H
+#endif  // CONTROLLERS_CONTROLLER_H_

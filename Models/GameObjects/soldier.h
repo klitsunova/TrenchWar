@@ -1,5 +1,5 @@
-#ifndef MODELS_GAMEOBJECTS_SOLDIER_H
-#define MODELS_GAMEOBJECTS_SOLDIER_H
+#ifndef MODELS_GAMEOBJECTS_SOLDIER_H_
+#define MODELS_GAMEOBJECTS_SOLDIER_H_
 
 #include "game_object.h"
 
@@ -16,4 +16,4 @@ class Soldier : public GameObject {
   QColor color_ = Qt::red;
 };
 
-#endif  // MODELS_GAMEOBJECTS_SOLDIER_H
+#endif  // MODELS_GAMEOBJECTS_SOLDIER_H_
