@@ -13,9 +13,9 @@ class View {
 
   ~View() = default;
 
-  int GetScale();
+  int GetScale() const;
 
-  void SetScale(int);
+  void SetScale(int scale);
 
   void Update(
       QPainter* painter,

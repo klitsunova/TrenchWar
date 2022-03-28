@@ -15,6 +15,7 @@ class GameObject {
   QPoint GetPosition() const;
   virtual QColor GetColor() = 0;
 
+  void SetColor(QColor color);
   void SetPosition(const QPoint& position);
   void SetRandomPosition();
 

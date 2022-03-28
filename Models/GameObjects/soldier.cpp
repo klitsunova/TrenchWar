@@ -1,6 +1,6 @@
 #include "soldier.h"
 
-int Soldier::GetHitPoints() {
+Soldier::health_t Soldier::GetHitPoints() const {
   return hit_points_;
 }
 
@@ -9,6 +9,7 @@ QColor Soldier::GetColor() {
 }
 
 void Soldier::MoveSoldier() {
+  //  TODO: soldier's movement along the route
   if (position_.x()) {
     MoveLeft();
   } else {

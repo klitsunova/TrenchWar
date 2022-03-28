@@ -12,9 +12,9 @@ class Map {
 
   ~Map() = default;
 
-  std::vector<std::shared_ptr<GameObject>> GetObjects() const;
-  std::vector<std::shared_ptr<Soldier>> GetSoldiers() const;
-  std::vector<std::shared_ptr<TerrainObject>> GetTerrainObjects() const;
+  std::vector<std::shared_ptr<GameObject>> GetObjects();
+  std::vector<std::shared_ptr<Soldier>> GetSoldiers();
+  std::vector<std::shared_ptr<TerrainObject>> GetTerrainObjects();
 
   void AddSoldier();
   void AddTerraintbject();

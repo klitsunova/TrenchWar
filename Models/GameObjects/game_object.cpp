@@ -2,6 +2,15 @@
 
 #include <random>
 
+namespace {
+  int GetRandomNumber() {
+    static std::random_device rd;
+    static std::mt19937 mt(rd());
+    static std::uniform_real_distribution<double> dist(0.0, 100.0);
+    return dist(mt);
+  }
+}
+
 GameObject::GameObject() {
   SetRandomPosition();
 }
@@ -13,15 +22,12 @@ QPoint GameObject::GetPosition() const {
   return position_;
 }
 
-void GameObject::SetPosition(const QPoint& position) {
-  position_ = position;
+void GameObject::SetColor(QColor color) {
+  color_ = color;
 }
 
-int GetRandomNumber() {
-  static std::random_device rd;
-  static std::mt19937 mt(rd());
-  static std::uniform_real_distribution<double> dist(0.0, 100.0);
-  return dist(mt);
+void GameObject::SetPosition(const QPoint& position) {
+  position_ = position;
 }
 
 void GameObject::SetRandomPosition() {

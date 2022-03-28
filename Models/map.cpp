@@ -1,21 +1,21 @@
 #include "map.h"
 
-std::vector<std::shared_ptr<GameObject>> Map::GetObjects() const {
-  std::vector<std::shared_ptr<GameObject>> objects_;
+std::vector<std::shared_ptr<GameObject>> Map::GetObjects() {
+  std::vector<std::shared_ptr<GameObject>> objects;
   for (const auto& soldier : soldiers_) {
-    objects_.push_back(soldier);
+    objects.push_back(soldier);
   }
   for (const auto& terrain_object : terrain_objects_) {
-    objects_.push_back(terrain_object);
+    objects.push_back(terrain_object);
   }
-  return objects_;
+  return objects;
 }
 
-std::vector<std::shared_ptr<Soldier>> Map::GetSoldiers() const {
+std::vector<std::shared_ptr<Soldier>> Map::GetSoldiers() {
   return soldiers_;
 }
 
-std::vector<std::shared_ptr<TerrainObject>> Map::GetTerrainObjects() const {
+std::vector<std::shared_ptr<TerrainObject>> Map::GetTerrainObjects() {
   return terrain_objects_;
 }
 

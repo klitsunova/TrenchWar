@@ -3,18 +3,19 @@
 #include "game_object.h"
 
 class Soldier : public GameObject {
+  using health_t = int;
+
  public:
   Soldier() = default;
 
   ~Soldier() override = default;
 
-  int GetHitPoints();
+  health_t GetHitPoints() const;
   QColor GetColor() override;
 
   void MoveSoldier();
 
  private:
-  using health_t = int;
   health_t hit_points_ = 100;
   QColor color_ = Qt::red;
 };
