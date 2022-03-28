@@ -1,29 +1,27 @@
-#ifndef CONTROLLERS_CONTROLLER_H_
-#define CONTROLLERS_CONTROLLER_H_
+#pragma once
 
-#include <vector>
 #include <QBasicTimer>
 #include <QWidget>
+#include <memory>
+#include <vector>
 
-#include "Views/view.h"
 #include "Models/GameObjects/soldier.h"
 #include "Models/GameObjects/terrain_object.h"
+#include "Models/map.h"
+#include "Views/view.h"
 
 class Controller : public QWidget {
   Q_OBJECT
  public:
   Controller();
-  ~Controller() override;
-  std::vector<GameObject*> GetObjects() const;
+
+  ~Controller() override = default;
+
   void paintEvent(QPaintEvent*) override;
   void timerEvent(QTimerEvent*) override;
 
  private:
-  std::vector<GameObject*> objects_;
-  Soldier* soldier_;
-  TerrainObject* terrain_object_;
-  View* view_;
-  QBasicTimer* timer_;
+  std::unique_ptr<Map> map_;
+  std::unique_ptr<View> view_;
+  std::unique_ptr<QBasicTimer> timer_;
 };
-
-#endif  // CONTROLLERS_CONTROLLER_H_

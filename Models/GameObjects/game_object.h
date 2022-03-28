@@ -1,29 +1,29 @@
-#ifndef MODELS_GAMEOBJECTS_GAME_OBJECT_H_
-#define MODELS_GAMEOBJECTS_GAME_OBJECT_H_
+#pragma once
 
-#include <utility>
 #include <QColor>
+#include <QPoint>
+#include <QPointer>
+#include <utility>
 
 class GameObject {
-  using Point = std::pair<int, int>;
-
  public:
   GameObject();
-  explicit GameObject(const Point& position);
-  ~GameObject() = default;
+  explicit GameObject(const QPoint& position);
 
-  Point GetPosition() const;
-  void SetPosition(const Point& position);
+  virtual ~GameObject() = default;
+
+  QPoint GetPosition() const;
+  virtual QColor GetColor() = 0;
+
+  void SetPosition(const QPoint& position);
   void SetRandomPosition();
+
   void MoveLeft();
   void MoveRight();
   void MoveUp();
   void MoveDown();
-  virtual QColor GetColor();
 
  protected:
-  Point position_;
+  QPoint position_;
   QColor color_ = Qt::white;
 };
-
-#endif  // MODELS_GAMEOBJECTS_GAME_OBJECT_H_

@@ -9,7 +9,7 @@ QColor Soldier::GetColor() {
 }
 
 void Soldier::MoveSoldier() {
-  if (position_.first) {
+  if (position_.x()) {
     MoveLeft();
   } else {
     SetRandomPosition();

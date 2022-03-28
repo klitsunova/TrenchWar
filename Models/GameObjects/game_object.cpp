@@ -1,52 +1,46 @@
-#include <random>
-
 #include "game_object.h"
 
-GameObject::GameObject() : position_(std::make_pair(0, 0)) {
+#include <random>
+
+GameObject::GameObject() {
+  SetRandomPosition();
 }
 
-GameObject::GameObject(const GameObject::Point& position) {
-  position_.first = position.first;
-  position_.second = position.second;
+GameObject::GameObject(const QPoint& position) : position_(position) {
 }
 
-GameObject::Point GameObject::GetPosition() const {
+QPoint GameObject::GetPosition() const {
   return position_;
 }
 
-void GameObject::SetPosition(const GameObject::Point& position) {
-  position_.first = position.first;
-  position_.second = position.second;
+void GameObject::SetPosition(const QPoint& position) {
+  position_ = position;
 }
 
 int GetRandomNumber() {
-  std::random_device rd;
-  std::mt19937 mt(rd());
-  std::uniform_real_distribution<double> dist(0.0, 100.0);
+  static std::random_device rd;
+  static std::mt19937 mt(rd());
+  static std::uniform_real_distribution<double> dist(0.0, 100.0);
   return dist(mt);
 }
 
 void GameObject::SetRandomPosition() {
-  position_.first = GetRandomNumber();
-  position_.second = GetRandomNumber();
+  position_.setX(GetRandomNumber());
+  position_.setY(GetRandomNumber());
 }
 
 void GameObject::MoveLeft() {
-  --position_.first;
+  position_ -= QPoint(1, 0);
 }
 
 void GameObject::MoveRight() {
-  ++position_.first;
+  position_ += QPoint(1, 0);
 }
 
 void GameObject::MoveUp() {
-  ++position_.second;
+  position_ += QPoint(0, 1);
 }
 
 void GameObject::MoveDown() {
-  --position_.second;
-}
-
-QColor GameObject::GetColor() {
-  return color_;
+  position_ -= QPoint(0, 1);
 }

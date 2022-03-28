@@ -16,21 +16,23 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
+set(MODELS
+        Models/map.cpp
+        Models/GameObjects/game_object.cpp
+        Models/GameObjects/soldier.cpp
+        Models/GameObjects/terrain_object.cpp)
+
+set(VIEWS
+        Views/view.cpp)
+
+set (CONTROLLERS
+        Controllers/controller.cpp)
+
 set(SOURCES
         main.cpp
-        Views/view.cpp
-        Views/view.h
-        Controllers/controller.cpp
-        Controllers/controller.h
-        Models/map.cpp
-        Models/map.h
-        Models/GameObjects/game_object.cpp
-        Models/GameObjects/game_object.h
-        Models/GameObjects/soldier.cpp
-        Models/GameObjects/soldier.h
-        Models/GameObjects/terrain_object.cpp
-        Models/GameObjects/terrain_object.h
-)
+        ${MODELS}
+        ${VIEWS}
+        ${CONTROLLERS})
 
 add_executable(TrenchWar ${SOURCES})
 
