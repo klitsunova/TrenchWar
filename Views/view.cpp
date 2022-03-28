@@ -15,7 +15,7 @@ void View::Update(
   for (const auto& object : objects) {
     QPoint object_point = object->GetPosition();
     painter->setBrush(QBrush(object->GetColor(), Qt::SolidPattern));
-    //  TODO: It is temporary code
+    // TODO(klitsunova): It is temporary code
     const int kObjectWidth = 10;
     const int kObjectHeight = 10;
     painter->drawRect(

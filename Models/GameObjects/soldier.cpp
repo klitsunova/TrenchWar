@@ -9,7 +9,7 @@ QColor Soldier::GetColor() {
 }
 
 void Soldier::MoveSoldier() {
-  //  TODO: soldier's movement along the route
+  // TODO(klitsunova): soldier's movement along the route
   if (position_.x()) {
     MoveLeft();
   } else {
