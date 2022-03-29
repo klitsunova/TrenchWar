@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QPoint>
+
 #include <memory>
 #include <vector>
 

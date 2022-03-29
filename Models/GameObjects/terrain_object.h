@@ -4,11 +4,12 @@
 
 class TerrainObject : public GameObject {
  public:
-  TerrainObject() = default;
+  TerrainObject(int, int);
 
   ~TerrainObject() override = default;
 
   QColor GetColor() override;
+  void DrawObject(QPainter*, const QRect&) const final;
 
  private:
   QColor color_ = Qt::black;

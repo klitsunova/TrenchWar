@@ -1,30 +1,36 @@
 #pragma once
 
 #include <QColor>
+#include <QPainter>
 #include <QPoint>
 #include <QPointer>
+
 #include <utility>
 
 class GameObject {
  public:
   GameObject();
-  explicit GameObject(const QPoint& position);
+  explicit GameObject(int, int);
 
   virtual ~GameObject() = default;
 
-  QPoint GetPosition() const;
+  int GetXPosition() const;
+  int GetYPosition() const;
   virtual QColor GetColor() = 0;
 
   void SetColor(QColor color);
-  void SetPosition(const QPoint& position);
-  void SetRandomPosition();
+  void SetPosition(int, int);
+  void SetRandomPosition(int, int);
 
   void MoveLeft();
   void MoveRight();
   void MoveUp();
   void MoveDown();
 
+  virtual void DrawObject(QPainter*, const QRect&) const = 0;
+
  protected:
-  QPoint position_;
+  int x_position_;
+  int y_position_;
   QColor color_ = Qt::white;
 };
