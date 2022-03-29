@@ -25,7 +25,7 @@ set(MODELS
 set(VIEWS
         Views/view.cpp)
 
-set (CONTROLLERS
+set(CONTROLLERS
         Controllers/controller.cpp)
 
 set(SOURCES

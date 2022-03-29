@@ -3,13 +3,15 @@
 #include <random>
 
 namespace {
-  int GetRandomNumber() {
-    static std::random_device rd;
-    static std::mt19937 mt(rd());
-    static std::uniform_real_distribution<double> dist(0.0, 100.0);
-    return dist(mt);
-  }
+
+int GetRandomNumber() {
+  static std::random_device rd;
+  static std::mt19937 mt(rd());
+  static std::uniform_real_distribution<double> dist(0.0, 100.0);
+  return dist(mt);
 }
+
+} // namespace
 
 GameObject::GameObject() {
   SetRandomPosition();
