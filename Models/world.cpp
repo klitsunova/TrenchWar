@@ -1,6 +1,6 @@
-#include "map.h"
+#include "world.h"
 
-std::vector<std::shared_ptr<GameObject>> Map::GetObjects() {
+std::vector<std::shared_ptr<GameObject>> World::GetObjects() {
   std::vector<std::shared_ptr<GameObject>> objects;
   for (const auto& soldier : soldiers_) {
     objects.push_back(soldier);
@@ -11,18 +11,18 @@ std::vector<std::shared_ptr<GameObject>> Map::GetObjects() {
   return objects;
 }
 
-std::vector<std::shared_ptr<Soldier>> Map::GetSoldiers() {
+std::vector<std::shared_ptr<Soldier>> World::GetSoldiers() {
   return soldiers_;
 }
 
-std::vector<std::shared_ptr<TerrainObject>> Map::GetTerrainObjects() {
+std::vector<std::shared_ptr<TerrainObject>> World::GetTerrainObjects() {
   return terrain_objects_;
 }
 
-void Map::AddSoldier() {
+void World::AddSoldier() {
   soldiers_.push_back(std::make_shared<Soldier>());
 }
 
-void Map::AddTerraintbject() {
+void World::AddTerraintbject() {
   terrain_objects_.push_back(std::make_shared<TerrainObject>());
 }

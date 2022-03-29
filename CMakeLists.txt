@@ -17,7 +17,7 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 set(MODELS
-        Models/map.cpp
+        Models/world.cpp
         Models/GameObjects/game_object.cpp
         Models/GameObjects/soldier.cpp
         Models/GameObjects/terrain_object.cpp)

@@ -7,7 +7,7 @@
 
 #include "Models/GameObjects/soldier.h"
 #include "Models/GameObjects/terrain_object.h"
-#include "Models/map.h"
+#include "Models/world.h"
 #include "Views/view.h"
 
 class Controller : public QWidget {
@@ -21,7 +21,7 @@ class Controller : public QWidget {
   void timerEvent(QTimerEvent*) override;
 
  private:
-  std::unique_ptr<Map> map_;
+  std::unique_ptr<World> world_;
   std::unique_ptr<View> view_;
   std::unique_ptr<QBasicTimer> timer_;
 };

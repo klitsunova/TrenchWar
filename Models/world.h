@@ -6,11 +6,11 @@
 #include "GameObjects/soldier.h"
 #include "GameObjects/terrain_object.h"
 
-class Map {
+class World {
  public:
-  Map() = default;
+  World() = default;
 
-  ~Map() = default;
+  ~World() = default;
 
   std::vector<std::shared_ptr<GameObject>> GetObjects();
   std::vector<std::shared_ptr<Soldier>> GetSoldiers();

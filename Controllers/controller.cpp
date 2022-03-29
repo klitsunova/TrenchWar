@@ -4,20 +4,20 @@
 
 Controller::Controller() : timer_(new QBasicTimer),
                            view_(std::make_unique<View>()),
-                           map_(std::make_unique<Map>()) {
+                           world_(std::make_unique<World>()) {
   timer_->start(15, this);
-  map_->AddSoldier();
-  map_->AddTerraintbject();
+  world_->AddSoldier();
+  world_->AddTerraintbject();
 }
 
 void Controller::paintEvent(QPaintEvent* event) {
   QPainter qp(this);
-  view_->Update(&qp, map_->GetObjects());
+  view_->Update(&qp, world_->GetObjects());
 }
 
 void Controller::timerEvent(QTimerEvent*) {
-  for (const auto& soldier : map_->GetSoldiers()) {
+  for (const auto& soldier : world_->GetSoldiers()) {
     soldier->MoveSoldier();
   }
-  repaint();
+  update();
 }
