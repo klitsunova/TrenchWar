@@ -50,8 +50,9 @@ void World::AddSoldier() {
 void World::AddTerraintbject() {
   std::shared_ptr<TerrainObject> new_object = std::make_shared<TerrainObject>();
   new_object->SetRandomPosition(width_, height_);
-  cells_[new_object->GetXPosition()][new_object->GetYPosition()].terrain_objects.push_back(
-      new_object);
+  int x = new_object->GetXPosition();
+  int y = new_object->GetYPosition();
+  cells_[x][y].terrain_objects.push_back(new_object);
 }
 
 World::World(int width, int height) : width_(width), height_(height) {
@@ -101,13 +102,13 @@ void World::DrawMap(QPainter* painter) {
       cells_[i][j].point_on_screen = point;
     }
   }
-  //draw soldiers on map
+  //  draw soldiers on map
   for (int i = 0; i < width_; ++i) {
     for (int j = 0; j < height_; ++j) {
-      for (auto& soldier: cells_[i][j].soldiers) {
+      for (auto& soldier : cells_[i][j].soldiers) {
         soldier->DrawObject(painter, cells_[i][j].point_on_screen);
       }
-      for (auto& terrain_object: cells_[i][j].terrain_objects) {
+      for (auto& terrain_object : cells_[i][j].terrain_objects) {
         terrain_object->DrawObject(painter, cells_[i][j].point_on_screen);
       }
     }

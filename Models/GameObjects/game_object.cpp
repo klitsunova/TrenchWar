@@ -11,7 +11,7 @@ int GetRandomNumber() {
   return dist(mt);
 }
 
-} // namespace
+} //  namespace
 
 GameObject::GameObject() {}
 GameObject::GameObject(int x_position, int y_position)
