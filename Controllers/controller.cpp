@@ -2,19 +2,19 @@
 
 #include <memory>
 
-Controller::Controller() :
-                           view_(std::make_unique<View>()),
-                           world_(std::make_unique<World>(50, 40)),
+Controller::Controller() : view_(std::make_unique<View>()),
+                           world_(std::make_unique<World>(200, 50)),
                            timer_(new QBasicTimer) {
-  world_->AddSoldier();
-  timer_->start(100, this);
-  // map_->AddTerraintbject();
+  for (int i = 0; i < 100; ++i) {
+    world_->AddSoldier();
+  }
+  world_->AddTerraintbject();
+  timer_->start(50, this);
 }
 
 void Controller::paintEvent(QPaintEvent* event) {
   QPainter qp(this);
   world_->DrawMap(&qp);
-  // view_->Update(&qp, map_->GetObjects());
 }
 
 void Controller::timerEvent(QTimerEvent* event) {

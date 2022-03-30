@@ -28,6 +28,7 @@ class GameObject {
   void MoveDown();
 
   virtual void DrawObject(QPainter*, const QRect&) const = 0;
+  virtual void DrawObject(QPainter*, const QPoint&) const = 0;
 
  protected:
   int x_position_;

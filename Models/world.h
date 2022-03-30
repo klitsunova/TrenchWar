@@ -17,12 +17,10 @@ class World {
 
   ~World() = default;
 
-  // std::vector<std::shared_ptr<GameObject>> GetObjects();
   const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
   std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
   void ClearSoldiersFromCells();
   void UpdateSoldiersInCells();
-  // std::vector<std::shared_ptr<TerrainObject>> GetTerrainObjects();
   int GetWidth() const;
   int GetHeight() const;
   const cell_& GetCell(int, int) const;
@@ -30,7 +28,7 @@ class World {
   void DrawMap(QPainter*);
 
   void AddSoldier();
-  // void AddTerraintbject();
+  void AddTerraintbject();
 
  private:
   int width_, height_;
@@ -38,6 +36,7 @@ class World {
     std::vector<std::shared_ptr<Soldier>> soldiers;
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
     QRect bounding_rect;
+    QPoint point_on_screen;
   };
 
   std::vector<std::vector<cell_>> cells_;
