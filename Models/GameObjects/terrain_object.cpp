@@ -2,7 +2,8 @@
 
 TerrainObject::TerrainObject() : GameObject() {}
 
-TerrainObject::TerrainObject(int x_position, int y_position) : GameObject(x_position, y_position) {}
+TerrainObject::TerrainObject(int x_position, int y_position)
+    : GameObject(x_position, y_position) {}
 
 QColor TerrainObject::GetColor() {
   return color_;

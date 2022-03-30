@@ -11,12 +11,12 @@ int GetRandomNumber() {
   return dist(mt);
 }
 
-}  // namespace
+} // namespace
 
 GameObject::GameObject() {}
-GameObject::GameObject(int x_position, int y_position) :
-                                                         x_position_(x_position),
-                                                         y_position_(y_position) {}
+GameObject::GameObject(int x_position, int y_position)
+    : x_position_(x_position),
+      y_position_(y_position) {}
 int GameObject::GetXPosition() const {
   return x_position_;
 }

@@ -1,7 +1,8 @@
 #include "soldier.h"
 
 Soldier::Soldier() : GameObject() {}
-Soldier::Soldier(int x_position, int y_position) : GameObject(x_position, y_position) {}
+Soldier::Soldier(int x_position, int y_position)
+    : GameObject(x_position, y_position) {}
 
 Soldier::health_t Soldier::GetHitPoints() const {
   return hit_points_;

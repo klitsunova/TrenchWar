@@ -29,10 +29,11 @@ void World::UpdateSoldiersInCells() {
   }
   ClearSoldiersFromCells();
   for (int i = 0; i < soldiers_.size(); ++i) {
-    assert(soldiers_[i]->GetXPosition() >= 0
-           && soldiers_[i]->GetXPosition() < cells_.size());
-    assert(soldiers_[i]->GetYPosition() >= 0 && soldiers_[i]->GetYPosition() < cells_[soldiers_[i]->GetXPosition()].size());
-    cells_[soldiers_[i]->GetXPosition()][soldiers_[i]->GetYPosition()].soldiers.push_back(
+    int x = soldiers_[i]->GetXPosition();
+    int y = soldiers_[i]->GetYPosition();
+    assert(x >= 0 && x < cells_.size());
+    assert(y >= 0 && (y < cells_[x].size()));
+    cells_[x][y].soldiers.push_back(
         soldiers_[i]);
   }
 }
@@ -41,8 +42,9 @@ void World::AddSoldier() {
   std::shared_ptr<Soldier> new_object = std::make_shared<Soldier>();
   new_object->SetRandomPosition(width_, height_);
   soldiers_.push_back(new_object);
-  cells_[new_object->GetXPosition()][new_object->GetYPosition()].soldiers.push_back(
-      new_object);
+  int x = new_object->GetXPosition();
+  int y = new_object->GetYPosition();
+  cells_[x][y].soldiers.push_back(new_object);
 }
 
 void World::AddTerraintbject() {
