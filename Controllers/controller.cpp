@@ -19,7 +19,7 @@ void Controller::paintEvent(QPaintEvent* event) {
 
 void Controller::timerEvent(QTimerEvent* event) {
   Q_UNUSED(event);
-  for (const auto& soldier: world_->GetSoldiers()) {
+  for (const auto& soldier : world_->GetSoldiers()) {
     soldier->MoveSoldier(world_->GetWidth(), world_->GetHeight());
   }
   update();

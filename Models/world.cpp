@@ -72,7 +72,7 @@ void World::DrawMap(QPainter* painter) {
     }
   }
   //  draw soldiers on map
-  for (auto& soldier: soldiers_) {
+  for (auto& soldier : soldiers_) {
     int x = soldier->GetXPosition();
     int y = soldier->GetYPosition();
     soldier->DrawObject(painter, cells_[x][y].point_on_screen);
@@ -80,7 +80,7 @@ void World::DrawMap(QPainter* painter) {
   //  draw objects on map
   for (int i = 0; i < width_; ++i) {
     for (int j = 0; j < height_; ++j) {
-      for (auto& terrain_object: cells_[i][j].terrain_objects) {
+      for (auto& terrain_object : cells_[i][j].terrain_objects) {
         terrain_object->DrawObject(painter, cells_[i][j].point_on_screen);
       }
     }

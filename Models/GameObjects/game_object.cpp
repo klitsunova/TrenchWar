@@ -11,7 +11,7 @@ int GetRandomNumber() {
   return dist(mt);
 }
 
-} //  namespace
+}  //  namespace
 
 GameObject::GameObject() {}
 GameObject::GameObject(int x_position, int y_position)
@@ -35,9 +35,9 @@ void GameObject::SetPosition(int x, int y) {
 
 void GameObject::SetRandomPosition(int x_max, int y_max) {
   // x_position_ = GetRandomNumber() % x_max;
-  x_position_ = rand() % x_max;
+  x_position_ = std::rand() % x_max;
   // y_position_ = GetRandomNumber() % y_max;
-  y_position_ = rand() % y_max;
+  y_position_ = std::rand() % y_max;
 }
 
 void GameObject::MoveLeft() {
