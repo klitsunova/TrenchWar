@@ -14,7 +14,7 @@ QColor Soldier::GetColor() {
 
 void Soldier::MoveSoldier(int width, int height) {
   // TODO(klitsunova): soldier's movement along the route
-  if (x_position_ > 0) {
+  if (x_position_ - 1 > 0) {
     MoveLeft();
   } else {
     SetRandomPosition(width, height);
