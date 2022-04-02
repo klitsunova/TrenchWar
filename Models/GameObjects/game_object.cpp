@@ -11,47 +11,50 @@ int GetRandomNumber() {
   return dist(mt);
 }
 
-}  //  namespace
+} // namespace
 
 GameObject::GameObject() {}
-GameObject::GameObject(int x_position, int y_position)
-    : x_position_(x_position),
-      y_position_(y_position) {}
+
+GameObject::GameObject(const QPoint& position)
+    : position_(position) {}
+
 int GameObject::GetXPosition() const {
-  return x_position_;
+  return position_.x();
 }
+
 int GameObject::GetYPosition() const {
-  return y_position_;
+  return position_.y();
 }
 
-void GameObject::SetColor(QColor color) {
-  color_ = color;
+QPoint GameObject::GetPosition() const {
+  return position_;
 }
 
-void GameObject::SetPosition(int x, int y) {
-  x_position_ = x;
-  y_position_ = y;
+void GameObject::SetPosition(const QPoint& position) {
+  position_ = position;
 }
 
-void GameObject::SetRandomPosition(int x_max, int y_max) {
-  // x_position_ = GetRandomNumber() % x_max;
-  x_position_ = std::rand() % x_max;
-  // y_position_ = GetRandomNumber() % y_max;
-  y_position_ = std::rand() % y_max;
+void GameObject::SetRandomPosition(const QSize& size) {
+  position_ = QPoint(std::rand() % size.width(),
+                     std::rand() % size.height());
 }
 
 void GameObject::MoveLeft() {
-  x_position_ -= 1;
+  position_ -= QPoint(step_, 0);
 }
 
 void GameObject::MoveRight() {
-  ++x_position_;
+  position_ += QPoint(step_, 0);
 }
 
 void GameObject::MoveUp() {
-  ++y_position_;
+  position_ -= QPoint(0, step_);
 }
 
 void GameObject::MoveDown() {
-  --y_position_;
+  position_ += QPoint(0, step_);
+}
+
+QPixmap GameObject::GetPixmap() const {
+  return picture_;
 }

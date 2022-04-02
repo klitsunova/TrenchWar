@@ -8,17 +8,13 @@ class Soldier : public GameObject {
 
  public:
   Soldier();
-  Soldier(int, int);
+  Soldier(const QPoint&);
 
   ~Soldier() override = default;
 
   health_t GetHitPoints() const;
-  QColor GetColor() override;
-  void MoveSoldier(int, int);
-  void DrawObject(QPainter*, const QRect&) const final;
-  void DrawObject(QPainter*, const QPoint&) const final;
+  void MoveSoldier(QSize);
 
  private:
   health_t hit_points_ = 100;
-  QColor color_ = Qt::red;
 };

@@ -1,5 +1,13 @@
 #include "world.h"
 
+World::World(QSize size) : size_(size) {
+  cells_.resize(size.width());
+  for (int i = 0; i < size.width(); ++i) {
+    cells_[i].resize(size.height());
+  }
+  picture_ = std::move(DrawWorld());
+}
+
 const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
   return soldiers_;
 }
@@ -10,80 +18,74 @@ std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() {
 
 void World::AddSoldier() {
   std::shared_ptr<Soldier> new_object = std::make_shared<Soldier>();
-  new_object->SetRandomPosition(width_, height_);
+  new_object->SetRandomPosition(size_);
   soldiers_.push_back(new_object);
+  game_objects_.push_back(new_object);
 }
 
-void World::AddTerraintObject() {
+void World::AddTerrainObject() {
   std::shared_ptr<TerrainObject> new_object =
       std::make_shared<TerrainObject>();
-  new_object->SetRandomPosition(width_, height_);
+  new_object->SetRandomPosition(size_);
   int x = new_object->GetXPosition();
   int y = new_object->GetYPosition();
   cells_[x][y].terrain_objects.push_back(new_object);
+  game_objects_.push_back(new_object);
 }
 
-World::World(int width, int height)
-    : width_(width), height_(height) {
-  cells_.resize(width);
-  for (int i = 0; i < width; ++i) {
-    cells_[i].resize(height);
-  }
+const std::vector<std::shared_ptr<GameObject>>& World::GetGameObjects() const {
+  return game_objects_;
+}
+
+std::vector<std::shared_ptr<GameObject>>& World::GetGameObjects() {
+  return game_objects_;
 }
 
 int World::GetWidth() const {
-  return width_;
+  return size_.width();
 }
 
 int World::GetHeight() const {
-  return height_;
+  return size_.height();
 }
 
-const World::cell_& World::GetCell(int x, int y) const {
-  assert(x >= 0 && x < cells_.size());
-  assert(y >= 0 && y < cells_[x].size());
-  return cells_[x][y];
+QSize World::GetSize() const {
+  return size_;
 }
 
-World::cell_& World::GetCell(int x, int y) {
-  assert(x >= 0 && x < cells_.size());
-  assert(y >= 0 && y < cells_[x].size());
-  return cells_[x][y];
+const World::cell_& World::GetCell(const QPoint& point) const {
+  assert(point.x() >= 0 && point.x() < cells_.size());
+  assert(point.y() >= 0 && point.y() < cells_[point.x()].size());
+  return cells_[point.x()][point.y()];
 }
 
-void World::DrawMap(QPainter* painter) {
-  painter->save();
-  int window_width = painter->window().width() - 1;
-  int window_height = painter->window().height() - 1;
-  painter->setBrush(QBrush("#ff28e024"));
-  painter->setPen(QPen(QColor("#ff28e024"), 1));
-  for (int i = 0; i < width_; ++i) {
-    for (int j = 0; j < height_; ++j) {
-      int x_pos = (window_width * i) / width_;
-      int dx = ((window_width * (i + 1)) / width_) - x_pos;
-      int y_pos = (window_height * j) / height_;
-      int dy = ((window_height * (j + 1)) / height_) - y_pos;
-      QRect rect(x_pos, y_pos, dx, dy);
-      QPoint point((window_width * (2 * i + 1)) / (2 * width_),
-                   (window_height * (2 * j + 1)) / (2 * height_));
-      painter->drawRect(rect);
-      cells_[i][j].bounding_rect = rect;
-      cells_[i][j].point_on_screen = point;
+World::cell_& World::GetCell(const QPoint& point) {
+  assert(point.x() >= 0 && point.x() < cells_.size());
+  assert(point.y() >= 0 && point.y() < cells_[point.x()].size());
+  return cells_[point.x()][point.y()];
+}
+
+QPixmap World::GetPixmap() const {
+  return picture_;
+}
+
+QPixmap World::DrawWorld() const {
+  QPixmap picture(size_);
+  auto painter = QPainter(&picture);
+  int window_width = painter.window().width() - 1;
+  int window_height = painter.window().height() - 1;
+  painter.setBrush(QBrush("#ff28e024"));
+  painter.setPen(QPen(QColor("#ff28e024"), 1));
+  for (int i = 0; i < size_.width(); ++i) {
+    for (int j = 0; j < size_.height(); ++j) {
+      int x_top = (window_width * i) / size_.width();
+      int x_bottom = ((window_width * (i + 1)) / size_.width());
+      int y_top = (window_height * j) / size_.height();
+      int y_bottom = ((window_height * (j + 1)) / size_.height());
+      QRect rect_of_each_cell(QPoint(x_top, y_top),
+                              QPoint(x_bottom, y_bottom));
+      painter.drawRect(rect_of_each_cell);
     }
   }
-  //  draw soldiers on map
-  for (auto& soldier : soldiers_) {
-    int x = soldier->GetXPosition();
-    int y = soldier->GetYPosition();
-    soldier->DrawObject(painter, cells_[x][y].point_on_screen);
-  }
-  //  draw objects on map
-  for (int i = 0; i < width_; ++i) {
-    for (int j = 0; j < height_; ++j) {
-      for (auto& terrain_object : cells_[i][j].terrain_objects) {
-        terrain_object->DrawObject(painter, cells_[i][j].point_on_screen);
-      }
-    }
-  }
-  painter->restore();
+  return picture;
 }

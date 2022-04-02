@@ -2,6 +2,7 @@
 
 #include <QColor>
 #include <QPainter>
+#include <QPixmap>
 #include <QPoint>
 #include <QPointer>
 
@@ -10,28 +11,27 @@
 class GameObject {
  public:
   GameObject();
-  explicit GameObject(int, int);
+  explicit GameObject(const QPoint&);
 
   virtual ~GameObject() = default;
 
   int GetXPosition() const;
   int GetYPosition() const;
-  virtual QColor GetColor() = 0;
+  QPoint GetPosition() const;
 
-  void SetColor(QColor color);
-  void SetPosition(int, int);
-  void SetRandomPosition(int, int);
+  void SetPosition(const QPoint&);
+  void SetRandomPosition(const QSize&);
 
   void MoveLeft();
   void MoveRight();
   void MoveUp();
   void MoveDown();
 
-  virtual void DrawObject(QPainter*, const QRect&) const = 0;
-  virtual void DrawObject(QPainter*, const QPoint&) const = 0;
+  QPixmap GetPixmap() const;
+  static constexpr QSize standard_size_{QSize(30, 30)};
 
  protected:
-  int x_position_;
-  int y_position_;
-  QColor color_ = Qt::white;
+  QPoint position_;
+  QPixmap picture_;
+  static constexpr int step_{1};
 };

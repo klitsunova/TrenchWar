@@ -25,4 +25,7 @@ class Controller : public QWidget {
   std::unique_ptr<World> world_;
   std::unique_ptr<View> view_;
   std::unique_ptr<QBasicTimer> timer_;
+
+  static constexpr int timer_interval_{50};
+  static constexpr QSize world_size_{QSize(1000, 1000)};
 };

@@ -15,32 +15,33 @@ class World {
 
  public:
   World() = delete;
-  World(int, int);
+  explicit World(QSize);
 
   ~World() = default;
 
   const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
   std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
-  // void ClearSoldiersFromCells(bool smart_cleaning = false);
-  // void UpdateSoldiersInCells(bool smart_cleaning = false);
+  const std::vector<std::shared_ptr<GameObject>>& GetGameObjects() const;
+  std::vector<std::shared_ptr<GameObject>>& GetGameObjects();
   int GetWidth() const;
   int GetHeight() const;
-  const cell_& GetCell(int, int) const;
-  cell_& GetCell(int, int);
-  void ChangedCell(int, int);
-  void DrawMap(QPainter*);
+  QSize GetSize() const;
+  const cell_& GetCell(const QPoint&) const;
+  cell_& GetCell(const QPoint&);
+  QPixmap GetPixmap() const;
 
   void AddSoldier();
-  void AddTerraintObject();
+  void AddTerrainObject();
 
  private:
-  int width_, height_;
+  QSize size_;
+  QPixmap picture_;
   struct cell_ {
-    QRect bounding_rect;
-    QPoint point_on_screen;
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
   };
-
   std::vector<std::vector<cell_>> cells_;
   std::vector<std::shared_ptr<Soldier>> soldiers_;
+  std::vector<std::shared_ptr<GameObject>> game_objects_;
+
+  QPixmap DrawWorld() const;
 };
