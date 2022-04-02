@@ -14,7 +14,6 @@ class World {
   struct cell_;
 
  public:
-  World() = delete;
   explicit World(QSize);
 
   ~World() = default;
