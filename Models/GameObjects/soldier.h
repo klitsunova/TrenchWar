@@ -8,7 +8,7 @@ class Soldier : public GameObject {
 
  public:
   Soldier();
-  Soldier(const QPoint&);
+  explicit Soldier(const QPoint&);
 
   ~Soldier() override = default;
 
