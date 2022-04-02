@@ -1,4 +1,5 @@
 #include "world.h"
+#include <utility>
 
 World::World(QSize size) : size_(size) {
   cells_.resize(size.width());
