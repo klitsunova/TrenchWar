@@ -18,7 +18,7 @@ void Controller::paintEvent(QPaintEvent*) {
 }
 
 void Controller::timerEvent(QTimerEvent*) {
-  for (const auto& soldier: world_->GetSoldiers()) {
+  for (const auto& soldier : world_->GetSoldiers()) {
     soldier->MoveSoldier(world_->GetSize());
   }
   update();

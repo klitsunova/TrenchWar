@@ -12,7 +12,7 @@
 
 class View {
  public:
-  View(const std::shared_ptr<World>&);
+  explicit View(const std::shared_ptr<World>&);
 
   ~View() = default;
 

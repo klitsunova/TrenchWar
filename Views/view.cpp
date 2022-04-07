@@ -23,7 +23,7 @@ void View::Update(
                       world_->GetPixmap());
   int object_width = GameObject::StandardSize.width();
   int object_height = GameObject::StandardSize.height();
-  for (const auto& object: objects) {
+  for (const auto& object : objects) {
     QPoint screen_point;
     QPoint pos = object->GetPosition();
     screen_point.setX((window_width * (2 * pos.x() + 1))
