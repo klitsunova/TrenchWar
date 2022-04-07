@@ -2,14 +2,14 @@
 
 #include <memory>
 
-Controller::Controller() : world_(std::make_shared<World>(WorldSize)),
+Controller::Controller() : world_(std::make_shared<World>(kWorldSize)),
                            view_(std::make_unique<View>(world_)),
                            timer_(new QBasicTimer) {
   for (int i = 0; i < 10; ++i) {
     world_->AddSoldier();
   }
   world_->AddTerrainObject();
-  timer_->start(TimerInterval, this);
+  timer_->start(kTimerInterval, this);
 }
 
 void Controller::paintEvent(QPaintEvent*) {

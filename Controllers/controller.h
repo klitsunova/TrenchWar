@@ -22,8 +22,8 @@ class Controller : public QWidget {
   void timerEvent(QTimerEvent*) override;
 
  private:
-  static constexpr int TimerInterval{50};
-  static constexpr QSize WorldSize{QSize(1000, 1000)};
+  static constexpr int kTimerInterval{50};
+  static constexpr QSize kWorldSize{QSize(1000, 1000)};
 
   std::shared_ptr<World> world_;
   std::unique_ptr<View> view_;

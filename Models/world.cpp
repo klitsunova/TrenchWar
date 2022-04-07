@@ -3,7 +3,7 @@
 
 World::World(QSize size) : size_(size) {
   cells_.resize(size.width(),
-                std::vector<Cell_>(size.height()));
+                std::vector<Cell>(size.height()));
   picture_ = DrawWorld();
 }
 
@@ -42,13 +42,13 @@ const QSize& World::GetSize() const {
   return size_;
 }
 
-const World::Cell_& World::GetCell(const QPoint& point) const {
+const World::Cell& World::GetCell(const QPoint& point) const {
   assert(point.x() >= 0 && point.x() < cells_.size());
   assert(point.y() >= 0 && point.y() < cells_[point.x()].size());
   return cells_[point.x()][point.y()];
 }
 
-World::Cell_& World::GetCell(const QPoint& point) {
+World::Cell& World::GetCell(const QPoint& point) {
   assert(point.x() >= 0 && point.x() < cells_.size());
   assert(point.y() >= 0 && point.y() < cells_[point.x()].size());
   return cells_[point.x()][point.y()];

@@ -11,7 +11,7 @@
 
 class World {
  private:
-  struct Cell_;
+  struct Cell;
 
  public:
   explicit World(QSize);
@@ -26,8 +26,8 @@ class World {
 
   const QSize& GetSize() const;
 
-  const Cell_& GetCell(const QPoint&) const;
-  Cell_& GetCell(const QPoint&);
+  const Cell& GetCell(const QPoint&) const;
+  Cell& GetCell(const QPoint&);
 
   const QPixmap& GetPixmap() const;
 
@@ -35,13 +35,13 @@ class World {
   void AddTerrainObject();
 
  private:
-  struct Cell_ {
+  struct Cell {
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
   };
 
   QSize size_;
   QPixmap picture_;
-  std::vector<std::vector<Cell_>> cells_;
+  std::vector<std::vector<Cell>> cells_;
   std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<GameObject>> game_objects_;
 
