@@ -10,7 +10,7 @@
 
 class GameObject {
  public:
-  GameObject(const QString&);
+  explicit GameObject(const QString&);
   explicit GameObject(const QPoint&, const QString&);
 
   virtual ~GameObject() = default;
