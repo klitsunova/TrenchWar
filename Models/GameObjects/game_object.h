@@ -15,8 +15,6 @@ class GameObject {
 
   virtual ~GameObject() = default;
 
-  int GetXPosition() const;
-  int GetYPosition() const;
   QPoint GetPosition() const;
 
   void SetPosition(const QPoint&);
@@ -28,10 +26,12 @@ class GameObject {
   void MoveDown();
 
   QPixmap GetPixmap() const;
-  static constexpr QSize standard_size_{QSize(30, 30)};
+
+  static constexpr QSize StandardSize{QSize(30, 30)};
 
  protected:
+  static constexpr int step_{1};
+
   QPoint position_;
   QPixmap picture_;
-  static constexpr int step_{1};
 };

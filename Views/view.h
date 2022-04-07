@@ -12,7 +12,7 @@
 
 class View {
  public:
-  View() = default;
+  View(const std::shared_ptr<World>&);
 
   ~View() = default;
 
@@ -22,9 +22,9 @@ class View {
 
   void Update(
       QPainter* painter,
-      const std::vector<std::shared_ptr<GameObject>>& objects,
-      const World&);
+      const std::vector<std::shared_ptr<GameObject>>& objects);
 
  private:
   int scale_;
+  std::shared_ptr<World> world_;
 };

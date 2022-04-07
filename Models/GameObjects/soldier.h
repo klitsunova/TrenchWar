@@ -1,7 +1,8 @@
 #pragma once
 
-#include "game_object.h"
 #include <QPainter>
+
+#include "game_object.h"
 
 class Soldier : public GameObject {
   using health_t = int;
@@ -13,6 +14,7 @@ class Soldier : public GameObject {
   ~Soldier() override = default;
 
   health_t GetHitPoints() const;
+
   void MoveSoldier(QSize);
 
  private:
