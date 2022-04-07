@@ -7,7 +7,7 @@ Soldier::Soldier(const QPoint& point)
     : GameObject(point, ":Resources/Images/Soldier1.png") {
 }
 
-Soldier::health_t Soldier::GetHitPoints() const {
+Soldier::Health Soldier::GetHitPoints() const {
   return hit_points_;
 }
 

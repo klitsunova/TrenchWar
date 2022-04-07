@@ -5,7 +5,7 @@
 #include "game_object.h"
 
 class Soldier : public GameObject {
-  using health_t = int;
+  using Health = int;
 
  public:
   Soldier();
@@ -13,10 +13,10 @@ class Soldier : public GameObject {
 
   ~Soldier() override = default;
 
-  health_t GetHitPoints() const;
+  Health GetHitPoints() const;
 
   void MoveSoldier(QSize);
 
  private:
-  health_t hit_points_ = 100;
+  Health hit_points_ = 100;
 };
