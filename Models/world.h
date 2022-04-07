@@ -24,12 +24,12 @@ class World {
   const std::vector<std::shared_ptr<GameObject>>& GetGameObjects() const;
   std::vector<std::shared_ptr<GameObject>>& GetGameObjects();
 
-  QSize GetSize() const;
+  const QSize& GetSize() const;
 
   const Cell_& GetCell(const QPoint&) const;
   Cell_& GetCell(const QPoint&);
 
-  QPixmap GetPixmap() const;
+  const QPixmap& GetPixmap() const;
 
   void AddSoldier();
   void AddTerrainObject();

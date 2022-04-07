@@ -13,12 +13,14 @@ int GetRandomNumber() {
 
 }  // namespace
 
-GameObject::GameObject() {}
+GameObject::GameObject(const QString& image_path)
+    : picture_(image_path) {}
 
-GameObject::GameObject(const QPoint& position)
-    : position_(position) {}
+GameObject::GameObject(const QPoint& position, const QString& image_path)
+    : position_(position),
+      picture_(image_path) {}
 
-QPoint GameObject::GetPosition() const {
+const QPoint& GameObject::GetPosition() const {
   return position_;
 }
 
@@ -50,4 +52,10 @@ void GameObject::MoveDown() {
 
 QPixmap GameObject::GetPixmap() const {
   return picture_;
+}
+QSize GameObject::GetSize() const {
+  return size_;
+}
+void GameObject::SetSize(const QSize& size) {
+  size_ = size;
 }

@@ -1,10 +1,10 @@
 #include "terrain_object.h"
 
-TerrainObject::TerrainObject() : GameObject() {
-  picture_ = QPixmap(":Resources/Images/Tower1.png");
+TerrainObject::TerrainObject() : GameObject(":Resources/Images/Tower1.png") {
+  // picture_ = QPixmap(":Resources/Images/Tower1.png");
 }
 
 TerrainObject::TerrainObject(const QPoint& point)
-    : GameObject(point) {
-  picture_ = QPixmap(":Resources/Images/Tower1.png");
+    : GameObject(point, ":Resources/Images/Tower1.png") {
+  // picture_ = QPixmap(":Resources/Images/Tower1.png");
 }

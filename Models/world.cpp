@@ -23,8 +23,7 @@ void World::AddSoldier() {
 }
 
 void World::AddTerrainObject() {
-  std::shared_ptr<TerrainObject> new_object =
-      std::make_shared<TerrainObject>();
+  auto new_object = std::make_shared<TerrainObject>();
   new_object->SetRandomPosition(size_);
   QPoint pos = new_object->GetPosition();
   cells_[pos.x()][pos.y()].terrain_objects.push_back(new_object);
@@ -39,7 +38,7 @@ std::vector<std::shared_ptr<GameObject>>& World::GetGameObjects() {
   return game_objects_;
 }
 
-QSize World::GetSize() const {
+const QSize& World::GetSize() const {
   return size_;
 }
 
@@ -55,7 +54,7 @@ World::Cell_& World::GetCell(const QPoint& point) {
   return cells_[point.x()][point.y()];
 }
 
-QPixmap World::GetPixmap() const {
+const QPixmap& World::GetPixmap() const {
   return picture_;
 }
 

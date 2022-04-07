@@ -1,12 +1,12 @@
 #include "soldier.h"
 
-Soldier::Soldier() : GameObject() {
-  picture_ = QPixmap(":Resources/Images/Soldier1.png");
+Soldier::Soldier() : GameObject(":Resources/Images/Soldier1.png") {
+  // picture_ = QPixmap(":Resources/Images/Soldier1.png");
 }
 
 Soldier::Soldier(const QPoint& point)
-    : GameObject(point) {
-  picture_ = QPixmap(":Resources/Images/Soldier1.png");
+    : GameObject(point,":Resources/Images/Soldier1.png") {
+  // picture_ = QPixmap(":Resources/Images/Soldier1.png");
 }
 
 Soldier::health_t Soldier::GetHitPoints() const {
