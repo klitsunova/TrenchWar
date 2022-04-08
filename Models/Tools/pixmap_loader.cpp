@@ -1,41 +1,40 @@
 #include "pixmap_loader.h"
 
-PixmapLoader::PixmapLoader() {
-  soldier_path_ = ":././Resources/Images/Soldier1.png";
-  LoadPixmap(soldier_path_);
-  left_soldier_path_ = ":././Resources/Images/Soldier2.png";
-  LoadPixmap(left_soldier_path_);
-  right_soldier_path_ = ":././Resources/Images/Soldier1.png";
-  LoadPixmap(right_soldier_path_);
-  terrain_object_path_ = ":././Resources/Images/Tower1.png";
-  LoadPixmap(terrain_object_path_);
-}
+QString PixmapLoader::soldier_path =
+    ":././Resources/Images/Soldier1.png";
+QString PixmapLoader::left_soldier_path =
+    ":././Resources/Images/Soldier2.png";
+QString PixmapLoader::right_soldier_path =
+    ":././Resources/Images/Soldier1.png";
+QString PixmapLoader::terrain_object_path =
+    ":././Resources/Images/Tower1.png";
+std::map<QString, std::shared_ptr<QPixmap>> PixmapLoader::images;
 
 void PixmapLoader::LoadPixmap(const QString& path) {
-  images_[path] = (std::make_shared<QPixmap>(QPixmap(path)));
-  assert(!images_[path]->isNull());
+  images[path] = (std::make_shared<QPixmap>(QPixmap(path)));
+  assert(!images[path]->isNull());
 }
 
 const std::shared_ptr<QPixmap>& PixmapLoader::GetPixmap(const QString& path) {
-  if (images_.find(path) == images_.end()) {
-    images_[path] = (std::make_shared<QPixmap>(QPixmap(path)));
-    assert(!images_[path]->isNull());
+  if (images.find(path) == images.end()) {
+    images[path] = (std::make_shared<QPixmap>(QPixmap(path)));
+    assert(!images[path]->isNull());
   }
-  return images_[path];
+  return images[path];
 }
 
 const std::shared_ptr<QPixmap>& PixmapLoader::GetSoldier() {
-  return GetPixmap(soldier_path_);
+  return GetPixmap(soldier_path);
 }
 
 const std::shared_ptr<QPixmap>& PixmapLoader::GetLSoldier() {
-  return GetPixmap(left_soldier_path_);
+  return GetPixmap(left_soldier_path);
 }
 
 const std::shared_ptr<QPixmap>& PixmapLoader::GetRSoldier() {
-  return GetPixmap(right_soldier_path_);
+  return GetPixmap(right_soldier_path);
 }
 
 const std::shared_ptr<QPixmap>& PixmapLoader::GetTerrainObject() {
-  return GetPixmap(terrain_object_path_);
+  return GetPixmap(terrain_object_path);
 }

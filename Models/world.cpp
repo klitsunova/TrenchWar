@@ -1,9 +1,7 @@
 #include "world.h"
 
-World::World(QSize size,
-             const std::shared_ptr<PixmapLoader>& pixmap_loader)
-    : size_(size),
-      pixmap_loader_(pixmap_loader) {
+World::World(QSize size)
+    : size_(size) {
   cells_.resize(size.width(),
                 std::vector<Cell>(size.height()));
   picture_ = DrawWorld();
@@ -18,14 +16,14 @@ std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() {
 }
 
 void World::AddSoldier() {
-  auto new_object = std::make_shared<Soldier>(pixmap_loader_);
+  auto new_object = std::make_shared<Soldier>();
   new_object->SetRandomPosition(size_);
   soldiers_.push_back(new_object);
   game_objects_.push_back(new_object);
 }
 
 void World::AddTerrainObject() {
-  auto new_object = std::make_shared<TerrainObject>(pixmap_loader_);
+  auto new_object = std::make_shared<TerrainObject>();
   new_object->SetRandomPosition(size_);
   QPoint pos = new_object->GetPosition();
   cells_[pos.x()][pos.y()].terrain_objects.push_back(new_object);

@@ -8,13 +8,13 @@
 
 #include "Models/Tools/pixmap_loader.h"
 
-#include <utility>
 #include <memory>
+#include <utility>
 
 class GameObject {
  public:
-  explicit GameObject(const std::shared_ptr<PixmapLoader>&);
-  explicit GameObject(const QPoint&, const std::shared_ptr<PixmapLoader>&);
+  explicit GameObject();
+  explicit GameObject(const QPoint&);
 
   virtual ~GameObject() = default;
 
@@ -37,7 +37,6 @@ class GameObject {
   static constexpr int kStep{1};
   static constexpr QSize kStandardSize{QSize(30, 30)};
 
-  std::shared_ptr<PixmapLoader> pixmap_loader_;
   QSize size_{kStandardSize};
   QPoint position_;
   std::shared_ptr<QPixmap> picture_;

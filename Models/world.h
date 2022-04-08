@@ -15,7 +15,7 @@ class World {
   struct Cell;
 
  public:
-  explicit World(QSize, const std::shared_ptr<PixmapLoader>&);
+  explicit World(QSize);
 
   ~World() = default;
 
@@ -42,7 +42,6 @@ class World {
 
   QSize size_;
   QPixmap picture_;
-  std::shared_ptr<PixmapLoader> pixmap_loader_;
   std::vector<std::vector<Cell>> cells_;
   std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<GameObject>> game_objects_;

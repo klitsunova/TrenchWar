@@ -13,13 +13,10 @@ int GetRandomNumber() {
 
 }  // namespace
 
-GameObject::GameObject(const std::shared_ptr<PixmapLoader>& pixmap_loader)
-    : pixmap_loader_(pixmap_loader) {}
+GameObject::GameObject() {}
 
-GameObject::GameObject(const QPoint& position,
-                       const std::shared_ptr<PixmapLoader>& pixmap_loader)
-    : position_(position),
-      pixmap_loader_(pixmap_loader) {}
+GameObject::GameObject(const QPoint& position)
+    : position_(position) {}
 
 const QPoint& GameObject::GetPosition() const {
   return position_;

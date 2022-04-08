@@ -11,24 +11,24 @@
 
 class PixmapLoader {
  public:
-  PixmapLoader();
 
-  ~PixmapLoader() = default;
+  static void LoadPixmap(const QString&);
 
-  void LoadPixmap(const QString&);
+  static const std::shared_ptr<QPixmap>& GetPixmap(const QString&);
 
-  const std::shared_ptr<QPixmap>& GetPixmap(const QString&);
+  static const std::shared_ptr<QPixmap>& GetSoldier();
+  static const std::shared_ptr<QPixmap>& GetLSoldier();
+  static const std::shared_ptr<QPixmap>& GetRSoldier();
 
-  const std::shared_ptr<QPixmap>& GetSoldier();
-  const std::shared_ptr<QPixmap>& GetLSoldier();
-  const std::shared_ptr<QPixmap>& GetRSoldier();
-
-  const std::shared_ptr<QPixmap>& GetTerrainObject();
+  static const std::shared_ptr<QPixmap>& GetTerrainObject();
 
  private:
-  std::map<QString, std::shared_ptr<QPixmap>> images_;
-  QString soldier_path_;
-  QString right_soldier_path_;
-  QString left_soldier_path_;
-  QString terrain_object_path_;
+  PixmapLoader() = default;
+
+  static std::map<QString, std::shared_ptr<QPixmap>> images;
+  static QString soldier_path;
+  static QString right_soldier_path;
+  static QString left_soldier_path;
+  static QString terrain_object_path;
 };
+

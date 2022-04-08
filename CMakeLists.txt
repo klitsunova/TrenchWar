@@ -21,7 +21,6 @@ set(MODELS
         Models/GameObjects/game_object.cpp
         Models/GameObjects/soldier.cpp
         Models/GameObjects/terrain_object.cpp
-        Models/Tools/pixmap_loader.h
         Models/Tools/pixmap_loader.cpp)
 
 set(VIEWS

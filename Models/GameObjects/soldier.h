@@ -10,8 +10,8 @@ class Soldier : public GameObject {
   using Health = int;
 
  public:
-  explicit Soldier(const std::shared_ptr<PixmapLoader>&);
-  explicit Soldier(const QPoint&, const std::shared_ptr<PixmapLoader>&);
+  explicit Soldier();
+  explicit Soldier(const QPoint&);
 
   ~Soldier() override = default;
 

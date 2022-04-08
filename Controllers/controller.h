@@ -28,6 +28,5 @@ class Controller : public QWidget {
 
   std::shared_ptr<World> world_;
   std::unique_ptr<View> view_;
-  std::shared_ptr<PixmapLoader> pixmap_loader_;
   std::unique_ptr<QBasicTimer> timer_;
 };

@@ -3,11 +3,10 @@
 #include <memory>
 
 Controller::Controller() {
-  pixmap_loader_ = std::make_shared<PixmapLoader>();
-  world_ = std::make_shared<World>(kWorldSize, pixmap_loader_);
+  world_ = std::make_shared<World>(kWorldSize);
   view_ = std::make_unique<View>(world_);
   timer_ = std::make_unique<QBasicTimer>();
-  for (int i = 0; i < 10; ++i) {
+  for (int i = 0; i < 1000; ++i) {
     world_->AddSoldier();
   }
   world_->AddTerrainObject();

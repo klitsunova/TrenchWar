@@ -1,14 +1,13 @@
 #include "soldier.h"
 
-Soldier::Soldier(const std::shared_ptr<PixmapLoader>& pixmap_loader)
-    : GameObject(pixmap_loader) {
-  picture_ = pixmap_loader->GetSoldier();
+Soldier::Soldier()
+    : GameObject() {
+  picture_ = PixmapLoader::GetSoldier();
 }
 
-Soldier::Soldier(const QPoint& point,
-                 const std::shared_ptr<PixmapLoader>& pixmap_loader)
-    : GameObject(point, pixmap_loader) {
-  picture_ = pixmap_loader->GetSoldier();
+Soldier::Soldier(const QPoint& point)
+    : GameObject(point) {
+  picture_ = PixmapLoader::GetSoldier();
 }
 
 Soldier::Health Soldier::GetHitPoints() const {
@@ -19,7 +18,7 @@ void Soldier::MoveSoldier(QSize size) {
   // TODO(klitsunova): soldier's movement along the route
   if (position_.x() - kStep > 0) {
     MoveLeft();
-    picture_ = pixmap_loader_->GetLSoldier();
+    picture_ = PixmapLoader::GetLSoldier();
   } else {
     SetRandomPosition(size);
   }
