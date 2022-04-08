@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cassert>
 #include <map>
+#include <memory>
 
 class PixmapLoader {
  public:
