@@ -9,6 +9,7 @@
 #include "Models/Tools/pixmap_loader.h"
 
 #include <utility>
+#include <memory>
 
 class GameObject {
  public:
