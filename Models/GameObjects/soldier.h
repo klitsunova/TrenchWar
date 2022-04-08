@@ -4,6 +4,8 @@
 
 #include "game_object.h"
 
+#include <memory>
+
 class Soldier : public GameObject {
   using Health = int;
 
