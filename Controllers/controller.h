@@ -13,7 +13,7 @@
 #include "Views/view.h"
 
 class Controller : public QWidget {
- Q_OBJECT
+  Q_OBJECT
  public:
   Controller();
 
