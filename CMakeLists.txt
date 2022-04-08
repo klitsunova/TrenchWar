@@ -34,7 +34,9 @@ set(SOURCES
         ${VIEWS}
         ${CONTROLLERS})
 
-add_executable(TrenchWar ${SOURCES})
+qt6_add_big_resources(RESOURCES resources.qrc)
+
+add_executable(TrenchWar ${SOURCES} ${RESOURCES})
 
 target_link_libraries(TrenchWar
         Qt::Core

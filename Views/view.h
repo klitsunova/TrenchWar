@@ -1,15 +1,18 @@
 #pragma once
 
 #include <QPainter>
+#include <QPixmap>
 #include <QPoint>
+
 #include <memory>
 #include <vector>
 
 #include "Models/GameObjects/game_object.h"
+#include "Models/world.h"
 
 class View {
  public:
-  View() = default;
+  explicit View(const std::shared_ptr<World>&);
 
   ~View() = default;
 
@@ -23,4 +26,5 @@ class View {
 
  private:
   int scale_;
+  std::shared_ptr<World> world_;
 };

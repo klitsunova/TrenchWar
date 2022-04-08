@@ -1,21 +1,22 @@
 #pragma once
 
+#include <QPainter>
+
 #include "game_object.h"
 
 class Soldier : public GameObject {
-  using health_t = int;
+  using Health = int;
 
  public:
-  Soldier() = default;
+  Soldier();
+  explicit Soldier(const QPoint&);
 
   ~Soldier() override = default;
 
-  health_t GetHitPoints() const;
-  QColor GetColor() override;
+  Health GetHitPoints() const;
 
-  void MoveSoldier();
+  void MoveSoldier(QSize);
 
  private:
-  health_t hit_points_ = 100;
-  QColor color_ = Qt::red;
+  Health hit_points_ = 100;
 };

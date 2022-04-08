@@ -1,18 +1,21 @@
 #include "soldier.h"
 
-Soldier::health_t Soldier::GetHitPoints() const {
+Soldier::Soldier() : GameObject(":Resources/Images/Soldier1.png") {
+}
+
+Soldier::Soldier(const QPoint& point)
+    : GameObject(point, ":Resources/Images/Soldier1.png") {
+}
+
+Soldier::Health Soldier::GetHitPoints() const {
   return hit_points_;
 }
 
-QColor Soldier::GetColor() {
-  return color_;
-}
-
-void Soldier::MoveSoldier() {
+void Soldier::MoveSoldier(QSize size) {
   // TODO(klitsunova): soldier's movement along the route
-  if (position_.x()) {
+  if (position_.x() - kStep > 0) {
     MoveLeft();
   } else {
-    SetRandomPosition();
+    SetRandomPosition(size);
   }
 }

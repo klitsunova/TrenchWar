@@ -1,30 +1,40 @@
 #pragma once
 
 #include <QColor>
+#include <QPainter>
+#include <QPixmap>
 #include <QPoint>
 #include <QPointer>
+
 #include <utility>
 
 class GameObject {
  public:
-  GameObject();
-  explicit GameObject(const QPoint& position);
+  explicit GameObject(const QString&);
+  explicit GameObject(const QPoint&, const QString&);
 
   virtual ~GameObject() = default;
 
-  QPoint GetPosition() const;
-  virtual QColor GetColor() = 0;
+  const QPoint& GetPosition() const;
 
-  void SetColor(QColor color);
-  void SetPosition(const QPoint& position);
-  void SetRandomPosition();
+  void SetPosition(const QPoint&);
+  void SetRandomPosition(const QSize&);
 
   void MoveLeft();
   void MoveRight();
   void MoveUp();
   void MoveDown();
 
+  QPixmap GetPixmap() const;
+
+  QSize GetSize() const;
+  void SetSize(const QSize&);
+
  protected:
+  static constexpr int kStep{1};
+  static constexpr QSize kStandardSize{QSize(30, 30)};
+
+  QSize size_{kStandardSize};
   QPoint position_;
-  QColor color_ = Qt::white;
+  QPixmap picture_;
 };
