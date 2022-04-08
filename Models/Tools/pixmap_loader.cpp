@@ -3,8 +3,8 @@
 PixmapLoader::PixmapLoader() {
   soldier_path_ = ":././Resources/Images/Soldier1.png";
   LoadPixmap(soldier_path_);
-  // left_soldier_path_ = ":././Resources/Images/Soldier2.png";
-  // LoadPixmap(left_soldier_path_);
+  left_soldier_path_ = ":././Resources/Images/Soldier2.png";
+  LoadPixmap(left_soldier_path_);
   right_soldier_path_ = ":././Resources/Images/Soldier1.png";
   LoadPixmap(right_soldier_path_);
   terrain_object_path_ = ":././Resources/Images/Tower1.png";
