@@ -11,7 +11,6 @@
 
 class PixmapLoader {
  public:
-
   static void LoadPixmap(const QString&);
 
   static const std::shared_ptr<QPixmap>& GetPixmap(const QString&);

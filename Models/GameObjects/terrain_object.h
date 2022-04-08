@@ -6,7 +6,7 @@
 
 class TerrainObject : public GameObject {
  public:
-  explicit TerrainObject();
+  TerrainObject();
   explicit TerrainObject(const QPoint&);
 
   ~TerrainObject() override = default;
