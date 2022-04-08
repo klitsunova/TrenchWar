@@ -8,13 +8,14 @@
 
 #include "GameObjects/soldier.h"
 #include "GameObjects/terrain_object.h"
+#include "Tools/pixmap_loader.h"
 
 class World {
  private:
   struct Cell;
 
  public:
-  explicit World(QSize);
+  explicit World(QSize, const std::shared_ptr<PixmapLoader>&);
 
   ~World() = default;
 
@@ -41,6 +42,7 @@ class World {
 
   QSize size_;
   QPixmap picture_;
+  std::shared_ptr<PixmapLoader> pixmap_loader_;
   std::vector<std::vector<Cell>> cells_;
   std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<GameObject>> game_objects_;

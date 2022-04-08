@@ -1,10 +1,16 @@
 #include "soldier.h"
 
-Soldier::Soldier() : GameObject(":Resources/Images/Soldier1.png") {
+Soldier::Soldier(const std::shared_ptr<PixmapLoader>& pixmap_loader)
+// : GameObject(":Resources/Images/Soldier1.png") {
+    : GameObject(pixmap_loader) {
+  picture_ = pixmap_loader->GetSoldier();
 }
 
-Soldier::Soldier(const QPoint& point)
-    : GameObject(point, ":Resources/Images/Soldier1.png") {
+Soldier::Soldier(const QPoint& point,
+                 const std::shared_ptr<PixmapLoader>& pixmap_loader)
+// : GameObject(point, ":Resources/Images/Soldier1.png") {
+    : GameObject(point, pixmap_loader) {
+  picture_ = pixmap_loader->GetSoldier();
 }
 
 Soldier::Health Soldier::GetHitPoints() const {

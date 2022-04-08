@@ -4,8 +4,8 @@
 
 class TerrainObject : public GameObject {
  public:
-  TerrainObject();
-  explicit TerrainObject(const QPoint&);
+  TerrainObject(const std::shared_ptr<PixmapLoader>&);
+  explicit TerrainObject(const QPoint&, const std::shared_ptr<PixmapLoader>&);
 
   ~TerrainObject() override = default;
 

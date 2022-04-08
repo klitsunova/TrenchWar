@@ -2,9 +2,11 @@
 
 #include <memory>
 
-Controller::Controller() : world_(std::make_shared<World>(kWorldSize)),
-                           view_(std::make_unique<View>(world_)),
-                           timer_(new QBasicTimer) {
+Controller::Controller() {
+  pixmap_loader_ = std::make_shared<PixmapLoader>();
+  world_ = std::make_shared<World>(kWorldSize, pixmap_loader_);
+  view_ = std::make_unique<View>(world_);
+  timer_ = std::make_unique<QBasicTimer>();
   for (int i = 0; i < 10; ++i) {
     world_->AddSoldier();
   }
@@ -18,7 +20,7 @@ void Controller::paintEvent(QPaintEvent*) {
 }
 
 void Controller::timerEvent(QTimerEvent*) {
-  for (const auto& soldier : world_->GetSoldiers()) {
+  for (const auto& soldier: world_->GetSoldiers()) {
     soldier->MoveSoldier(world_->GetSize());
   }
   update();

@@ -13,12 +13,13 @@ int GetRandomNumber() {
 
 }  // namespace
 
-GameObject::GameObject(const QString& image_path)
-    : picture_(image_path) {}
+GameObject::GameObject(const std::shared_ptr<PixmapLoader>& pixmap_loader)
+    : pixmap_loader_(pixmap_loader) {}
 
-GameObject::GameObject(const QPoint& position, const QString& image_path)
+GameObject::GameObject(const QPoint& position,
+                       const std::shared_ptr<PixmapLoader>& pixmap_loader)
     : position_(position),
-      picture_(image_path) {}
+      pixmap_loader_(pixmap_loader) {}
 
 const QPoint& GameObject::GetPosition() const {
   return position_;
@@ -50,8 +51,8 @@ void GameObject::MoveDown() {
   position_ += QPoint(0, kStep);
 }
 
-QPixmap GameObject::GetPixmap() const {
-  return picture_;
+const QPixmap& GameObject::GetPixmap() const {
+  return *picture_;
 }
 
 QSize GameObject::GetSize() const {
