@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.20)
 project(TrenchWar)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -32,7 +32,7 @@ set(SOURCES
         main.cpp
         ${MODELS}
         ${VIEWS}
-        ${CONTROLLERS})
+        ${CONTROLLERS} Models/Armor.cpp Models/Armor.h Models/equipment.h Models/weapon.cpp Models/weapon.h)
 
 qt6_add_big_resources(RESOURCES resources.qrc)
 
