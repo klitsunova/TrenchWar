@@ -2,9 +2,9 @@
 
 #include <QPainter>
 
-#include "game_object.h"
-
 #include <memory>
+
+#include "game_object.h"
 
 class Soldier : public GameObject {
   using Health = int;

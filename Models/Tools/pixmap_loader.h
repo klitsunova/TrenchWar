@@ -25,9 +25,9 @@ class PixmapLoader {
   PixmapLoader() = default;
 
   static std::map<QString, std::shared_ptr<QPixmap>> images;
-  static QString soldier_path;
-  static QString right_soldier_path;
-  static QString left_soldier_path;
-  static QString terrain_object_path;
+  static const QString soldier_path;
+  static const QString right_soldier_path;
+  static const QString left_soldier_path;
+  static const QString terrain_object_path;
 };
 

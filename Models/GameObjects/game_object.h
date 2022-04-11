@@ -6,10 +6,10 @@
 #include <QPoint>
 #include <QPointer>
 
-#include "Models/Tools/pixmap_loader.h"
-
 #include <memory>
 #include <utility>
+
+#include "Models/Tools/pixmap_loader.h"
 
 class GameObject {
  public:

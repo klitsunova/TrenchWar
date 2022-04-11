@@ -6,6 +6,7 @@ Controller::Controller() {
   world_ = std::make_shared<World>(kWorldSize);
   view_ = std::make_unique<View>(world_);
   timer_ = std::make_unique<QBasicTimer>();
+  // temporary code
   for (int i = 0; i < 1000; ++i) {
     world_->AddSoldier();
   }

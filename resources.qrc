@@ -2,6 +2,9 @@
     <qresource>
         <file>Resources/Images/Soldier1.png</file>
         <file>Resources/Images/Soldier2.png</file>
+        <file>Resources/Images/Soldier3.png</file>
+        <file>Resources/Images/Soldier4.png</file>
         <file>Resources/Images/Tower1.png</file>
+        <file>Resources/Images/Tower2.png</file>
     </qresource>
 </RCC>

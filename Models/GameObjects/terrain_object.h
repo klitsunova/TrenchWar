@@ -1,8 +1,8 @@
 #pragma once
 
-#include "game_object.h"
-
 #include <memory>
+
+#include "game_object.h"
 
 class TerrainObject : public GameObject {
  public:
