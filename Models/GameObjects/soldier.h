@@ -4,6 +4,7 @@
 #include <Models/weapon.h>
 #include <QPainter>
 #include <utility>
+#include <vector>
 
 class Soldier : public GameObject {
   using health_t = int;

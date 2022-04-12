@@ -42,7 +42,7 @@ void Soldier::AddWeapon(Weapon::WeaponType type) {
   if (it == weapon_and_ammo_.end()) {
     Weapon new_weapon(type);
     weapon_and_ammo_.push_back(std::make_pair(
-        new_weapon,new_weapon.GetDefaultCountAmmo()));
+        new_weapon, new_weapon.GetDefaultCountAmmo()));
   }
 }
 void Soldier::AddAmmo(Weapon::WeaponType type, int count_ammo) {
