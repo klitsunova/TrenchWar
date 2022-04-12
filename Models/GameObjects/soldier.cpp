@@ -1,10 +1,13 @@
 #include "soldier.h"
 
-Soldier::Soldier() : GameObject(":Resources/Images/Soldier1.png") {
+Soldier::Soldier()
+    : GameObject() {
+  picture_ = PixmapLoader::GetSoldier();
 }
 
 Soldier::Soldier(const QPoint& point)
-    : GameObject(point, ":Resources/Images/Soldier1.png") {
+    : GameObject(point) {
+  picture_ = PixmapLoader::GetSoldier();
 }
 
 Soldier::Health Soldier::GetHitPoints() const {
@@ -15,6 +18,7 @@ void Soldier::MoveSoldier(QSize size) {
   // TODO(klitsunova): soldier's movement along the route
   if (position_.x() - kStep > 0) {
     MoveLeft();
+    picture_ = PixmapLoader::GetLSoldier();
   } else {
     SetRandomPosition(size);
   }

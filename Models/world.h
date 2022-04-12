@@ -8,6 +8,7 @@
 
 #include "GameObjects/soldier.h"
 #include "GameObjects/terrain_object.h"
+#include "Tools/pixmap_loader.h"
 
 class World {
  private:

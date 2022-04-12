@@ -8,6 +8,7 @@
 
 #include "Models/GameObjects/soldier.h"
 #include "Models/GameObjects/terrain_object.h"
+#include "Models/Tools/pixmap_loader.h"
 #include "Models/world.h"
 #include "Views/view.h"
 
