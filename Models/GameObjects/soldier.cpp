@@ -35,16 +35,19 @@ bool Soldier::IsDied() const {
   return is_died_;
 }
 void Soldier::AddWeapon(Weapon::WeaponType type) {
-  auto it = std::find_if(weapon_and_ammo_.begin(), weapon_and_ammo_.end(), [&](const std::pair<Weapon, int>& item) {
+  auto it = std::find_if(weapon_and_ammo_.begin(), weapon_and_ammo_.end(),
+                         [&](const std::pair<Weapon, int>& item) {
     return item.first.GetWeaponType() == type;
   });
   if (it == weapon_and_ammo_.end()) {
     Weapon new_weapon(type);
-    weapon_and_ammo_.push_back(std::make_pair(new_weapon, new_weapon.GetDefaultCountAmmo()));
+    weapon_and_ammo_.push_back(std::make_pair(
+        new_weapon,new_weapon.GetDefaultCountAmmo()));
   }
 }
 void Soldier::AddAmmo(Weapon::WeaponType type, int count_ammo) {
-  auto it = std::find_if(weapon_and_ammo_.begin(), weapon_and_ammo_.end(), [&](const std::pair<Weapon, int>& item) {
+  auto it = std::find_if(weapon_and_ammo_.begin(), weapon_and_ammo_.end(),
+                         [&](const std::pair<Weapon, int>& item) {
     return item.first.GetWeaponType() == type;
   });
   if (it != weapon_and_ammo_.end()) {

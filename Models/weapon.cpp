@@ -23,7 +23,7 @@ int Weapon::GetDefaultCountAmmo() const {
   return default_count_ammo_;
 }
 void Weapon::InitializationFromType() {
-  switch(weapon_type_) {
+  switch (weapon_type_) {
     case WeaponType::Knife:
       default_count_ammo_ = -1;
       damage_ = 10;

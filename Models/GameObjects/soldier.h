@@ -3,6 +3,7 @@
 #include "game_object.h"
 #include <Models/weapon.h>
 #include <QPainter>
+#include <utility>
 
 class Soldier : public GameObject {
   using health_t = int;

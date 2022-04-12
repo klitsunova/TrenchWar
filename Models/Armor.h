@@ -6,5 +6,4 @@ class Armor : public Equipment {
   EquipmentType GetType() const override {
     return EquipmentType::Armor;
   }
-
 };
