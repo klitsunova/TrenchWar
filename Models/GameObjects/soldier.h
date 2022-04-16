@@ -1,7 +1,5 @@
 #pragma once
 
-#include <QPainter>
-
 #include <memory>
 
 #include "game_object.h"
