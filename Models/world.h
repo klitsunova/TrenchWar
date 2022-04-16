@@ -8,10 +8,11 @@
 
 #include "GameObjects/soldier.h"
 #include "GameObjects/terrain_object.h"
+#include "Tools/pixmap_loader.h"
 
 class World {
  private:
-  struct cell_;
+  struct Cell;
 
  public:
   explicit World(QSize);
@@ -20,25 +21,28 @@ class World {
 
   const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
   std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
+
   const std::vector<std::shared_ptr<GameObject>>& GetGameObjects() const;
   std::vector<std::shared_ptr<GameObject>>& GetGameObjects();
-  int GetWidth() const;
-  int GetHeight() const;
-  QSize GetSize() const;
-  const cell_& GetCell(const QPoint&) const;
-  cell_& GetCell(const QPoint&);
-  QPixmap GetPixmap() const;
+
+  const QSize& GetSize() const;
+
+  const Cell& GetCell(const QPoint&) const;
+  Cell& GetCell(const QPoint&);
+
+  const QPixmap& GetPixmap() const;
 
   void AddSoldier();
   void AddTerrainObject();
 
  private:
-  QSize size_;
-  QPixmap picture_;
-  struct cell_ {
+  struct Cell {
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
   };
-  std::vector<std::vector<cell_>> cells_;
+
+  QSize size_;
+  QPixmap picture_;
+  std::vector<std::vector<Cell>> cells_;
   std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<GameObject>> game_objects_;
 

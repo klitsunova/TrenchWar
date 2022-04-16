@@ -20,7 +20,11 @@ set(MODELS
         Models/world.cpp
         Models/GameObjects/game_object.cpp
         Models/GameObjects/soldier.cpp
-        Models/GameObjects/terrain_object.cpp)
+        Models/GameObjects/terrain_object.cpp
+        Models/Tools/pixmap_loader.cpp
+        Models/Armor.cpp
+        Models/weapon.cpp
+        )
 
 set(VIEWS
         Views/view.cpp)
@@ -32,7 +36,7 @@ set(SOURCES
         main.cpp
         ${MODELS}
         ${VIEWS}
-        ${CONTROLLERS} Models/Armor.cpp Models/Armor.h Models/equipment.h Models/weapon.cpp Models/weapon.h)
+        ${CONTROLLERS})
 
 qt6_add_big_resources(RESOURCES resources.qrc)
 
@@ -43,4 +47,3 @@ target_link_libraries(TrenchWar
         Qt::Gui
         Qt::Widgets
         )
-

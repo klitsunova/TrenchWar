@@ -18,15 +18,7 @@ GameObject::GameObject() {}
 GameObject::GameObject(const QPoint& position)
     : position_(position) {}
 
-int GameObject::GetXPosition() const {
-  return position_.x();
-}
-
-int GameObject::GetYPosition() const {
-  return position_.y();
-}
-
-QPoint GameObject::GetPosition() const {
+const QPoint& GameObject::GetPosition() const {
   return position_;
 }
 
@@ -35,26 +27,35 @@ void GameObject::SetPosition(const QPoint& position) {
 }
 
 void GameObject::SetRandomPosition(const QSize& size) {
+  // temporary code
   position_ = QPoint(std::rand() % size.width(),
                      std::rand() % size.height());
 }
 
 void GameObject::MoveLeft() {
-  position_ -= QPoint(step_, 0);
+  position_ -= QPoint(kStep, 0);
 }
 
 void GameObject::MoveRight() {
-  position_ += QPoint(step_, 0);
+  position_ += QPoint(kStep, 0);
 }
 
 void GameObject::MoveUp() {
-  position_ -= QPoint(0, step_);
+  position_ -= QPoint(0, kStep);
 }
 
 void GameObject::MoveDown() {
-  position_ += QPoint(0, step_);
+  position_ += QPoint(0, kStep);
 }
 
-QPixmap GameObject::GetPixmap() const {
-  return picture_;
+const QPixmap& GameObject::GetPixmap() const {
+  return *picture_;
+}
+
+QSize GameObject::GetSize() const {
+  return size_;
+}
+
+void GameObject::SetSize(const QSize& size) {
+  size_ = size;
 }

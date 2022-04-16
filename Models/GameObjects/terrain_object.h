@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "game_object.h"
 
 class TerrainObject : public GameObject {
