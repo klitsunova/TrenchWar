@@ -1,7 +1,8 @@
 #include "main_controller.h"
 
-MainController::MainController(
-    QWidget* parent) : menu_controller_(new MenuController()) {
+MainController::MainController(QWidget* parent)
+    : QWidget(parent),
+      menu_controller_(new MenuController(this)) {
   ConnectUI();
 }
 
@@ -27,13 +28,13 @@ void MainController::ConnectUI() {
 void MainController::StartGame() {
   menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
-  events_controller_ = new EventsController();
+  events_controller_ = new EventsController(this);
   ConnectEventsControllerUI();
 }
 
 void MainController::ReturnToMenu() {
   events_controller_->HideGame();
-  delete events_controller_;
+  // delete events_controller_;
   menu_controller_->HidePauseMenu();
   menu_controller_->SetGameFinished();
   menu_controller_->ShowMenu();

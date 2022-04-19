@@ -11,7 +11,7 @@ class MainController : public QWidget {
   Q_OBJECT
 
  public:
-  MainController(QWidget* parent = nullptr);
+  explicit MainController(QWidget* parent = nullptr);
   ~MainController() override = default;
 
   void StartGame();
@@ -25,6 +25,6 @@ class MainController : public QWidget {
   void ConnectEventsControllerUI();
 
   MenuController* menu_controller_;
-  EventsController* events_controller_ = nullptr;
-  Settings* settings_ = nullptr;
+  EventsController* events_controller_{nullptr};
+  Settings* settings_{nullptr};
 };
