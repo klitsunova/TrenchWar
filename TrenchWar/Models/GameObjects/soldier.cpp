@@ -3,11 +3,13 @@
 Soldier::Soldier()
     : GameObject() {
   picture_ = PixmapLoader::GetSoldier();
+  defender_type_ = false;
 }
 
-Soldier::Soldier(const QPoint& point)
+Soldier::Soldier(const QPoint& point, bool type)
     : GameObject(point) {
   picture_ = PixmapLoader::GetSoldier();
+  defender_type_ = type;
 }
 
 Soldier::Health Soldier::GetHitPoints() const {
@@ -28,6 +30,10 @@ int Soldier::GetId() const {
   return id_;
 }
 
+bool Soldier::GetType() const {
+  return defender_type_;
+}
+
 int Soldier::GetVisibilityRange() const {
   return visibility_range_;
 }
@@ -35,7 +41,7 @@ int Soldier::GetVisibilityRange() const {
 void Soldier::AddWeapon(const Weapon& weapon) {
   auto it = std::find_if(weapons_.begin(), weapons_.end(),
                          [&](const Weapon& item) {
-                          return item.GetWeaponType() == weapon.GetWeaponType();
+                           return item.GetWeaponType() == weapon.GetWeaponType();
                          });
   if (it == weapons_.end()) {
     weapons_.push_back(weapon);
