@@ -2,10 +2,10 @@
 
 #include "world.h"
 
-World::World(const QString& path) {
-  LoadMap(path);
-  cells_.resize(size_.width(),
-                std::vector<Cell>(size_.height()));
+World::World(QSize size)
+    : size_(size) {
+  cells_.resize(size.width(),
+                std::vector<Cell>(size.height()));
   picture_ = DrawWorld();
 }
 
