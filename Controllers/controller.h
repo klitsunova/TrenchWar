@@ -9,9 +9,9 @@
 #include "Models/GameObjects/soldier.h"
 #include "Models/GameObjects/terrain_object.h"
 #include "Models/Tools/pixmap_loader.h"
-#include "Models/weapon.h
+#include "Models/weapon.h"
 #include "Models/world.h"
-#include "Views/view.h""
+#include "Views/view.h"
 
 class Controller : public QWidget {
   Q_OBJECT
