@@ -45,7 +45,6 @@ class MapGenerator : public QWidget {
   };
 
   class ImageSHell : public QWidget {
-
    public:
     explicit ImageSHell(QWidget* parent = nullptr);
 
