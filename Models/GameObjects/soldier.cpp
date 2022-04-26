@@ -32,10 +32,6 @@ int Soldier::GetVisibilityRange() const {
   return visibility_range_;
 }
 
-void Soldier::SetDied(bool isDied) {
-  is_died_ = isDied;
-}
-
 bool Soldier::IsDied() const {
   return is_died_;
 }
