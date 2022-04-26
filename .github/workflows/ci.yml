@@ -54,21 +54,10 @@ jobs:
       working-directory: ${{runner.workspace}}/${{github.event.repository.name}}/TrenchWar
       run: make
 
-  build:
-    runs-on: ubuntu-20.04
-
-    steps:
-    - uses: actions/checkout@v2
-   
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with: 
-        version: "6.2.0"
-
-    - name: Create Makefile
+ - name: Create Makefile_2
       working-directory: ${{runner.workspace}}/${{github.event.repository.name}}/MapGenerator
       run: cmake -DCMAKE_PREFIX_PATH=${{env.Qt6_Dir}}/lib/cmake -DCMAKE_BUILD_TYPE=Release ./CMakeLists.txt
 
-    - name: Build
+    - name: Build_2
       working-directory: ${{runner.workspace}}/${{github.event.repository.name}}/MapGenerator
       run: make
