@@ -25,8 +25,6 @@ class Soldier : public GameObject {
   int GetVisibilityRange() const;
   bool IsDied() const;
 
-  void SetDied(bool);
-
   void AddWeapon(const Weapon& weapon);
   void AddAmmo(Weapon::WeaponType type, int count_ammo);
 
