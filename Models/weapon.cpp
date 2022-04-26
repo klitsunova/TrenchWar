@@ -1,6 +1,7 @@
 #include "weapon.h"
 
-Weapon::Weapon(WeaponType type, int damage, int range, int reload_time, double hit_chance, int count_ammo) {
+Weapon::Weapon(WeaponType type, int damage, int range,
+               int reload_time, double hit_chance, int count_ammo) {
   weapon_type_ = type;
   count_ammo_ = count_ammo;
   damage_ = damage;

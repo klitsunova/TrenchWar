@@ -12,7 +12,8 @@ class Weapon : public Equipment {
     return EquipmentType::Weapon;
   }
 
-  explicit Weapon(WeaponType type, int damage, int range, int reload_time, double hit_chance_, int count_ammo);
+  explicit Weapon(WeaponType type, int damage, int range,
+                  int reload_time, double hit_chance_, int count_ammo);
 
   int GetDamage() const;
   int GetRange() const;
