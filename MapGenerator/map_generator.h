@@ -15,16 +15,16 @@
 #include <QFileDialog>
 #include <QStringList>
 
-#include <vector>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 class MapGenerator : public QWidget {
   Q_OBJECT;
 
  private:
-  struct ladscape;
+  struct Ladscape;
   class ImageShell;
 
  public:

@@ -22,8 +22,6 @@ set(SOURCES
         map_generator.cpp
         map_generator.h)
 
-#qt6_add_big_resources(RESOURCES ../resources.qrc)
-
 add_executable(MapGenerator ${SOURCES})
 
 target_link_libraries(MapGenerator

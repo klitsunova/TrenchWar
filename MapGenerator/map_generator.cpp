@@ -192,9 +192,9 @@ void MapGenerator::DrawUsingColors() {
 
     QPoint top = QPoint((i * window_width) / using_colors_.size(),
                         0);
-    QPoint
-        bottom = QPoint(((i + 1) * window_width) / using_colors_.size(),
-                        window_height);
+    QPoint bottom =
+        QPoint(((i + 1) * window_width) / using_colors_.size(),
+               window_height);
 
     painter.drawRect(QRect(top, bottom));
   }
