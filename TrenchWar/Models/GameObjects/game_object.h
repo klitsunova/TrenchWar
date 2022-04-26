@@ -6,12 +6,15 @@
 #include <QPoint>
 #include <QPointer>
 
+#include <memory>
 #include <utility>
+
+#include "Models/Tools/pixmap_loader.h"
 
 class GameObject {
  public:
-  explicit GameObject(const QString&);
-  explicit GameObject(const QPoint&, const QString&);
+  GameObject();
+  explicit GameObject(const QPoint&);
 
   virtual ~GameObject() = default;
 
@@ -25,7 +28,7 @@ class GameObject {
   void MoveUp();
   void MoveDown();
 
-  QPixmap GetPixmap() const;
+  const QPixmap& GetPixmap() const;
 
   QSize GetSize() const;
   void SetSize(const QSize&);
@@ -36,5 +39,5 @@ class GameObject {
 
   QSize size_{kStandardSize};
   QPoint position_;
-  QPixmap picture_;
+  std::shared_ptr<QPixmap> picture_;
 };

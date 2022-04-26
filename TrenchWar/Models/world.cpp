@@ -1,6 +1,7 @@
 #include "world.h"
 
-World::World(QSize size) : size_(size) {
+World::World(QSize size)
+    : size_(size) {
   cells_.resize(size.width(),
                 std::vector<Cell>(size.height()));
   picture_ = DrawWorld();
@@ -71,7 +72,7 @@ QPixmap World::DrawWorld() const {
       int y_top = (window_height * j) / size_.height();
       int y_bottom = ((window_height * (j + 1)) / size_.height());
       QRect cell_rect(QPoint(x_top, y_top),
-                              QPoint(x_bottom, y_bottom));
+                      QPoint(x_bottom, y_bottom));
       painter.drawRect(cell_rect);
     }
   }

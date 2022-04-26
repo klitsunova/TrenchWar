@@ -2,6 +2,8 @@
 
 #include <QPainter>
 
+#include <memory>
+
 #include "game_object.h"
 
 class Soldier : public GameObject {
