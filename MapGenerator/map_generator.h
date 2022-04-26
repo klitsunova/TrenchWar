@@ -21,13 +21,14 @@
 #include <fstream>
 
 class MapGenerator : public QWidget {
- Q_OBJECT;
+  Q_OBJECT;
+
  private:
   struct ladscape;
   class ImageShell;
 
  public:
-  MapGenerator(QWidget* parent = nullptr);
+  explicit MapGenerator(QWidget* parent = nullptr);
 
   void mouseDoubleClickEvent(QMouseEvent*) override;
 
