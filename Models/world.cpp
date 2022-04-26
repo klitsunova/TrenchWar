@@ -1,5 +1,6 @@
-#include "world.h"
 #include <utility>
+
+#include "world.h"
 
 World::World(QSize size)
     : size_(size) {

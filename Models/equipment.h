@@ -6,5 +6,6 @@ class Equipment {
     Armor,
     Weapon
   };
+
   virtual EquipmentType GetType() const  = 0;
 };

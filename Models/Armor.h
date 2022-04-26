@@ -1,8 +1,9 @@
 #pragma once
+
 #include "equipment.h"
 
 class Armor : public Equipment {
- public :
+ public:
   EquipmentType GetType() const override {
     return EquipmentType::Armor;
   }

@@ -12,6 +12,7 @@ Controller::Controller() {
   }
   world_->AddTerrainObject();
   timer_->start(kTimerInterval, this);
+  InitializationWeapon();
 }
 
 void Controller::paintEvent(QPaintEvent*) {
@@ -24,4 +25,9 @@ void Controller::timerEvent(QTimerEvent*) {
     soldier->MoveSoldier(world_->GetSize());
   }
   update();
+}
+
+void Controller::InitializationWeapon() {
+  weapons_.emplace_back(Weapon::WeaponType::Rifle, 40, 5, 3, 60, 30);
+  weapons_.emplace_back(Weapon::WeaponType::Knife, 10, 1, 2, 50, -1);
 }

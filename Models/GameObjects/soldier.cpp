@@ -27,41 +27,43 @@ void Soldier::MoveSoldier(QSize size) {
 int Soldier::GetId() const {
   return id_;
 }
+
 int Soldier::GetVisibilityRange() const {
   return visibility_range_;
 }
+
 void Soldier::SetDied(bool isDied) {
   is_died_ = isDied;
 }
+
 bool Soldier::IsDied() const {
   return is_died_;
 }
-void Soldier::AddWeapon(Weapon::WeaponType type) {
-  auto it = std::find_if(weapon_and_ammo_.begin(), weapon_and_ammo_.end(),
-                         [&](const std::pair<Weapon, int>& item) {
-    return item.first.GetWeaponType() == type;
-  });
-  if (it == weapon_and_ammo_.end()) {
-    Weapon new_weapon(type);
-    weapon_and_ammo_.push_back(std::make_pair(
-        new_weapon, new_weapon.GetDefaultCountAmmo()));
+
+void Soldier::AddWeapon(const Weapon& weapon) {
+  auto it = std::find_if(weapons_.begin(), weapons_.end(),
+                         [&](const Weapon& item) {
+                           return item.GetWeaponType() == weapon.GetWeaponType();
+                         });
+  if (it == weapons_.end()) {
+    weapons_.emplace_back(weapon);
   }
 }
+
 void Soldier::AddAmmo(Weapon::WeaponType type, int count_ammo) {
-  auto it = std::find_if(weapon_and_ammo_.begin(), weapon_and_ammo_.end(),
-                         [&](const std::pair<Weapon, int>& item) {
-    return item.first.GetWeaponType() == type;
-  });
-  if (it != weapon_and_ammo_.end()) {
-    int index = it - weapon_and_ammo_.begin();
-    weapon_and_ammo_[index].second += count_ammo;
+  auto it = std::find_if(weapons_.begin(), weapons_.end(),
+                         [&](const Weapon& item) {
+                           return item.GetWeaponType() == type;
+                         });
+  if (it != weapons_.end()) {
+    it->AddAmmo(count_ammo);
   }
 }
+
 void Soldier::TakeDamage(int damage) {
-  if (damage >= hit_points_) {
+  hit_points_ -= damage;
+  if (hit_points_ <= 0) {
     hit_points_ = 0;
     is_died_ = true;
-  } else {
-    hit_points_ -= damage;
   }
 }

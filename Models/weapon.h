@@ -1,4 +1,5 @@
 #pragma once
+
 #include "equipment.h"
 
 class Weapon : public Equipment {
@@ -11,20 +12,21 @@ class Weapon : public Equipment {
     return EquipmentType::Weapon;
   }
 
-  explicit Weapon(WeaponType type);
+  explicit Weapon(WeaponType type, int damage, int range, int reload_time, double hit_chance_, int count_ammo);
 
   int GetDamage() const;
   int GetRange() const;
   int GetReloadTime() const;
   double GetHitChance() const;
-  int GetDefaultCountAmmo() const;
+  int GetCountAmmo() const;
+  void AddAmmo(int count);
 
   WeaponType GetWeaponType() const;
 
  private:
   void InitializationFromType();
   WeaponType weapon_type_;
-  int default_count_ammo_;
+  int count_ammo_;
   int damage_;
   int range_;
   int reload_time_;
