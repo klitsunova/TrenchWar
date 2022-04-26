@@ -21,13 +21,30 @@ void Controller::paintEvent(QPaintEvent*) {
 }
 
 void Controller::timerEvent(QTimerEvent*) {
-  for (const auto& soldier : world_->GetSoldiers()) {
+  for (const auto& soldier: world_->GetSoldiers()) {
     soldier->MoveSoldier(world_->GetSize());
   }
   update();
 }
 
 void Controller::InitializationWeapon() {
-  weapons_.emplace_back(Weapon::WeaponType::Rifle, 40, 5, 3, 60, 30);
-  weapons_.emplace_back(Weapon::WeaponType::Knife, 10, 1, 2, 50, -1);
+  constexpr int kRifle_damage = 40;
+  constexpr int kRifle_range = 5;
+  constexpr int kRifle_reload_time = 3;
+  constexpr double kRifle_hit_chance = 60;
+  constexpr int kRifle_count_ammo = 30;
+
+  constexpr int kKnife_damage = 10;
+  constexpr int kKnife_range = 1;
+  constexpr int kKnife_reload_time = 2;
+  constexpr double kKnife_hit_chance = 50;
+  constexpr int kKnife_count_ammo = -1;
+
+  weapons_.emplace_back(Weapon::WeaponType::Rifle, kRifle_damage,
+                        kRifle_range, kRifle_reload_time,
+                        kRifle_hit_chance, kRifle_count_ammo);
+
+  weapons_.emplace_back(Weapon::WeaponType::Knife, kKnife_damage,
+                        kKnife_range, kKnife_reload_time,
+                        kKnife_hit_chance, -kKnife_count_ammo);
 }

@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "game_object.h"
-#include <Models/weapon.h>
+#include "Models/weapon.h"
 
 class Soldier : public GameObject {
   using Health = int;
@@ -23,7 +23,6 @@ class Soldier : public GameObject {
 
   int GetId() const;
   int GetVisibilityRange() const;
-  bool IsDied() const;
 
   void AddWeapon(const Weapon& weapon);
   void AddAmmo(Weapon::WeaponType type, int count_ammo);
@@ -38,6 +37,5 @@ class Soldier : public GameObject {
   std::vector<Weapon> weapons_;
   int id_;
   int visibility_range_;
-  bool is_died_;
   Health hit_points_ = 100;
 };

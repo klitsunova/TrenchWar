@@ -32,17 +32,13 @@ int Soldier::GetVisibilityRange() const {
   return visibility_range_;
 }
 
-bool Soldier::IsDied() const {
-  return is_died_;
-}
-
 void Soldier::AddWeapon(const Weapon& weapon) {
   auto it = std::find_if(weapons_.begin(), weapons_.end(),
                          [&](const Weapon& item) {
                           return item.GetWeaponType() == weapon.GetWeaponType();
                          });
   if (it == weapons_.end()) {
-    weapons_.emplace_back(weapon);
+    weapons_.push_back(weapon);
   }
 }
 
@@ -60,6 +56,5 @@ void Soldier::TakeDamage(int damage) {
   hit_points_ -= damage;
   if (hit_points_ <= 0) {
     hit_points_ = 0;
-    is_died_ = true;
   }
 }

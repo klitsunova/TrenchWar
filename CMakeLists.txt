@@ -22,7 +22,6 @@ set(MODELS
         Models/GameObjects/soldier.cpp
         Models/GameObjects/terrain_object.cpp
         Models/Tools/pixmap_loader.cpp
-        Models/Armor.cpp
         Models/weapon.cpp
         )
 

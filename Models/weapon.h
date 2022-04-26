@@ -8,11 +8,12 @@ class Weapon : public Equipment {
     Knife,
     Rifle
   };
+
   EquipmentType GetType() const override {
     return EquipmentType::Weapon;
   }
 
-  explicit Weapon(WeaponType type, int damage, int range,
+  Weapon(WeaponType type, int damage, int range,
                   int reload_time, double hit_chance_, int count_ammo);
 
   int GetDamage() const;
@@ -26,6 +27,7 @@ class Weapon : public Equipment {
 
  private:
   void InitializationFromType();
+
   WeaponType weapon_type_;
   int count_ammo_;
   int damage_;
