@@ -45,7 +45,6 @@ class MapGenerator : public QWidget {
   };
 
   class ImageSHell : public QWidget {
-    void SaveButtonClicked();
 
    public:
     explicit ImageSHell(QWidget* parent = nullptr);
@@ -62,6 +61,8 @@ class MapGenerator : public QWidget {
 
   void ManageLayout();
 
+  void CreateConnections();
+
   void SetAdditionalColorVisible(bool);
 
   void DrawChangedPicture();
@@ -76,9 +77,12 @@ class MapGenerator : public QWidget {
   void ChangeButtonClicked();
   void RestoreButtonClicked();
   void SaveButtonClicked();
+  void LoadButtonClicked();
+
+  void LoadImageFromFile(const QString&);
 
   std::vector<std::vector<ChangingColor>> map_;
-  bool using_original_colors{true};
+  bool using_original_colors;
   std::vector<Landscape> using_colors_;
   QImage buffer_picture_;
   ImageSHell* original_picture_shell_;
@@ -90,6 +94,7 @@ class MapGenerator : public QWidget {
   QPushButton* change_button_;
   QPushButton* restore_button_;
   QPushButton* save_button_;
+  QPushButton* load_button_;
   QPushButton* add_color_button_;
   QLineEdit* width_;
   QLineEdit* height_;

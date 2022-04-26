@@ -10,48 +10,18 @@ MapGenerator::MapGenerator(QWidget* parent)
       change_button_(new QPushButton("Change colors", this)),
       restore_button_(new QPushButton("Restore color changes", this)),
       save_button_(new QPushButton("Save color changes", this)),
+      load_button_(new QPushButton("Load new image", this)),
       add_color_button_(new QPushButton("<--", this)),
       width_(new QLineEdit("500", this)),
       height_(new QLineEdit("500", this)),
       speed_characteristic_(new QLineEdit("0", this)),
       speed_characteristic_label_(new QLabel("Speed characteristic",
                                              this)) {
-  // temporary code
-  // we need to make possible to set the way of picture
-  original_picture_shell_->SetPixmap("../map1.png");
-  buffer_picture_.load("../map1.png");
-
-  SetAdditionalColorVisible(false);
-
-  save_button_->setVisible(false);
-
-  using_colors_.emplace_back(Landscape(QColor(255, 255, 255), 0));
-
-  connect(draw_button_,
-          &QPushButton::clicked,
-          this,
-          &MapGenerator::DrawButtonClicked);
-  connect(add_color_button_,
-          &QPushButton::clicked,
-          this,
-          &MapGenerator::AddColorButtonClicked);
-  connect(change_button_,
-          &QPushButton::clicked,
-          this,
-          &MapGenerator::ChangeButtonClicked);
-  connect(restore_button_,
-          &QPushButton::clicked,
-          this,
-          &MapGenerator::RestoreButtonClicked);
-  connect(save_button_,
-          &QPushButton::clicked,
-          this,
-          &MapGenerator::SaveButtonClicked);
-
-  DrawButtonClicked();
-  DrawUsingColors();
-
   ManageLayout();
+
+  CreateConnections();
+
+  LoadImageFromFile("../map1.png");
 }
 
 void MapGenerator::ManageLayout() {
@@ -83,6 +53,8 @@ void MapGenerator::ManageLayout() {
 
   auto layout5 = new QVBoxLayout();
   layout5->addStretch(1);
+  layout5->addWidget(load_button_);
+  layout5->addStretch(1);
   auto label1 = new QLabel("Width", this);
   layout5->addWidget(label1, 0);
   layout5->addWidget(width_, 0);
@@ -102,6 +74,33 @@ void MapGenerator::ManageLayout() {
   layout6->addStretch(1);
   layout6->addLayout(layout5, 0);
   layout6->addStretch(1);
+}
+
+void MapGenerator::CreateConnections() {
+  connect(draw_button_,
+          &QPushButton::clicked,
+          this,
+          &MapGenerator::DrawButtonClicked);
+  connect(add_color_button_,
+          &QPushButton::clicked,
+          this,
+          &MapGenerator::AddColorButtonClicked);
+  connect(change_button_,
+          &QPushButton::clicked,
+          this,
+          &MapGenerator::ChangeButtonClicked);
+  connect(restore_button_,
+          &QPushButton::clicked,
+          this,
+          &MapGenerator::RestoreButtonClicked);
+  connect(save_button_,
+          &QPushButton::clicked,
+          this,
+          &MapGenerator::SaveButtonClicked);
+  connect(load_button_,
+          &QPushButton::clicked,
+          this,
+          &MapGenerator::LoadButtonClicked);
 }
 
 void MapGenerator::ConvertImageToArray(const QSize& size) {
@@ -317,15 +316,20 @@ void MapGenerator::SetAdditionalColorVisible(bool visible) {
 void MapGenerator::SaveButtonClicked() {
   assert(!using_original_colors);
   assert(map_.size() > 0 && map_[0].size() > 0);
-  // QFileDialog dialog(this);
-  // dialog.open();
-  // QStringList
-  //     selected_files = dialog.selectedFiles();
-  // if (selected_files.empty()) {
-  //   return;
-  // }
-  // QTextStream fout(*selected_files.begin());
-  std::ofstream fout("map.txt");
+  QString filter = tr("Text Files (*.txt)");
+  QString filename = QFileDialog::getOpenFileName(
+      this,
+      tr("File to save"),
+      QDir::currentPath(),
+      filter);
+  if (filename.isNull()) {
+    return;
+  }
+  QFile file(filename);
+  if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    return;
+  }
+  QTextStream fout(&file);
   fout << using_colors_.size() << "\n";
   for (int i = 0; i < using_colors_.size(); ++i) {
     fout << using_colors_[i].color.rgb() << " "
@@ -338,7 +342,37 @@ void MapGenerator::SaveButtonClicked() {
     }
     fout << "\n";
   }
-  fout.close();
+}
+
+void MapGenerator::LoadButtonClicked() {
+  QString filter = tr("PNG (*.png)");
+  QString filename = QFileDialog::getOpenFileName(
+      this,
+      tr("Image to load"),
+      QDir::currentPath(),
+      filter);
+  if (filename.isNull()) {
+    return;
+  }
+
+  LoadImageFromFile(filename);
+}
+
+void MapGenerator::LoadImageFromFile(const QString& filename) {
+  original_picture_shell_->SetPixmap(filename);
+  buffer_picture_.load(filename);
+
+  using_original_colors = true;
+
+  SetAdditionalColorVisible(false);
+  save_button_->setVisible(false);
+
+  map_.clear();
+  using_colors_.clear();
+  using_colors_.emplace_back(Landscape(QColor(255, 255, 255), 0));
+
+  DrawButtonClicked();
+  DrawUsingColors();
 }
 
 MapGenerator::Landscape::Landscape(const QColor& color,
