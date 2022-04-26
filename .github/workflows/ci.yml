@@ -53,11 +53,3 @@ jobs:
     - name: Build
       working-directory: ${{runner.workspace}}/${{github.event.repository.name}}/TrenchWar
       run: make
-
- - name: Create Makefile_2
-      working-directory: ${{runner.workspace}}/${{github.event.repository.name}}/MapGenerator
-      run: cmake -DCMAKE_PREFIX_PATH=${{env.Qt6_Dir}}/lib/cmake -DCMAKE_BUILD_TYPE=Release ./CMakeLists.txt
-
-    - name: Build_2
-      working-directory: ${{runner.workspace}}/${{github.event.repository.name}}/MapGenerator
-      run: make
