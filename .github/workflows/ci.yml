@@ -47,9 +47,9 @@ jobs:
         version: "6.2.0"
 
     - name: Create Makefile
-      working-directory: ${{runner.workspace}}/${{github.event.repository.name}}
+      working-directory: ${{runner.workspace}}/${{github.event.repository.name}}/TrenchWar
       run: cmake -DCMAKE_PREFIX_PATH=${{env.Qt6_Dir}}/lib/cmake -DCMAKE_BUILD_TYPE=Release ./CMakeLists.txt
 
     - name: Build
-      working-directory: ${{runner.workspace}}/${{github.event.repository.name}}
+      working-directory: ${{runner.workspace}}/${{github.event.repository.name}}/TrenchWar
       run: make
