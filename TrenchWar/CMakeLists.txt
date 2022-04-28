@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.20)
 project(TrenchWar)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -21,7 +21,9 @@ set(MODELS
         Models/GameObjects/game_object.cpp
         Models/GameObjects/soldier.cpp
         Models/GameObjects/terrain_object.cpp
-        Models/Tools/pixmap_loader.cpp)
+        Models/Tools/pixmap_loader.cpp
+        Models/weapon.cpp
+        )
 
 set(VIEWS
         Views/view.cpp)
@@ -44,4 +46,3 @@ target_link_libraries(TrenchWar
         Qt::Gui
         Qt::Widgets
         )
-
