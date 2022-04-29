@@ -3,7 +3,7 @@
 #include <memory>
 
 GameController::GameController() {
-  world_ = std::make_shared<World>(kWorldSize);
+  world_ = std::make_shared<World>(window_sizes::kWorldSize);
   view_ = std::make_unique<GameView>(world_);
   timer_ = std::make_unique<QBasicTimer>();
   // temporary code
@@ -11,7 +11,7 @@ GameController::GameController() {
     world_->AddSoldier();
   }
   world_->AddTerrainObject();
-  timer_->start(kTimerInterval, this);
+  StartTimer();
   InitializationWeapon();
 }
 
@@ -21,7 +21,7 @@ void GameController::paintEvent(QPaintEvent*) {
 }
 
 void GameController::timerEvent(QTimerEvent*) {
-  for (const auto& soldier : world_->GetSoldiers()) {
+  for (const auto& soldier: world_->GetSoldiers()) {
     soldier->MoveSoldier(world_->GetSize());
   }
   update();
@@ -47,4 +47,12 @@ void GameController::InitializationWeapon() {
   weapons_.emplace_back(Weapon::WeaponType::Knife, kKnife_damage,
                         kKnife_range, kKnife_reload_time,
                         kKnife_hit_chance, -kKnife_count_ammo);
+}
+
+void GameController::StartTimer() {
+  timer_->start(kTimerInterval, this);
+}
+
+void GameController::PauseTimer() {
+  timer_->stop();
 }

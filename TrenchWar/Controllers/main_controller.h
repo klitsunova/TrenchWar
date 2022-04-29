@@ -14,11 +14,15 @@ class MainController : public QWidget {
   ~MainController() override = default;
 
   void StartGame();
+  void PauseGame();
+  void ResumeGame();
   void ReturnToMenu();
 
   // void closeEvent(QCloseEvent* event) override;
 
  private:
+  void ConnectUI();
+
   Settings* settings_;
   GameController* game_controller_ = nullptr;
   MenuController* menu_controller_;

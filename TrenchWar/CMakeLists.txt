@@ -30,6 +30,7 @@ set(VIEWS
         Views/game_view.cpp
         Views/Menu/menu_view.cpp
         Views/Menu/settings_menu_view.cpp
+        Views/Menu/pause_menu_view.cpp
         Views/Menu/exit_window.cpp
         )
 

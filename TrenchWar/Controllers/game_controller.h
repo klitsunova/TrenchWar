@@ -12,6 +12,7 @@
 #include "Models/weapon.h"
 #include "Models/world.h"
 #include "Views/game_view.h"
+#include "helpers/sizes.h"
 
 class GameController : public QWidget {
   Q_OBJECT
@@ -23,9 +24,11 @@ class GameController : public QWidget {
   void paintEvent(QPaintEvent*) override;
   void timerEvent(QTimerEvent*) override;
 
+  void StartTimer();
+  void PauseTimer();
+
  private:
   static constexpr int kTimerInterval{50};
-  static constexpr QSize kWorldSize{QSize(1000, 1000)};
 
   std::shared_ptr<World> world_;
   std::unique_ptr<GameView> view_;

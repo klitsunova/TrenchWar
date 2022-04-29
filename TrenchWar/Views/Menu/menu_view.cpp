@@ -12,6 +12,7 @@ MenuView::MenuView() : layout_(new QVBoxLayout(this)),
 }
 
 void MenuView::SetStyles() {
+  // TODO: Add styles
 }
 
 void MenuView::SetLayout() {
@@ -34,4 +35,8 @@ void MenuView::ConnectUI() {
           &QPushButton::clicked,
           this,
           &MenuView::ExitButtonPressed);
+}
+
+void MenuView::closeEvent(QCloseEvent* event) {
+  ExitButtonPressed();
 }

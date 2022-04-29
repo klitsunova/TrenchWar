@@ -7,15 +7,16 @@
 
 #include "Views/Menu/exit_window.h"
 
-class MenuView : public QWidget {
+class PauseMenuView : public QWidget {
   Q_OBJECT
 
  public:
-  MenuView();
-  ~MenuView() override = default;
+  PauseMenuView();
+  ~PauseMenuView() override = default;
 
  signals:
-  void StartButtonPressed();
+  void ResumeButtonPressed();
+  void BackButtonPressed();
   void SettingsButtonPressed();
   void ExitButtonPressed();
 
@@ -27,8 +28,8 @@ class MenuView : public QWidget {
   void closeEvent(QCloseEvent* event) override;
 
   QVBoxLayout* layout_;
-  QLabel* title_label_;
-  QPushButton* start_button_;
+  QPushButton* resume_button_;
+  QPushButton* back_button_;
   QPushButton* settings_button_;
   QPushButton* exit_button_;
 };
