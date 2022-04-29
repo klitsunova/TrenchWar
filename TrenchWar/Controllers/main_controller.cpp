@@ -17,6 +17,10 @@ void MainController::ConnectUI() {
           &MenuController::BackToMenu,
           this,
           &MainController::ReturnToMenu);
+  connect(menu_controller_,
+          &MenuController::Exit,
+          this,
+          &MainController::Exit);
 }
 
 void MainController::StartGame() {
@@ -49,4 +53,8 @@ void MainController::ConnectEventsControllerUI() {
           &EventsController::ShowPauseMenu,
           this,
           &MainController::PauseGame);
+}
+
+void MainController::Exit() {
+  QApplication::exit(0);
 }

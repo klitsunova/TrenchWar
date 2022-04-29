@@ -38,5 +38,6 @@ void MenuView::ConnectUI() {
 }
 
 void MenuView::closeEvent(QCloseEvent* event) {
+  event->ignore();
   ExitButtonPressed();
 }

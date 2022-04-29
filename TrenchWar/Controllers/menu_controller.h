@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QCloseEvent>
 #include <QWidget>
 
 #include "Views/Menu/exit_window.h"
@@ -22,24 +23,26 @@ class MenuController : public QWidget {
   void SetGameStarted();
   void SetGameFinished();
 
+  void ShowExitWindow();
+  void HideExitWindow();
+
  signals:
   void StartGame();
-  void PauseGame();
   void ResumeGame();
   void BackToMenu();
+  void Exit();
 
  private:
   void ConnectUI();
-
   void ConnectMenuUI();
   void ConnectPauseMenuUI();
   void ConnectSettingsUI();
 
+  void ConnectExitWindowUI();
   void ShowSettingsMenu();
-  void HideSettingsMenu();
+  void SaveChanges();
 
-  void ShowExitWindow();
-  void HideExitWindow();
+  void HideSettingsMenu();
 
   bool is_game_started_ = false;
   MenuView* menu_;

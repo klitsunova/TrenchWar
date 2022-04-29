@@ -12,6 +12,7 @@ void MenuController::ConnectUI() {
   ConnectMenuUI();
   ConnectPauseMenuUI();
   ConnectSettingsUI();
+  ConnectExitWindowUI();
 }
 
 void MenuController::ConnectMenuUI() {
@@ -49,6 +50,25 @@ void MenuController::ConnectPauseMenuUI() {
 }
 
 void MenuController::ConnectSettingsUI() {
+  connect(settings_menu_,
+          &SettingsMenuView::ApplyChanges,
+          this,
+          &MenuController::SaveChanges);
+  connect(settings_menu_,
+          &SettingsMenuView::Cancel,
+          this,
+          &MenuController::HideSettingsMenu);
+}
+
+void MenuController::ConnectExitWindowUI() {
+  connect(exit_window_,
+          &ExitWindow::Exit,
+          this,
+          &MenuController::Exit);
+  connect(exit_window_,
+          &ExitWindow::Resume,
+          this,
+          &MenuController::HideExitWindow);
 }
 
 void MenuController::ShowMenu() {
@@ -56,7 +76,9 @@ void MenuController::ShowMenu() {
 }
 
 void MenuController::HideMenu() {
-  menu_->hide();
+  if (!is_game_started_) {
+    menu_->hide();
+  }
 }
 
 void MenuController::ShowPauseMenu() {
@@ -64,7 +86,9 @@ void MenuController::ShowPauseMenu() {
 }
 
 void MenuController::HidePauseMenu() {
-  pause_menu_->hide();
+  if (is_game_started_) {
+    pause_menu_->hide();
+  }
 }
 
 void MenuController::ShowSettingsMenu() {
@@ -77,7 +101,7 @@ void MenuController::ShowSettingsMenu() {
 }
 
 void MenuController::HideSettingsMenu() {
-  settings_menu_->hide();
+  settings_menu_->close();
   if (is_game_started_) {
     ShowPauseMenu();
   } else {
@@ -98,5 +122,10 @@ void MenuController::ShowExitWindow() {
 }
 
 void MenuController::HideExitWindow() {
-  exit_window_->hide();
+  exit_window_->close();
+}
+
+void MenuController::SaveChanges() {
+  // TODO: Save changes in Models/Tools/settings.h
+  HideSettingsMenu();
 }

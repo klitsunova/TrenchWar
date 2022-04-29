@@ -17,12 +17,13 @@ class MainController : public QWidget {
   void PauseGame();
   void ResumeGame();
   void ReturnToMenu();
+  void Exit();
 
  private:
   void ConnectUI();
   void ConnectEventsControllerUI();
 
   MenuController* menu_controller_;
-  EventsController* events_controller_;
+  EventsController* events_controller_ = nullptr;
   Settings* settings_;
 };

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QCloseEvent>
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
