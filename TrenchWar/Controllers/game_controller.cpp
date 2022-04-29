@@ -1,10 +1,10 @@
-#include "controller.h"
+#include "game_controller.h"
 
 #include <memory>
 
-Controller::Controller() {
+GameController::GameController() {
   world_ = std::make_shared<World>(kWorldSize);
-  view_ = std::make_unique<View>(world_);
+  view_ = std::make_unique<GameView>(world_);
   timer_ = std::make_unique<QBasicTimer>();
   // temporary code
   for (int i = 0; i < 1000; ++i) {
@@ -15,19 +15,19 @@ Controller::Controller() {
   InitializationWeapon();
 }
 
-void Controller::paintEvent(QPaintEvent*) {
+void GameController::paintEvent(QPaintEvent*) {
   QPainter qp(this);
   view_->Update(&qp, world_->GetGameObjects());
 }
 
-void Controller::timerEvent(QTimerEvent*) {
+void GameController::timerEvent(QTimerEvent*) {
   for (const auto& soldier : world_->GetSoldiers()) {
     soldier->MoveSoldier(world_->GetSize());
   }
   update();
 }
 
-void Controller::InitializationWeapon() {
+void GameController::InitializationWeapon() {
   constexpr int kRifle_damage = 40;
   constexpr int kRifle_range = 5;
   constexpr int kRifle_reload_time = 3;

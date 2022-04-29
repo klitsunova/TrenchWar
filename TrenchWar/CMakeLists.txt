@@ -22,14 +22,23 @@ set(MODELS
         Models/GameObjects/soldier.cpp
         Models/GameObjects/terrain_object.cpp
         Models/Tools/pixmap_loader.cpp
+        Models/Tools/settings.cpp
         Models/weapon.cpp
         )
 
 set(VIEWS
-        Views/view.cpp)
+        Views/game_view.cpp
+        Views/Menu/menu_view.cpp
+        Views/Menu/settings_menu_view.cpp
+        Views/Menu/exit_window.cpp
+        )
 
 set(CONTROLLERS
-        Controllers/controller.cpp)
+        Controllers/game_controller.cpp
+        Controllers/main_controller.cpp
+        Controllers/menu_controller.cpp
+        Controllers/events_controller.cpp
+        )
 
 set(SOURCES
         main.cpp

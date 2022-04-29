@@ -1,18 +1,18 @@
-#include "view.h"
+#include "game_view.h"
 
-View::View(const std::shared_ptr<World>& world) {
+GameView::GameView(const std::shared_ptr<World>& world) {
   world_ = world;
 }
 
-int View::GetScale() const {
+int GameView::GetScale() const {
   return scale_;
 }
 
-void View::SetScale(int scale) {
+void GameView::SetScale(int scale) {
   scale_ = scale;
 }
 
-void View::Update(
+void GameView::Update(
     QPainter* painter,
     const std::vector<std::shared_ptr<GameObject>>& objects) {
   painter->save();
@@ -21,7 +21,7 @@ void View::Update(
   painter->drawPixmap(QRect(0, 0,
                             window_width, window_height),
                       world_->GetPixmap());
-  for (const auto& object : objects) {
+  for (const auto& object: objects) {
     int object_width = object->GetSize().width();
     int object_height = object->GetSize().height();
 
