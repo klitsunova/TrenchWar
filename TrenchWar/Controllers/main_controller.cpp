@@ -22,22 +22,31 @@ void MainController::ConnectUI() {
 void MainController::StartGame() {
   menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
-  game_controller_ = new GameController();
-  game_controller_->show();
+  events_controller_ = new EventsController();
+  ConnectEventsControllerUI();
 }
 
 void MainController::ReturnToMenu() {
-  delete game_controller_;
+  events_controller_->HideGame();
+  delete events_controller_;
+  menu_controller_->HidePauseMenu();
   menu_controller_->SetGameFinished();
   menu_controller_->ShowMenu();
 }
 
 void MainController::PauseGame() {
-  game_controller_->PauseTimer();
+  events_controller_->Pause();
   menu_controller_->ShowPauseMenu();
 }
 
 void MainController::ResumeGame() {
-  game_controller_->StartTimer();
+  events_controller_->Resume();
   menu_controller_->HidePauseMenu();
+}
+
+void MainController::ConnectEventsControllerUI() {
+  connect(events_controller_,
+          &EventsController::ShowPauseMenu,
+          this,
+          &MainController::PauseGame);
 }
