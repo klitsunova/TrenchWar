@@ -1,8 +1,7 @@
 #include "settings.h"
 
 void Settings::SetMusicVolume(int volume) {
-  QSettings settings;
-  settings.setValue("music_volume", volume);
+  settings_.setValue("music_volume", volume);
 }
 
 int Settings::GetMusicVolume() {

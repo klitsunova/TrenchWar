@@ -126,6 +126,6 @@ void MenuController::HideExitWindow() {
 }
 
 void MenuController::SaveChanges() {
-  // TODO: Save changes in Models/Tools/settings.h
+  // TODO(klitsunova): Save changes in Models/Tools/settings.h
   HideSettingsMenu();
 }

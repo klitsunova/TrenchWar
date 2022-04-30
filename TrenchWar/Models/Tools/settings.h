@@ -7,7 +7,6 @@ class Settings {
   Settings() = default;
   ~Settings() = default;
 
-
   void SetMusicVolume(int volume);
   int GetMusicVolume();
 

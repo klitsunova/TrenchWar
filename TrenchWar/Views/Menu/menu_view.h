@@ -2,11 +2,16 @@
 
 #include <QCloseEvent>
 #include <QLabel>
+#include <QPalette>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include "Models/Tools/pixmap_loader.h"
 #include "Views/Menu/exit_window.h"
+#include "helpers/sizes.h"
+#include "helpers/styles.h"
+#include "helpers/fonts.h"
 
 class MenuView : public QWidget {
   Q_OBJECT
@@ -15,6 +20,7 @@ class MenuView : public QWidget {
   MenuView();
   ~MenuView() override = default;
 
+  void resizeEvent(QResizeEvent* event);
  signals:
   void StartButtonPressed();
   void SettingsButtonPressed();
@@ -32,4 +38,6 @@ class MenuView : public QWidget {
   QPushButton* start_button_;
   QPushButton* settings_button_;
   QPushButton* exit_button_;
+  std::shared_ptr<QPixmap> background_;
+  std::shared_ptr<QPixmap> title_;
 };
