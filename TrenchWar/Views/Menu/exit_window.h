@@ -6,6 +6,10 @@
 #include <QLabel>
 #include <QPushButton>
 
+#include "helpers/fonts.h"
+#include "helpers/sizes.h"
+#include "helpers/styles.h"
+
 class ExitWindow : public QDialog {
   Q_OBJECT
 

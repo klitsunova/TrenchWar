@@ -11,10 +11,19 @@ ExitWindow::ExitWindow() : layout_(new QGridLayout(this)),
 }
 
 void ExitWindow::SetStyles() {
-  // TODO: Set styles
+  setMinimumSize(window_sizes::kDialogSize);
+  setStyleSheet(styles::kWidgetStyle);
+  question_label_->setFont(fonts::kDialogTitleFont);
+  exit_button_->setFont(fonts::kDialogButtonFont);
+  exit_button_->setMinimumSize(element_sizes::kDialogButtonSize);
+  exit_button_->setStyleSheet(styles::kExitButtonStyle);
+  cancel_button_->setFont(fonts::kDialogButtonFont);
+  cancel_button_->setMinimumSize(element_sizes::kDialogButtonSize);
+  cancel_button_->setStyleSheet(styles::kPushButtonStyle);
 }
 
 void ExitWindow::SetLayout() {
+  layout_->setSpacing(10);
   layout_->addWidget(question_label_, 0, 0);
   auto* button_layout = new QHBoxLayout;
   button_layout->addWidget(exit_button_);

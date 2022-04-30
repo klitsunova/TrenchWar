@@ -22,7 +22,7 @@ void MenuView::SetStyles() {
     auto* button_ptr = qobject_cast<QPushButton*>(widget);
     if (button_ptr != nullptr) {
       button_ptr->setFont(fonts::kMenuButtonFont);
-      button_ptr->setMinimumSize(element_sizes::kButtonSize);
+      button_ptr->setMinimumSize(element_sizes::kMenuButtonSize);
       button_ptr->setStyleSheet(styles::kPushButtonStyle);
     }
   }
