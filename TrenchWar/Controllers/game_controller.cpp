@@ -3,7 +3,7 @@
 #include <memory>
 
 GameController::GameController() {
-  world_ = std::make_shared<World>(window_sizes::kWorldSize);
+  world_ = std::make_shared<World>(window_sizes::kWorld);
   view_ = std::make_unique<GameView>(world_);
   timer_ = std::make_unique<QBasicTimer>();
   // temporary code

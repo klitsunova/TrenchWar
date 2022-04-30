@@ -1,8 +1,14 @@
 #pragma once
 
-#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QPushButton>
+#include <QVBoxLayout>
 #include <QWidget>
+
+#include "helpers/fonts.h"
+#include "helpers/sizes.h"
+#include "helpers/styles.h"
 
 class SettingsMenuView : public QWidget {
   Q_OBJECT
@@ -22,7 +28,9 @@ class SettingsMenuView : public QWidget {
 
   void closeEvent(QCloseEvent* event) override;
 
-  QGridLayout* layout_;
+  QVBoxLayout* layout_;
+  QLabel* settings_label_;
+  QHBoxLayout* button_layout_;
   QPushButton* apply_button_;
   QPushButton* cancel_button_;
 };

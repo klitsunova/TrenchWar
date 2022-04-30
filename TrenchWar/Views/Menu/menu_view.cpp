@@ -16,14 +16,14 @@ MenuView::MenuView() : layout_(new QVBoxLayout(this)),
 
 void MenuView::SetStyles() {
   setAutoFillBackground(true);
-  setMinimumSize(window_sizes::kMenuSize);
+  setMinimumSize(window_sizes::kMenu);
   resize(size());
   for (auto& widget: children()) {
     auto* button_ptr = qobject_cast<QPushButton*>(widget);
     if (button_ptr != nullptr) {
-      button_ptr->setFont(fonts::kMenuButtonFont);
-      button_ptr->setMinimumSize(element_sizes::kMenuButtonSize);
-      button_ptr->setStyleSheet(styles::kPushButtonStyle);
+      button_ptr->setFont(fonts::kMenuButton);
+      button_ptr->setMinimumSize(element_sizes::kMenuButton);
+      button_ptr->setStyleSheet(styles::kPushButton);
     }
   }
 }

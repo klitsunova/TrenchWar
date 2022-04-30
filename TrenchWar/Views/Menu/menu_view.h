@@ -9,9 +9,9 @@
 
 #include "Models/Tools/pixmap_loader.h"
 #include "Views/Menu/exit_window.h"
+#include "helpers/fonts.h"
 #include "helpers/sizes.h"
 #include "helpers/styles.h"
-#include "helpers/fonts.h"
 
 class MenuView : public QWidget {
   Q_OBJECT
@@ -21,6 +21,7 @@ class MenuView : public QWidget {
   ~MenuView() override = default;
 
   void resizeEvent(QResizeEvent* event);
+
  signals:
   void StartButtonPressed();
   void SettingsButtonPressed();

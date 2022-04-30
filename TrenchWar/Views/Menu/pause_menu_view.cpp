@@ -12,14 +12,25 @@ PauseMenuView::PauseMenuView() : layout_(new QVBoxLayout(this)),
 }
 
 void PauseMenuView::SetStyles() {
-  // TODO: Set styles
+  setMinimumSize(window_sizes::kPauseMenu);
+  setStyleSheet(styles::kWidget);
+  for (auto& widget: children()) {
+    auto* button_ptr = qobject_cast<QPushButton*>(widget);
+    if (button_ptr != nullptr) {
+      button_ptr->setFont(fonts::kMenuButton);
+      button_ptr->setFixedSize(element_sizes::kMenuButton);
+      button_ptr->setStyleSheet(styles::kPushButton);
+    }
+  }
 }
 
 void PauseMenuView::SetLayout() {
+  layout_->setSpacing(10);
   layout_->addWidget(resume_button_);
   layout_->addWidget(back_button_);
   layout_->addWidget(settings_button_);
   layout_->addWidget(exit_button_);
+  layout_->setAlignment(Qt::AlignCenter);
 }
 
 void PauseMenuView::ConnectUI() {

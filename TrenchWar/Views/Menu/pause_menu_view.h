@@ -6,6 +6,9 @@
 #include <QWidget>
 
 #include "Views/Menu/exit_window.h"
+#include "helpers/fonts.h"
+#include "helpers/sizes.h"
+#include "helpers/styles.h"
 
 class PauseMenuView : public QWidget {
   Q_OBJECT

@@ -16,6 +16,7 @@
 
 class GameController : public QWidget {
   Q_OBJECT
+
  public:
   GameController();
 

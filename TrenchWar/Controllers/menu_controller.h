@@ -10,6 +10,7 @@
 
 class MenuController : public QWidget {
   Q_OBJECT
+
  public:
   MenuController();
   ~MenuController() override = default;
