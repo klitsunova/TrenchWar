@@ -1,10 +1,13 @@
 #include "settings_menu_view.h"
 
 SettingsMenuView::SettingsMenuView() : layout_(new QVBoxLayout(this)),
-                                       settings_label_(new QLabel("Settings", this)),
+                                       settings_label_(new QLabel(
+                                           "Settings", this)),
                                        button_layout_(new QHBoxLayout()),
-                                       apply_button_(new QPushButton("Apply", this)),
-                                       cancel_button_(new QPushButton("Cancel", this)) {
+                                       apply_button_(new QPushButton(
+                                           "Apply", this)),
+                                       cancel_button_(new QPushButton(
+                                           "Cancel", this)) {
   SetStyles();
   SetLayout();
   ConnectUI();

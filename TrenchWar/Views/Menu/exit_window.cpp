@@ -1,7 +1,8 @@
 #include "exit_window.h"
 
 ExitWindow::ExitWindow() : layout_(new QGridLayout(this)),
-                           question_label_(new QLabel("Are you sure you want to exit?", this)),
+                           question_label_(new QLabel(
+                               "Are you sure you want to exit?", this)),
                            exit_button_(new QPushButton("Exit", this)),
                            cancel_button_(new QPushButton("Cancel", this)) {
   setModal(true);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <QCloseEvent>
 #include <QLabel>
 #include <QPalette>

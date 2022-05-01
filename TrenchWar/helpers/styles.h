@@ -34,4 +34,4 @@ const QString kExitButton =
 const QString kWidget =
     "QWidget {"
     "background-color: #BFB790;}";
-} // namespace styles
+}  // namespace styles
