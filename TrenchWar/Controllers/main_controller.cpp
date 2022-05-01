@@ -1,6 +1,7 @@
 #include "main_controller.h"
 
-MainController::MainController() : menu_controller_(new MenuController()) {
+MainController::MainController(
+    QWidget* parent) : menu_controller_(new MenuController()) {
   ConnectUI();
 }
 

@@ -1,8 +1,8 @@
 #include "events_controller.h"
 
-EventsController::EventsController() : game_controller_(new GameController()),
-                                       pause_(new QShortcut(Qt::Key_Escape,
-                                                            game_controller_)) {
+EventsController::EventsController(
+    QWidget* parent) : game_controller_(new GameController()),
+                       pause_(new QShortcut(Qt::Key_Escape, game_controller_)) {
   game_controller_->show();
   ConnectUI();
 }

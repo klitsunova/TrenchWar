@@ -14,3 +14,8 @@ namespace element_sizes {
 constexpr QSize kMenuButton(300, 75);
 constexpr QSize kDialogButton(150, 50);
 }  // namespace element_sizes
+
+namespace interval_sizes {
+constexpr int kSpacing(15);
+constexpr int kStretch(10);
+}  // namespace interval_sizes

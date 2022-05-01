@@ -1,9 +1,11 @@
 #include "menu_controller.h"
 
-MenuController::MenuController() : menu_(new MenuView()),
-                                   settings_menu_(new SettingsMenuView()),
-                                   pause_menu_(new PauseMenuView()),
-                                   exit_window_(new ExitWindow()) {
+MenuController::MenuController(
+    QWidget* parent) : menu_(new MenuView()),
+                       settings_menu_(new SettingsMenuView()),
+                       pause_menu_(new PauseMenuView()),
+                       exit_window_(new ExitWindow()) {
+  setParent(parent);
   ConnectUI();
   ShowMenu();
 }

@@ -1,12 +1,14 @@
 #include "menu_view.h"
 
-MenuView::MenuView() : layout_(new QVBoxLayout(this)),
+MenuView::MenuView(
+    QWidget* parent) : layout_(new QVBoxLayout(this)),
                        title_label_(new QLabel(this)),
                        start_button_(new QPushButton("Start", this)),
                        settings_button_(new QPushButton("Settings", this)),
                        exit_button_(new QPushButton("Exit", this)),
                        background_(PixmapLoader::GetMenuBackground()),
                        title_(PixmapLoader::GetMenuTitle()) {
+  setParent(parent);
   setWindowTitle("Menu");
   title_label_->setPixmap(*title_);
   SetStyles();
@@ -29,9 +31,9 @@ void MenuView::SetStyles() {
 }
 
 void MenuView::SetLayout() {
-  layout_->setSpacing(15);
+  layout_->setSpacing(interval_sizes::kSpacing);
   layout_->addWidget(title_label_, 1, Qt::AlignLeft);
-  layout_->addStretch(10);
+  layout_->addStretch(interval_sizes::kStretch);
   layout_->addWidget(start_button_, 1, Qt::AlignRight);
   layout_->addWidget(settings_button_, 1, Qt::AlignRight);
   layout_->addWidget(exit_button_, 1, Qt::AlignRight);
@@ -65,7 +67,9 @@ void MenuView::resizeEvent(QResizeEvent* event) {
   setPalette(palette);
 
   int title_ratio = title_label_->width() / title_label_->height();
-  int new_title_width = static_cast<int>(size().width() / 1.5);
+  double window_to_title_ratio = 1.5;
+  int new_title_width = static_cast<int>(
+      size().width() / window_to_title_ratio);
   title_label_->setPixmap(title_->scaled(new_title_width,
                                          new_title_width / title_ratio));
 }

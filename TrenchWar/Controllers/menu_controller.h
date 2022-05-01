@@ -13,7 +13,7 @@ class MenuController : public QWidget {
   Q_OBJECT
 
  public:
-  MenuController();
+  MenuController(QWidget* parent = nullptr);
   ~MenuController() override = default;
 
   void ShowMenu();

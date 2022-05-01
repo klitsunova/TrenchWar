@@ -14,7 +14,7 @@ class PauseMenuView : public QWidget {
   Q_OBJECT
 
  public:
-  PauseMenuView();
+  PauseMenuView(QWidget* parent = nullptr);
   ~PauseMenuView() override = default;
 
  signals:

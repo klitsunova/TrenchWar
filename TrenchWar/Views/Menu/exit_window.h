@@ -14,7 +14,7 @@ class ExitWindow : public QDialog {
   Q_OBJECT
 
  public:
-  ExitWindow();
+  ExitWindow(QWidget* parent = nullptr);
   ~ExitWindow() override = default;
 
  signals:

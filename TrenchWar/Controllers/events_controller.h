@@ -10,7 +10,7 @@ class EventsController : public QWidget {
   Q_OBJECT
 
  public:
-  EventsController();
+  EventsController(QWidget* parent = nullptr);
   ~EventsController() override = default;
 
   void Pause();

@@ -2,7 +2,8 @@
 
 #include <memory>
 
-GameController::GameController() {
+GameController::GameController(QWidget* parent) {
+  setParent(parent);
   world_ = std::make_shared<World>(window_sizes::kWorld);
   view_ = std::make_unique<GameView>(world_);
   timer_ = std::make_unique<QBasicTimer>();
@@ -50,11 +51,15 @@ void GameController::InitializationWeapon() {
 }
 
 void GameController::StartTimer() {
-  timer_->start(kTimerInterval, this);
+  if (!timer_->isActive()) {
+    timer_->start(kTimerInterval, this);
+  }
 }
 
 void GameController::PauseTimer() {
-  timer_->stop();
+  if (timer_->isActive()) {
+    timer_->stop();
+  }
 }
 
 void GameController::closeEvent(QCloseEvent* event) {

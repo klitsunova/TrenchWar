@@ -19,7 +19,7 @@ class GameController : public QWidget {
   Q_OBJECT
 
  public:
-  GameController();
+  GameController(QWidget* parent = nullptr);
 
   ~GameController() override = default;
 

@@ -1,13 +1,11 @@
 #include "settings_menu_view.h"
 
-SettingsMenuView::SettingsMenuView() : layout_(new QVBoxLayout(this)),
-                                       settings_label_(new QLabel(
-                                           "Settings", this)),
-                                       button_layout_(new QHBoxLayout()),
-                                       apply_button_(new QPushButton(
-                                           "Apply", this)),
-                                       cancel_button_(new QPushButton(
-                                           "Cancel", this)) {
+SettingsMenuView::SettingsMenuView(
+    QWidget* parent) : layout_(new QVBoxLayout(this)),
+                       settings_label_(new QLabel("Settings", this)),
+                       button_layout_(new QHBoxLayout()),
+                       apply_button_(new QPushButton("Apply", this)),
+                       cancel_button_(new QPushButton("Cancel", this)) {
   SetStyles();
   SetLayout();
   ConnectUI();
@@ -30,7 +28,7 @@ void SettingsMenuView::SetStyles() {
 
 void SettingsMenuView::SetLayout() {
   layout_->addWidget(settings_label_, 1, Qt::AlignCenter);
-  layout_->addStretch(10);
+  layout_->addStretch(interval_sizes::kStretch);
   button_layout_->addWidget(apply_button_);
   button_layout_->addWidget(cancel_button_);
   layout_->addLayout(button_layout_, Qt::AlignRight);
