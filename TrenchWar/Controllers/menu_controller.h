@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QCloseEvent>
+#include <QStyle>
 #include <QWidget>
 
 #include "Views/Menu/exit_window.h"

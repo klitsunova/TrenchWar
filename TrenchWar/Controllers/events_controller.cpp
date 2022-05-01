@@ -19,6 +19,10 @@ void EventsController::ConnectUI() {
           &QShortcut::activated,
           this,
           &EventsController::ShowPauseMenu);
+  connect(game_controller_,
+          &GameController::Exit,
+          this,
+          &EventsController::ShowPauseMenu);
 }
 
 void EventsController::HideGame() {

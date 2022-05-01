@@ -56,3 +56,8 @@ void GameController::StartTimer() {
 void GameController::PauseTimer() {
   timer_->stop();
 }
+
+void GameController::closeEvent(QCloseEvent* event) {
+  event->ignore();
+  Exit();
+}

@@ -72,6 +72,11 @@ void MenuController::ConnectExitWindowUI() {
 }
 
 void MenuController::ShowMenu() {
+  menu_->setGeometry(QStyle::alignedRect(
+      Qt::LeftToRight,
+      Qt::AlignCenter,
+      window_sizes::kMenu,
+      QApplication::primaryScreen()->availableGeometry()));
   menu_->show();
 }
 
@@ -82,6 +87,11 @@ void MenuController::HideMenu() {
 }
 
 void MenuController::ShowPauseMenu() {
+  pause_menu_->setGeometry(QStyle::alignedRect(
+      Qt::LeftToRight,
+      Qt::AlignCenter,
+      window_sizes::kPauseMenu,
+      QApplication::primaryScreen()->availableGeometry()));
   pause_menu_->show();
 }
 
@@ -97,6 +107,11 @@ void MenuController::ShowSettingsMenu() {
   } else {
     HideMenu();
   }
+  settings_menu_->setGeometry(QStyle::alignedRect(
+      Qt::LeftToRight,
+      Qt::AlignCenter,
+      window_sizes::kSettingsMenu,
+      QApplication::primaryScreen()->availableGeometry()));
   settings_menu_->show();
 }
 
@@ -118,6 +133,11 @@ void MenuController::SetGameFinished() {
 }
 
 void MenuController::ShowExitWindow() {
+  exit_window_->setGeometry(QStyle::alignedRect(
+      Qt::LeftToRight,
+      Qt::AlignCenter,
+      window_sizes::kDialogWidget,
+      QApplication::primaryScreen()->availableGeometry()));
   exit_window_->show();
 }
 

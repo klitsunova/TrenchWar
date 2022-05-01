@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QBasicTimer>
+#include <QCloseEvent>
 #include <QWidget>
 
 #include <memory>
@@ -27,6 +28,11 @@ class GameController : public QWidget {
 
   void StartTimer();
   void PauseTimer();
+
+  void closeEvent(QCloseEvent* event) override;
+
+ signals:
+  void Exit();
 
  private:
   static constexpr int kTimerInterval{50};
