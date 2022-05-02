@@ -74,7 +74,7 @@ QPixmap World::DrawWorld() const {
       QRect cell_rect(QPoint(x_top, y_top),
                       QPoint(x_bottom, y_bottom));
       QColor color = landscapes_[j][i].color;
-      painter.setBrush(QBrush(color)); // temporary
+      painter.setBrush(QBrush(color));
       painter.setPen(QPen(QColor(color), 1));
       painter.drawRect(cell_rect);
     }
