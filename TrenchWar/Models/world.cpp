@@ -122,8 +122,10 @@ void World::LoadMap(const QString path) {
       if (end_index == std::string::npos) {
         end_index = s.length();
       }
-      int color_index = std::stoi(s.substr(start_index, end_index - start_index));
-      landscapes_[i].push_back(Landscape(color_and_value[color_index].first, color_and_value[color_index].second));
+      int color_index = std::stoi(s.substr(start_index,
+                                           end_index - start_index));
+      landscapes_[i].push_back(Landscape(color_and_value[color_index].first, 
+                                         color_and_value[color_index].second));
       index++;
       end_index++;
       start_index = end_index;
