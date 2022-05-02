@@ -73,8 +73,8 @@ QPixmap World::DrawWorld() const {
       int y_bottom = ((window_height * (j + 1)) / size_.height());
       QRect cell_rect(QPoint(x_top, y_top),
                       QPoint(x_bottom, y_bottom));
-      QColor color  = landscapes_[j][i].color;
-      painter.setBrush(QBrush(color));  // temporary
+      QColor color = landscapes_[j][i].color;
+      painter.setBrush(QBrush(color)); // temporary
       painter.setPen(QPen(QColor(color), 1));
       painter.drawRect(cell_rect);
     }
@@ -97,7 +97,7 @@ void World::LoadMap(const QString path) {
     std::string s = in.readLine().toStdString();
     int index = s.find_first_of(' ');
     std::string s1 = s.substr(0, index);
-    std::string s2 = s.substr(index  + 1, s.length() - index - 1);
+    std::string s2 = s.substr(index + 1, s.length() - index - 1);
     color_and_value.emplace_back(std::stoll(s1), std::stoi(s2));
   }
   in.readLine();
@@ -105,7 +105,7 @@ void World::LoadMap(const QString path) {
   std::string sizes = in.readLine().toStdString();
   int index_1 = sizes.find_first_of(' ');
   std::string s1 = sizes.substr(0, index_1);
-  std::string s2 = sizes.substr(index_1  + 1, sizes.length() - index_1 - 1);
+  std::string s2 = sizes.substr(index_1 + 1, sizes.length() - index_1 - 1);
   int length = std::stoi(s1);
   int width = std::stoi(s2);
   landscapes_.resize(length);
@@ -115,7 +115,7 @@ void World::LoadMap(const QString path) {
   for (int i = 0; i < length; ++i) {
     std::string s = in.readLine().toStdString();
     int start_index = 0;
-    int end_index =  0;
+    int end_index = 0;
     int index = 0;
     while (start_index < s.length()) {
       end_index = s.find(' ', end_index);
@@ -124,7 +124,7 @@ void World::LoadMap(const QString path) {
       }
       int color_index = std::stoi(s.substr(start_index,
                                            end_index - start_index));
-      landscapes_[i].push_back(Landscape(color_and_value[color_index].first, 
+      landscapes_[i].push_back(Landscape(color_and_value[color_index].first,
                                          color_and_value[color_index].second));
       index++;
       end_index++;
