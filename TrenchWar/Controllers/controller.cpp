@@ -3,7 +3,7 @@
 #include <memory>
 
 Controller::Controller() {
-  world_ = std::make_shared<World>(kWorldSize);
+  world_ = std::make_shared<World>("../Resources/Maps/map1.txt");
   view_ = std::make_unique<View>(world_);
   timer_ = std::make_unique<QBasicTimer>();
   // temporary code
