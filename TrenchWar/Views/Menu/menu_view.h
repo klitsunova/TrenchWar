@@ -19,7 +19,7 @@ class MenuView : public QWidget {
   Q_OBJECT
 
  public:
-  MenuView(QWidget* parent = nullptr);
+  explicit MenuView(QWidget* parent = nullptr);
   ~MenuView() override = default;
 
   void resizeEvent(QResizeEvent* event);

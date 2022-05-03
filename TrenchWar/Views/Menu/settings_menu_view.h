@@ -14,7 +14,7 @@ class SettingsMenuView : public QWidget {
   Q_OBJECT
 
  public:
-  SettingsMenuView(QWidget* parent = nullptr);
+  explicit SettingsMenuView(QWidget* parent = nullptr);
   ~SettingsMenuView() override = default;
 
  signals:
