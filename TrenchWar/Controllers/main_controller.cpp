@@ -34,7 +34,7 @@ void MainController::StartGame() {
 
 void MainController::ReturnToMenu() {
   events_controller_->HideGame();
-  // delete events_controller_;
+  delete events_controller_;
   menu_controller_->HidePauseMenu();
   menu_controller_->SetGameFinished();
   menu_controller_->ShowMenu();

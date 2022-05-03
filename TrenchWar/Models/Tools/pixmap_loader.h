@@ -5,7 +5,6 @@
 #include <QString>
 
 #include <cassert>
-#include <iostream>
 #include <map>
 #include <memory>
 

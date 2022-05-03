@@ -8,9 +8,16 @@ class Settings {
   static constexpr int max_volume = 100;
 
  public:
-  Settings() = default;
+  Settings(const Settings&) = delete;
+  Settings& operator=(Settings&) = delete;
 
-  ~Settings() = default;
+  static Settings* getInstance() {
+    if (!instance_) {
+      instance_ = new Settings;
+    }
+    return instance_;
+  }
+
   void SetMusicVolume(int volume);
 
   int GetMusicVolume();
@@ -22,5 +29,8 @@ class Settings {
   bool IsFullScreen();
 
  private:
+  Settings() = default;
+  static Settings* instance_;
+
   QSettings settings_;
 };
