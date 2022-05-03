@@ -6,8 +6,7 @@ class Settings {
  public:
   static constexpr int min_volume = 0;
   static constexpr int max_volume = 100;
-
- public:
+  
   Settings(const Settings&) = delete;
   Settings& operator=(Settings&) = delete;
 

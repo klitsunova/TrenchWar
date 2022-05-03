@@ -66,9 +66,9 @@ void MenuView::resizeEvent(QResizeEvent* event) {
   palette.setBrush(QPalette::Window, scaled_background);
   setPalette(palette);
 
-  int title_ratio = title_label_->width() / title_label_->height();
-  double window_to_title_ratio = 1.5;
-  int new_title_width = static_cast<int>(
+  const int title_ratio = title_label_->width() / title_label_->height();
+  const double window_to_title_ratio = 1.5;
+  const int new_title_width = static_cast<int>(
       size().width() / window_to_title_ratio);
   title_label_->setPixmap(title_->scaled(new_title_width,
                                          new_title_width / title_ratio));
