@@ -16,7 +16,7 @@ PauseMenuView::PauseMenuView(
 void PauseMenuView::SetStyles() {
   setMinimumSize(window_sizes::kPauseMenu);
   setStyleSheet(styles::kWidget);
-  for (auto& widget: children()) {
+  for (auto& widget : children()) {
     auto* button_ptr = qobject_cast<QPushButton*>(widget);
     if (button_ptr != nullptr) {
       button_ptr->setFont(fonts::kMenuButton);
