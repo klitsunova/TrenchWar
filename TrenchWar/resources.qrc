@@ -6,5 +6,7 @@
         <file>Resources/Images/Soldier4.png</file>
         <file>Resources/Images/Tower1.png</file>
         <file>Resources/Images/Tower2.png</file>
+        <file>Resources/Images/MenuBackground.jpg</file>
+        <file>Resources/Images/MenuTitle.png</file>
     </qresource>
 </RCC>
