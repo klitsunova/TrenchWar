@@ -17,7 +17,7 @@ class World {
   struct Cell;
 
  public:
-  explicit World(const QString path);
+  explicit World(const QString& path);
 
   ~World() = default;
 
@@ -38,7 +38,7 @@ class World {
   void AddTerrainObject();
 
  private:
-  void LoadMap(const QString path);
+  void LoadMap(const QString& path);
 
   struct Cell {
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
@@ -46,7 +46,7 @@ class World {
 
   struct Landscape {
     Landscape(const QColor& q_color, int speed);
-    QColor color{0xffffff};
+    QColor color = Qt::white;
     int speed_characteristic{0};
   };
 

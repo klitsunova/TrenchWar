@@ -8,6 +8,11 @@ const QString PixmapLoader::right_soldier_path =
     ":././Resources/Images/Soldier1.png";
 const QString PixmapLoader::terrain_object_path =
     ":././Resources/Images/Tower2.png";
+const QString PixmapLoader::menu_background_path =
+    ":././Resources/Images/MenuBackground.jpg";
+const QString PixmapLoader::menu_title_path =
+    ":././Resources/Images/MenuTitle.png";
+
 std::map<QString, std::shared_ptr<QPixmap>> PixmapLoader::images;
 
 void PixmapLoader::LoadPixmap(const QString& path) {
@@ -37,4 +42,12 @@ const std::shared_ptr<QPixmap>& PixmapLoader::GetRSoldier() {
 
 const std::shared_ptr<QPixmap>& PixmapLoader::GetTerrainObject() {
   return GetPixmap(terrain_object_path);
+}
+
+const std::shared_ptr<QPixmap>& PixmapLoader::GetMenuBackground() {
+  return GetPixmap(menu_background_path);
+}
+
+const std::shared_ptr<QPixmap>& PixmapLoader::GetMenuTitle() {
+  return GetPixmap(menu_title_path);
 }

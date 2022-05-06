@@ -1,33 +1,34 @@
-#include "controller.h"
+#include "game_controller.h"
 
 #include <memory>
 
-Controller::Controller() {
-  world_ = std::make_shared<World>("../Resources/Maps/map1.txt");
-  view_ = std::make_unique<View>(world_);
+GameController::GameController(QWidget* parent) {
+  setParent(parent);
+  world_ = std::make_shared<World>(":././Resources/Maps/map1.txt");
+  view_ = std::make_unique<GameView>(world_);
   timer_ = std::make_unique<QBasicTimer>();
   // temporary code
   for (int i = 0; i < 1000; ++i) {
     world_->AddSoldier();
   }
   world_->AddTerrainObject();
-  timer_->start(kTimerInterval, this);
+  StartTimer();
   InitializationWeapon();
 }
 
-void Controller::paintEvent(QPaintEvent*) {
+void GameController::paintEvent(QPaintEvent*) {
   QPainter qp(this);
   view_->Update(&qp, world_->GetGameObjects());
 }
 
-void Controller::timerEvent(QTimerEvent*) {
+void GameController::timerEvent(QTimerEvent*) {
   for (const auto& soldier : world_->GetSoldiers()) {
     soldier->MoveSoldier(world_->GetSize());
   }
   update();
 }
 
-void Controller::InitializationWeapon() {
+void GameController::InitializationWeapon() {
   constexpr int kRifle_damage = 40;
   constexpr int kRifle_range = 5;
   constexpr int kRifle_reload_time = 3;
@@ -47,4 +48,21 @@ void Controller::InitializationWeapon() {
   weapons_.emplace_back(Weapon::WeaponType::Knife, kKnife_damage,
                         kKnife_range, kKnife_reload_time,
                         kKnife_hit_chance, -kKnife_count_ammo);
+}
+
+void GameController::StartTimer() {
+  if (!timer_->isActive()) {
+    timer_->start(kTimerInterval, this);
+  }
+}
+
+void GameController::PauseTimer() {
+  if (timer_->isActive()) {
+    timer_->stop();
+  }
+}
+
+void GameController::closeEvent(QCloseEvent* event) {
+  event->ignore();
+  Exit();
 }

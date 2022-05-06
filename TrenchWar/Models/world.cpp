@@ -2,7 +2,7 @@
 
 #include "world.h"
 
-World::World(const QString path) {
+World::World(const QString& path) {
   LoadMap(path);
   cells_.resize(size_.width(),
                 std::vector<Cell>(size_.height()));
@@ -82,11 +82,11 @@ QPixmap World::DrawWorld() const {
   return picture;
 }
 
-void World::LoadMap(const QString path) {
+void World::LoadMap(const QString& path) {
   QFile file(path);
 
   if (!file.open(QIODevice::ReadOnly)) {
-    qWarning("Cannot open file for reading");
+    qCritical("Cannot open file for reading");
   }
   QTextStream in(&file);
   std::vector<std::pair<int64_t, int>> color_and_value;

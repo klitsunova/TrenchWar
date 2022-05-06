@@ -6,7 +6,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_PREFIX_PATH "~/Qt/6.2.3/gcc_64/lib/cmake")
+#set(CMAKE_PREFIX_PATH "~/Qt/6.2.3/gcc_64/lib/cmake")
+set(CMAKE_PREFIX_PATH "~/Qt/6.3.0/mingw_64/lib/cmake")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -22,14 +23,24 @@ set(MODELS
         Models/GameObjects/soldier.cpp
         Models/GameObjects/terrain_object.cpp
         Models/Tools/pixmap_loader.cpp
+        Models/Tools/settings.cpp
         Models/weapon.cpp
         )
 
 set(VIEWS
-        Views/view.cpp)
+        Views/game_view.cpp
+        Views/Menu/menu_view.cpp
+        Views/Menu/settings_menu_view.cpp
+        Views/Menu/pause_menu_view.cpp
+        Views/Menu/exit_window.cpp
+        )
 
 set(CONTROLLERS
-        Controllers/controller.cpp)
+        Controllers/game_controller.cpp
+        Controllers/main_controller.cpp
+        Controllers/menu_controller.cpp
+        Controllers/events_controller.cpp
+        )
 
 set(SOURCES
         main.cpp

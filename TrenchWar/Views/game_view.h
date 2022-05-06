@@ -10,11 +10,11 @@
 #include "Models/GameObjects/game_object.h"
 #include "Models/world.h"
 
-class View {
+class GameView {
  public:
-  explicit View(const std::shared_ptr<World>&);
+  explicit GameView(const std::shared_ptr<World>&);
 
-  ~View() = default;
+  ~GameView() = default;
 
   int GetScale() const;
 

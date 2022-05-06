@@ -1,11 +1,9 @@
-#include "Controllers/controller.h"
-
 #include <QApplication>
-#include <QPushButton>
+
+#include "Controllers/main_controller.h"
 
 int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
-  Controller controller;
-  controller.show();
+  MainController controller;
   return QApplication::exec();
 }
