@@ -1,8 +1,10 @@
 #pragma once
 
+#include <QCheckBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QSlider>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -16,6 +18,8 @@ class SettingsMenuView : public QWidget {
  public:
   explicit SettingsMenuView(QWidget* parent = nullptr);
   ~SettingsMenuView() override = default;
+  int GetVolume();
+  bool IsFullScreen();
 
  signals:
   void ApplyChanges();
@@ -29,8 +33,16 @@ class SettingsMenuView : public QWidget {
   void closeEvent(QCloseEvent* event) override;
 
   QVBoxLayout* layout_;
+
   QLabel* settings_label_;
+  QLabel* sound_label_;
+  QLabel* set_full_screen_label_;
+
   QHBoxLayout* button_layout_;
+  QHBoxLayout* sound_layout_;
+  QHBoxLayout* set_full_screen_layout_;
   QPushButton* apply_button_;
   QPushButton* cancel_button_;
+  QSlider* sound_slider_;
+  QCheckBox* set_full_screen_checkbox_;
 };

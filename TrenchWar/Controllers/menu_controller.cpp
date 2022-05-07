@@ -149,5 +149,10 @@ void MenuController::HideExitWindow() {
 
 void MenuController::SaveChanges() {
   // TODO(klitsunova): Save changes in Models/Tools/settings.h
+  Settings* instance = Settings::getInstance();
+  int volume_sound = settings_menu_->GetVolume();
+  // instance->SetMusicVolume(volume_sound);
+  bool is_fullscreen = settings_menu_->IsFullScreen();
+  // instance->SetFullScreenValue(is_fullscreen);
   HideSettingsMenu();
 }

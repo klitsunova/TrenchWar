@@ -11,7 +11,7 @@ class Settings {
   Settings& operator=(Settings&) = delete;
 
   static Settings* getInstance() {
-    if (!instance_) {
+    if(!instance_) {
       instance_ = new Settings;
     }
     return instance_;
@@ -31,5 +31,5 @@ class Settings {
   Settings() = default;
   static Settings* instance_;
 
-  QSettings settings_;
+  QSettings settings_{};
 };

@@ -8,6 +8,8 @@ namespace {
   const QString key_fullscreen = "is_fullscreen";
 }
 
+Settings* instance_{};
+
 void Settings::SetMusicVolume(int volume) {
   settings_.setValue(key_music_volume, volume);
 }

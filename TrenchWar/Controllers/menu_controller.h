@@ -9,6 +9,8 @@
 #include "Views/Menu/pause_menu_view.h"
 #include "Views/Menu/settings_menu_view.h"
 
+#include "Models/Tools/settings.h"
+
 class MenuController : public QWidget {
   Q_OBJECT
 
