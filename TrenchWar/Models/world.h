@@ -4,6 +4,7 @@
 #include <QPainter>
 
 #include <memory>
+#include <queue>
 #include <stack>
 #include <string>
 #include <vector>
@@ -35,13 +36,21 @@ class World {
   const QPixmap& GetPixmap() const;
 
   void AddSoldier();
+  void AddSoldier(const QPoint&, bool);
   void AddTerrainObject();
+
+  void UpdateDistances();
+
+  void MoveSoldiers();
 
  private:
   void LoadMap(const QString& path);
 
   struct Cell {
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
+
+    bool used;
+    int distance;
   };
 
   struct Landscape {

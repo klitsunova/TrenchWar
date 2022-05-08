@@ -8,9 +8,10 @@ GameController::GameController(QWidget* parent) {
   view_ = std::make_unique<GameView>(world_);
   timer_ = std::make_unique<QBasicTimer>();
   // temporary code
-  for (int i = 0; i < 1000; ++i) {
+  for (int i = 0; i < 1; ++i) {
     world_->AddSoldier();
   }
+  world_->AddSoldier(QPoint(10, 10), true);
   world_->AddTerrainObject();
   StartTimer();
   InitializationWeapon();
@@ -22,9 +23,11 @@ void GameController::paintEvent(QPaintEvent*) {
 }
 
 void GameController::timerEvent(QTimerEvent*) {
-  for (const auto& soldier : world_->GetSoldiers()) {
-    soldier->MoveSoldier(world_->GetSize());
-  }
+  // for (const auto& soldier : world_->GetSoldiers()) {
+  //   soldier->MoveSoldier(world_->GetSize());
+  // }
+  world_->MoveSoldiers();
+  // assert(false);
   update();
 }
 
