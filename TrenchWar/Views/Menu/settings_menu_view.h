@@ -11,6 +11,7 @@
 #include "helpers/fonts.h"
 #include "helpers/sizes.h"
 #include "helpers/styles.h"
+#include "Models/Tools/settings.h"
 
 class SettingsMenuView : public QWidget {
   Q_OBJECT
@@ -20,6 +21,7 @@ class SettingsMenuView : public QWidget {
   ~SettingsMenuView() override = default;
   int GetVolume();
   bool IsFullScreen();
+  void ReturnToDefault();
 
  signals:
   void ApplyChanges();
@@ -29,6 +31,7 @@ class SettingsMenuView : public QWidget {
   void SetStyles();
   void SetLayout();
   void ConnectUI();
+  void SetValues();
 
   void closeEvent(QCloseEvent* event) override;
 
@@ -45,4 +48,6 @@ class SettingsMenuView : public QWidget {
   QPushButton* cancel_button_;
   QSlider* sound_slider_;
   QCheckBox* set_full_screen_checkbox_;
+
+  Settings* settings_;
 };

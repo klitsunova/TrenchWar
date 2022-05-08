@@ -2,7 +2,8 @@
 
 MainController::MainController(QWidget* parent)
     : QWidget(parent),
-      menu_controller_(new MenuController(this)) {
+      menu_controller_(new MenuController(this)),
+      settings_(Settings::getInstance()) {
   ConnectUI();
 }
 
@@ -23,12 +24,21 @@ void MainController::ConnectUI() {
           &MenuController::Exit,
           this,
           &MainController::Exit);
+  connect(menu_controller_,
+          &MenuController::MusicVolumeChanged,
+          this,
+          &MainController::ChangeMusic);
+  connect(menu_controller_,
+          &MenuController::FullScreenValueChanged,
+          this,
+          &MainController::ChangeScreenValue);
 }
 
 void MainController::StartGame() {
   menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
   events_controller_ = new EventsController(this);
+  events_controller_->SetFullScreen(Settings::getInstance()->IsFullScreen());
   ConnectEventsControllerUI();
 }
 
@@ -59,4 +69,14 @@ void MainController::ConnectEventsControllerUI() {
 
 void MainController::Exit() {
   QApplication::exit(0);
+}
+
+void MainController::ChangeMusic(bool is_game_started) {
+
+}
+
+void MainController::ChangeScreenValue(bool is_game_started) {
+  if (is_game_started) {
+    events_controller_->SetFullScreen(settings_->IsFullScreen());
+  }
 }

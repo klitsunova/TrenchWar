@@ -17,6 +17,7 @@ class EventsController : public QWidget {
   void Resume();
 
   void HideGame();
+  void SetFullScreen(bool is_fullscreen);
 
  signals:
   void ShowPauseMenu();

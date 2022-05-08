@@ -2,7 +2,8 @@
 
 #include <memory>
 
-GameController::GameController(QWidget* parent) {
+GameController::GameController(QWidget* parent) :
+    settings_(Settings::getInstance()) {
   setParent(parent);
   world_ = std::make_shared<World>(window_sizes::kWorld);
   view_ = std::make_unique<GameView>(world_);
@@ -12,6 +13,7 @@ GameController::GameController(QWidget* parent) {
     world_->AddSoldier();
   }
   world_->AddTerrainObject();
+  SetStyle();
   StartTimer();
   InitializationWeapon();
 }
@@ -65,4 +67,20 @@ void GameController::PauseTimer() {
 void GameController::closeEvent(QCloseEvent* event) {
   event->ignore();
   Exit();
+}
+
+void GameController::SetScreen(bool is_fullscreen) {
+  if (is_fullscreen) {
+    showFullScreen();
+  } else {
+    showNormal();
+  }
+}
+
+void GameController::SetStyle() {
+  this->setGeometry(QStyle::alignedRect(
+          Qt::LeftToRight,
+          Qt::AlignCenter,
+          window_sizes::kMenu,
+          QApplication::primaryScreen()->availableGeometry()));
 }
