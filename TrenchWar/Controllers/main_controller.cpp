@@ -72,7 +72,7 @@ void MainController::Exit() {
 }
 
 void MainController::ChangeMusic(bool is_game_started) {}
-// TODO (Zolokinos)
+// TODO(Zolokinos)
 
 void MainController::ChangeScreenValue(bool is_game_started) {
   if (is_game_started) {
