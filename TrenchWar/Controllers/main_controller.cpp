@@ -71,6 +71,7 @@ void MainController::Exit() {
   QApplication::exit(0);
 }
 
+
 void MainController::ChangeMusic(bool is_game_started) {}
 // TODO(Zolokinos)
 

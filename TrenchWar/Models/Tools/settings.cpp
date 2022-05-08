@@ -35,7 +35,7 @@ bool Settings::IsFullScreen() {
 }
 
 Settings::Settings() {
+  // TODO(Zolokinos) make default values. Or save in INI.
   // SetMusicVolume(start_volume);
   // SetFullScreenValue(fullscreen);
-  // TODO(Zolokinos) make default values. Or save in INI.
 }
