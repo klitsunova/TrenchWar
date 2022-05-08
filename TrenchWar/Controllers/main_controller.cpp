@@ -45,6 +45,7 @@ void MainController::StartGame() {
 void MainController::ReturnToMenu() {
   events_controller_->HideGame();
   delete events_controller_;
+  events_controller_ = nullptr;
   menu_controller_->HidePauseMenu();
   menu_controller_->SetGameFinished();
   menu_controller_->ShowMenu();
@@ -75,8 +76,8 @@ void MainController::Exit() {
 void MainController::ChangeMusic(bool is_game_started) {}
 // TODO(Zolokinos)
 
-void MainController::ChangeScreenValue(bool is_game_started) {
-  if (is_game_started) {
+void MainController::ChangeScreenValue() {
+  if (events_controller_ != nullptr) {
     events_controller_->SetFullScreen(settings_->IsFullScreen());
   }
 }

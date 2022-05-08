@@ -156,7 +156,7 @@ void MenuController::SaveChanges() {
 
   bool is_fullscreen = settings_menu_->IsFullScreen();
   instance->SetFullScreenValue(is_fullscreen);
-  emit FullScreenValueChanged(is_game_started_);
+  emit FullScreenValueChanged();
 
   HideSettingsMenu();
 }

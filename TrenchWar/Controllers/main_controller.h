@@ -20,7 +20,7 @@ class MainController : public QWidget {
   void ReturnToMenu();
   void Exit();
   void ChangeMusic(bool is_game_started);
-  void ChangeScreenValue(bool is_game_started);
+  void ChangeScreenValue();
 
  private:
   void ConnectUI();
