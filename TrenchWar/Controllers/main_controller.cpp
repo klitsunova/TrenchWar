@@ -71,9 +71,7 @@ void MainController::Exit() {
   QApplication::exit(0);
 }
 
-void MainController::ChangeMusic(bool is_game_started) {
-
-}
+void MainController::ChangeMusic(bool is_game_started) {}
 
 void MainController::ChangeScreenValue(bool is_game_started) {
   if (is_game_started) {

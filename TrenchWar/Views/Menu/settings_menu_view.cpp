@@ -4,7 +4,8 @@ SettingsMenuView::SettingsMenuView(
     QWidget* parent) : layout_(new QVBoxLayout(this)),
                        settings_label_(new QLabel("Settings", this)),
                        sound_label_(new QLabel("Sound: ", this)),
-                       set_full_screen_label_(new QLabel("Set full screen: ", this)),
+                       set_full_screen_label_(
+                           new QLabel("Set full screen: ", this)),
                        button_layout_(new QHBoxLayout()),
                        sound_layout_(new QHBoxLayout()),
                        set_full_screen_layout_(new QHBoxLayout()),

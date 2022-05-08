@@ -5,6 +5,7 @@
 
 class Settings : public QObject {
   Q_OBJECT
+
  public:
   static constexpr int min_volume = 0;
   static constexpr int max_volume = 100;
@@ -15,7 +16,7 @@ class Settings : public QObject {
   Settings& operator=(Settings&) = delete;
 
   static Settings* getInstance() {
-    if(!instance_) {
+    if (!instance_) {
       instance_ = new Settings();
     }
     return instance_;
@@ -29,8 +30,6 @@ class Settings : public QObject {
 
   void SetFullScreenValue(bool IsFullScreen);
   bool IsFullScreen();
-
-  signals:
 
  private:
   Settings();
