@@ -152,7 +152,7 @@ void MenuController::SaveChanges() {
 
   int volume_sound = settings_menu_->GetVolume();
   instance->SetMusicVolume(volume_sound);
-  emit MusicVolumeChanged(is_game_started_);
+  emit MusicVolumeChanged();
 
   bool is_fullscreen = settings_menu_->IsFullScreen();
   instance->SetFullScreenValue(is_fullscreen);

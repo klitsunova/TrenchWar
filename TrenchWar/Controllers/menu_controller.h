@@ -35,7 +35,7 @@ class MenuController : public QWidget {
   void ResumeGame();
   void BackToMenu();
   void Exit();
-  void MusicVolumeChanged(bool is_game_started);
+  void MusicVolumeChanged();
   void FullScreenValueChanged();
 
  private:
