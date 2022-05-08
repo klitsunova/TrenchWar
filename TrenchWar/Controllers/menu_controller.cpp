@@ -79,11 +79,7 @@ void MenuController::ShowMenu() {
       Qt::AlignCenter,
       window_sizes::kMenu,
       QApplication::primaryScreen()->availableGeometry()));
-  if (Settings::getInstance()->IsFullScreen()) {
-    menu_->showFullScreen();
-  } else {
-    menu_->showNormal();
-  }
+  SetFullScreen(menu_);
 }
 
 void MenuController::HideMenu() {
@@ -118,11 +114,7 @@ void MenuController::ShowSettingsMenu() {
       Qt::AlignCenter,
       window_sizes::kSettingsMenu,
       QApplication::primaryScreen()->availableGeometry()));
-  if (Settings::getInstance()->IsFullScreen()) {
-    settings_menu_->showFullScreen();
-  } else {
-    settings_menu_->showNormal();
-  }
+  SetFullScreen(settings_menu_);
 }
 
 void MenuController::HideSettingsMenu() {
@@ -173,4 +165,12 @@ void MenuController::CancelChanges() {
   settings_menu_->ReturnToDefault();
 
   HideSettingsMenu();
+}
+
+void MenuController::SetFullScreen(QWidget* widget) {
+  if (Settings::getInstance()->IsFullScreen()) {
+    widget->showFullScreen();
+  } else {
+    widget->showNormal();
+  }
 }

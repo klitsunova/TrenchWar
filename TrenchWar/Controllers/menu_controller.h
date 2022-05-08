@@ -51,6 +51,8 @@ class MenuController : public QWidget {
 
   void HideSettingsMenu();
 
+  void SetFullScreen(QWidget* widget);
+
   bool is_game_started_ = false;
   MenuView* menu_;
   SettingsMenuView* settings_menu_;

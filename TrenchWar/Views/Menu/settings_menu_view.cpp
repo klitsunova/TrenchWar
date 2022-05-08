@@ -25,11 +25,11 @@ void SettingsMenuView::SetStyles() {
   setBaseSize(window_sizes::kSettingsMenu);
   setStyleSheet(styles::kWidget);
 
+  // labels
   settings_label_->setFont(fonts::kTitleLabel);
-  // settings_label_->setAlignment(Qt::AlignTop);
   sound_label_->setFont(fonts::kSettingsLabel);
   set_full_screen_label_->setFont(fonts::kSettingsLabel);
-  // labels
+  // buttons
   apply_button_->setFont(fonts::kDialogButton);
   apply_button_->setFixedSize(element_sizes::kDialogButton);
   apply_button_->setStyleSheet(styles::kPushButton);
@@ -37,12 +37,10 @@ void SettingsMenuView::SetStyles() {
   cancel_button_->setFont(fonts::kDialogButton);
   cancel_button_->setFixedSize(element_sizes::kDialogButton);
   cancel_button_->setStyleSheet(styles::kExitButton);
-  // buttons
 }
 
 void SettingsMenuView::SetLayout() {
   layout_->addWidget(settings_label_, 0, Qt::AlignCenter | Qt::AlignTop);
-  // layout_->addStretch(interval_sizes::kStretch);
 
   sound_layout_->addWidget(sound_label_, 1);
   sound_layout_->addWidget(sound_slider_, 4);
@@ -84,17 +82,17 @@ bool SettingsMenuView::IsFullScreen() {
 }
 
 void SettingsMenuView::SetValues() {
+  // sound slider
   sound_slider_->setOrientation(Qt::Horizontal);
   sound_slider_->setMinimum(0);
   sound_slider_->setMaximum(100);
   sound_slider_->setValue(settings_->GetMusicVolume());
-  // sound slider
+  // fullscreen check
   if (settings_->IsFullScreen()) {
     set_full_screen_checkbox_->setCheckState(Qt::Checked);
   } else {
     set_full_screen_checkbox_->setCheckState(Qt::Unchecked);
   }
-  // fullscreen check
 }
 
 void SettingsMenuView::ReturnToDefault() {

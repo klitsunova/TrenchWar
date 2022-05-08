@@ -7,16 +7,16 @@ class Settings : public QObject {
   Q_OBJECT
 
  public:
-  static constexpr int min_volume = 0;
-  static constexpr int max_volume = 100;
-  static constexpr int start_volume = 50;
-  static constexpr bool fullscreen = true;
+  static constexpr int kMinVolume = 0;
+  static constexpr int kMaxVolume = 100;
+  static constexpr int kStartVolume = 50;
+  static constexpr bool kFullScreen = true;
 
   Settings(const Settings&) = delete;
   Settings& operator=(Settings&) = delete;
 
   static Settings* getInstance() {
-    if (!instance_) {
+    if (instance_ == nullptr) {
       instance_ = new Settings();
     }
     return instance_;
@@ -35,5 +35,5 @@ class Settings : public QObject {
   Settings();
   static Settings* instance_;
 
-  QSettings settings_;
+  QSettings settings_{};
 };

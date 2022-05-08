@@ -3,38 +3,39 @@
 #include <QString>
 
 namespace {
-  const QString key_music_volume = "music_volume";
-  const QString key_effects_volume = "effects_volume";
-  const QString key_fullscreen = "is_fullscreen";
+  const QString kKeyMusicVolume = "music_volume";
+  const QString kKeyEffectsVolume = "effects_volume";
+  const QString kKeyFullscreen = "is_fullscreen";
 }
 
 Settings* Settings::instance_ = nullptr;
 
 void Settings::SetMusicVolume(int volume) {
-  settings_.setValue(key_music_volume, volume);
+  settings_.setValue(kKeyMusicVolume, volume);
 }
 
 int Settings::GetMusicVolume() {
-  return settings_.value(key_music_volume).toInt();
+  return settings_.value(kKeyMusicVolume).toInt();
 }
 
 void Settings::SetEffectsVolume(int volume) {
-  settings_.setValue(key_effects_volume, volume);
+  settings_.setValue(kKeyEffectsVolume, volume);
 }
 
 int Settings::GetEffectsVolume() {
-  return settings_.value(key_effects_volume).toInt();
+  return settings_.value(kKeyEffectsVolume).toInt();
 }
 
 void Settings::SetFullScreenValue(bool IsFullScreen) {
-  settings_.setValue(key_fullscreen, IsFullScreen);
+  settings_.setValue(kKeyFullscreen, IsFullScreen);
 }
 
 bool Settings::IsFullScreen() {
-  return settings_.value(key_fullscreen).toBool();
+  return settings_.value(kKeyFullscreen).toBool();
 }
 
 Settings::Settings() {
   // SetMusicVolume(start_volume);
   // SetFullScreenValue(fullscreen);
+  // TODO (Zolokinos) make default values. Or save in INI.
 }
