@@ -39,10 +39,11 @@ int Soldier::GetVisibilityRange() const {
 }
 
 void Soldier::AddWeapon(const Weapon& weapon) {
-  auto it = std::find_if(weapons_.begin(), weapons_.end(),
-                         [&](const Weapon& item) {
-                           return item.GetWeaponType() == weapon.GetWeaponType();
-                         });
+  auto it =
+      std::find_if(weapons_.begin(), weapons_.end(),
+                   [&](const Weapon& item) {
+                     return item.GetWeaponType() == weapon.GetWeaponType();
+                   });
   if (it == weapons_.end()) {
     weapons_.push_back(weapon);
   }

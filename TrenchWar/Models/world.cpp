@@ -114,8 +114,8 @@ void World::UpdateDistances() {
   while (!latest.empty()) {
     int x = latest.top().first;
     int y = latest.top().second;
-    // to do "+1"
-    int current_distance = cells_[x][y].distance + cells_[x][y].landscape.speed_characteristic;
+    int current_distance = cells_[x][y].distance
+        + cells_[x][y].landscape.speed_characteristic;
 
     // left neighbor
     push_if(x - 1, y, current_distance, (x != 0));
@@ -132,7 +132,6 @@ void World::UpdateDistances() {
 }
 
 void World::MoveSoldiers() {
-
   UpdateDistances();
 
   auto move_if = [&](int soldier_pos, int& current_dist,
