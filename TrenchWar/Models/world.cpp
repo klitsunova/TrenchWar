@@ -4,8 +4,6 @@
 
 World::World(const QString& path) {
   LoadMap(path);
-  cells_.resize(size_.width(),
-                std::vector<Cell>(size_.height()));
   picture_ = DrawWorld();
 }
 
@@ -182,6 +180,7 @@ void World::LoadMap(const QString& path) {
     color_and_value.emplace_back(color, value);
   }
   in.readLine();
+
 
   int length, width;
   in >> length >> width;
