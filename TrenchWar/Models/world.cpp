@@ -94,7 +94,7 @@ void World::LoadMap(const QString& path) {
   for (int i = 0; i < size_t; i++) {
     QString s = in.readLine();
     int index = static_cast<int>(s.indexOf(' '));
-    long long color = s.mid(0, index).toLongLong();
+    int64_t color = s.mid(0, index).toLongLong();
     int value  = s.mid(index + 1, s.length() - index - 1).toInt();
     color_and_value.emplace_back(color, value);
   }
