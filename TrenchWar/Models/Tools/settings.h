@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QSettings>
 #include <QObject>
+#include <QSettings>
 
 class Settings : public QObject {
   Q_OBJECT
@@ -15,7 +15,7 @@ class Settings : public QObject {
   Settings(const Settings&) = delete;
   Settings& operator=(Settings&) = delete;
 
-  static Settings* getInstance() {
+  static Settings* Instance() {
     if (instance_ == nullptr) {
       instance_ = new Settings();
     }

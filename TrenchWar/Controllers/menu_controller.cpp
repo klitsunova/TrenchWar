@@ -148,7 +148,7 @@ void MenuController::HideExitWindow() {
 }
 
 void MenuController::SaveChanges() {
-  Settings* instance = Settings::getInstance();
+  Settings* instance = Settings::Instance();
 
   int volume_sound = settings_menu_->GetVolume();
   instance->SetMusicVolume(volume_sound);
@@ -168,7 +168,7 @@ void MenuController::CancelChanges() {
 }
 
 void MenuController::SetFullScreen(QWidget* widget) {
-  if (Settings::getInstance()->IsFullScreen()) {
+  if (Settings::Instance()->IsFullScreen()) {
     widget->showFullScreen();
   } else {
     widget->showNormal();

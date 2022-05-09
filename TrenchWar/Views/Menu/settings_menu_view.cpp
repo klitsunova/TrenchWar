@@ -13,7 +13,7 @@ SettingsMenuView::SettingsMenuView(
                        cancel_button_(new QPushButton("Cancel", this)),
                        sound_slider_(new QSlider(this)),
                        set_full_screen_checkbox_(new QCheckBox()),
-                       settings_(Settings::getInstance()) {
+                       settings_(Settings::Instance()) {
   SetStyles();
   SetLayout();
   ConnectUI();

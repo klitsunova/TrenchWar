@@ -1,9 +1,9 @@
-#include "game_controller.h"
-
 #include <memory>
 
+#include "game_controller.h"
+
 GameController::GameController(QWidget* parent) :
-    settings_(Settings::getInstance()) {
+    settings_(Settings::Instance()) {
   setParent(parent);
   world_ = std::make_shared<World>(":././Resources/Maps/map1.txt");
   view_ = std::make_unique<GameView>(world_);

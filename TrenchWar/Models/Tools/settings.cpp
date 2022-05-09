@@ -1,6 +1,6 @@
-#include "settings.h"
-
 #include <QString>
+
+#include "settings.h"
 
 namespace {
   const QString kKeyMusicVolume = "music_volume";

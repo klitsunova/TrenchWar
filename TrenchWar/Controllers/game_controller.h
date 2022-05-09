@@ -2,8 +2,8 @@
 
 #include <QBasicTimer>
 #include <QCloseEvent>
-#include <QWidget>
 #include <QStyle>
+#include <QWidget>
 
 #include <memory>
 #include <vector>
