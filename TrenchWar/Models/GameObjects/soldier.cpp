@@ -30,7 +30,7 @@ int Soldier::GetId() const {
   return id_;
 }
 
-bool Soldier::GetType() const {
+bool Soldier::IsDefender() const {
   return defender_type_;
 }
 

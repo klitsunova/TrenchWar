@@ -24,6 +24,14 @@ void World::AddSoldier() {
   game_objects_.push_back(new_object);
 }
 
+void World::AddSoldier(const QPoint& position, bool type) {
+  assert(position.x() >= 0 && position.x() < size_.width());
+  assert(position.y() >= 0 && position.x() < size_.height());
+  auto new_object = std::make_shared<Soldier>(position, type);
+  soldiers_.push_back(new_object);
+  game_objects_.push_back(new_object);
+}
+
 void World::AddTerrainObject() {
   auto new_object = std::make_shared<TerrainObject>();
   new_object->SetRandomPosition(size_);
@@ -60,26 +68,100 @@ const QPixmap& World::GetPixmap() const {
   return picture_;
 }
 
-QPixmap World::DrawWorld() const {
-  QPixmap picture(size_);
-  auto painter = QPainter(&picture);
-  int window_width = painter.window().width() - 1;
-  int window_height = painter.window().height() - 1;
+void World::UpdateDistances() {
+  if (!is_need_update_distances) {
+    return;
+  }
+  is_need_update_distances = false;
+
   for (int i = 0; i < size_.width(); ++i) {
     for (int j = 0; j < size_.height(); ++j) {
-      int x_top = (window_width * i) / size_.width();
-      int x_bottom = ((window_width * (i + 1)) / size_.width());
-      int y_top = (window_height * j) / size_.height();
-      int y_bottom = ((window_height * (j + 1)) / size_.height());
-      QRect cell_rect(QPoint(x_top, y_top),
-                      QPoint(x_bottom, y_bottom));
-      QColor color = landscapes_[j][i].color;
-      painter.setBrush(QBrush(color));
-      painter.setPen(QPen(QColor(color), 1));
-      painter.drawRect(cell_rect);
+      cells_[i][j].used = false;
+      cells_[i][j].distance = INT32_MAX;
     }
   }
-  return picture;
+
+  auto cmp =
+      [&](std::pair<int, int> left, std::pair<int, int> right) {
+        return cells_[left.first][left.second].distance
+            > cells_[right.first][right.second].distance;
+      };
+  std::priority_queue<std::pair<int, int>,
+                      std::vector<std::pair<int, int>>,
+                      decltype(cmp)>
+      latest(cmp);
+
+  for (auto& soldier: soldiers_) {
+    int x = soldier->GetPosition().x();
+    int y = soldier->GetPosition().y();
+    if (!soldier->IsDefender()) {
+      continue;
+    }
+    cells_[x][y].distance = 0;
+    latest.push(std::make_pair(x, y));
+  }
+
+  auto push_if = [&](int x, int y, int dist, bool condition = true) {
+    if (!condition) {
+      return;
+    }
+    if (!cells_[x][y].used && cells_[x][y].distance > dist) {
+      cells_[x][y].distance = dist;
+      latest.push(std::make_pair(x, y));
+    }
+  };
+
+  while (!latest.empty()) {
+    int x = latest.top().first;
+    int y = latest.top().second;
+    // to do "+1"
+    int current_distance = cells_[x][y].distance + 1;
+
+    // left neighbor
+    push_if(x - 1, y, current_distance, (x != 0));
+    // right neighbor
+    push_if(x + 1, y, current_distance, (x != size_.width() - 1));
+    // upper neighbor
+    push_if(x, y - 1, current_distance, (y != 0));
+    // lower neighbor
+    push_if(x, y + 1, current_distance, (y != size_.height() - 1));
+
+    cells_[x][y].used = true;
+    latest.pop();
+  }
+}
+
+void World::MoveSoldiers() {
+
+  UpdateDistances();
+
+  auto move_if = [&](int soldier_pos, int& current_dist,
+                     int to_x, int to_y, int condition = true) {
+    if (!condition) {
+      return;
+    }
+    if (current_dist > cells_[to_x][to_y].distance) {
+      current_dist = cells_[to_x][to_y].distance;
+      soldiers_[soldier_pos]->SetPosition(QPoint(to_x, to_y));
+    }
+  };
+
+  for (int i = 0; i < soldiers_.size(); ++i) {
+    if (soldiers_[i]->IsDefender()) {
+      continue;
+    }
+    int x = soldiers_[i]->GetPosition().x();
+    int y = soldiers_[i]->GetPosition().y();
+    int distance = cells_[x][y].distance;
+    // left neighbor
+    move_if(i, distance, x - 1, y, x != 0);
+    // right neighbor
+    move_if(i, distance, x + 1, y, x != size_.width() - 1);
+    // upper neighbor
+    move_if(i, distance, x, y - 1, y != 0);
+    // lower neighbor
+    move_if(i, distance, x, y + 1, y != size_.height() - 1);
+  }
 }
 
 void World::LoadMap(const QString& path) {
@@ -92,7 +174,7 @@ void World::LoadMap(const QString& path) {
   std::vector<std::pair<int64_t, int>> color_and_value;
 
   QString size = in.readLine();
-  int size_t = std::stoi(size.toStdString());
+  int size_t = size.toInt();
   for (int i = 0; i < size_t; i++) {
     std::string s = in.readLine().toStdString();
     int index = s.find_first_of(' ');
@@ -133,6 +215,28 @@ void World::LoadMap(const QString& path) {
   }
 
   file.close();
+}
+
+QPixmap World::DrawWorld() const {
+  QPixmap picture(size_);
+  auto painter = QPainter(&picture);
+  int window_width = painter.window().width() - 1;
+  int window_height = painter.window().height() - 1;
+  for (int i = 0; i < size_.width(); ++i) {
+    for (int j = 0; j < size_.height(); ++j) {
+      int x_top = (window_width * i) / size_.width();
+      int x_bottom = ((window_width * (i + 1)) / size_.width());
+      int y_top = (window_height * j) / size_.height();
+      int y_bottom = ((window_height * (j + 1)) / size_.height());
+      QRect cell_rect(QPoint(x_top, y_top),
+                      QPoint(x_bottom, y_bottom));
+      QColor color = landscapes_[j][i].color;
+      painter.setBrush(QBrush(color));
+      painter.setPen(QPen(QColor(color), 1));
+      painter.drawRect(cell_rect);
+    }
+  }
+  return picture;
 }
 
 World::Landscape::Landscape(const QColor& q_color, int speed) {

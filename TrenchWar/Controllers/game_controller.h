@@ -36,7 +36,7 @@ class GameController : public QWidget {
 
  private:
   // static constexpr int kTimerInterval{50};
-  static constexpr int kTimerInterval{150};
+  static constexpr int kTimerInterval{50};
 
   std::shared_ptr<World> world_;
   std::unique_ptr<GameView> view_;

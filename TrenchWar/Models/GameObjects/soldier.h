@@ -22,7 +22,7 @@ class Soldier : public GameObject {
   void MoveSoldier(QSize);
 
   int GetId() const;
-  bool GetType() const;
+  bool IsDefender() const;
   int GetVisibilityRange() const;
 
   void AddWeapon(const Weapon& weapon);
