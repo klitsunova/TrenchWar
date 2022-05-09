@@ -28,7 +28,9 @@ set(MODELS
         )
 
 set(VIEWS
-        Views/game_view.cpp
+        Views/Game/map_view.cpp
+        Views/Game/game_view.cpp
+        Views/Game/store_view.cpp
         Views/Menu/menu_view.cpp
         Views/Menu/settings_menu_view.cpp
         Views/Menu/pause_menu_view.cpp
