@@ -91,7 +91,7 @@ void World::UpdateDistances() {
                       decltype(cmp)>
       latest(cmp);
 
-  for (auto& soldier: soldiers_) {
+  for (auto& soldier : soldiers_) {
     int x = soldier->GetPosition().x();
     int y = soldier->GetPosition().y();
     if (!soldier->IsDefender()) {
@@ -101,15 +101,16 @@ void World::UpdateDistances() {
     latest.push(std::make_pair(x, y));
   }
 
-  auto push_if = [&](int x, int y, int dist, bool condition = true) {
-    if (!condition) {
-      return;
-    }
-    if (!cells_[x][y].used && cells_[x][y].distance > dist) {
-      cells_[x][y].distance = dist;
-      latest.push(std::make_pair(x, y));
-    }
-  };
+  auto push_if =
+      [&](int x, int y, int dist, bool condition = true) {
+        if (!condition) {
+          return;
+        }
+        if (!cells_[x][y].used && cells_[x][y].distance > dist) {
+          cells_[x][y].distance = dist;
+          latest.push(std::make_pair(x, y));
+        }
+      };
 
   while (!latest.empty()) {
     int x = latest.top().first;
