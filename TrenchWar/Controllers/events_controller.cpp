@@ -1,31 +1,56 @@
 #include "events_controller.h"
 
-EventsController::EventsController(
-    QWidget* parent) : game_controller_(new GameController()),
-                       pause_(new QShortcut(Qt::Key_Escape, game_controller_)) {
-  game_controller_->show();
+EventsController::EventsController(QWidget* parent) {
+  setParent(parent);
+  world_ = std::make_shared<World>(":././Resources/Maps/map1.txt");
+  view_ = std::make_unique<GameView>(this, world_);
+  timer_ = std::make_unique<QBasicTimer>();
+  game_controller_ = std::make_unique<GameController>(this, world_);
+  game_controller_->SetWorldObjects();
   ConnectUI();
+  view_->show();
 }
 
-void EventsController::Pause() {
-  game_controller_->PauseTimer();
+void EventsController::timerEvent(QTimerEvent*) {
+  for (const auto& soldier : world_->GetSoldiers()) {
+    soldier->MoveSoldier(world_->GetSize());
+  }
+  view_->UpdateMap();
 }
 
-void EventsController::Resume() {
-  game_controller_->StartTimer();
+void EventsController::StartTimer() {
+  if (!timer_->isActive()) {
+    timer_->start(kTimerInterval, this);
+  }
+}
+
+void EventsController::PauseTimer() {
+  if (timer_->isActive()) {
+    timer_->stop();
+  }
 }
 
 void EventsController::ConnectUI() {
-  connect(pause_,
-          &QShortcut::activated,
+  connect(view_.get(),
+          &GameView::Close,
           this,
           &EventsController::ShowPauseMenu);
-  connect(game_controller_,
-          &GameController::Exit,
+  connect(view_.get(),
+          &GameView::StartGame,
           this,
-          &EventsController::ShowPauseMenu);
+          &EventsController::Start);
 }
 
 void EventsController::HideGame() {
-  game_controller_->hide();
+  view_->hide();
+}
+
+void EventsController::Start() {
+  view_->HideReadyButton();
+  game_stage = active;
+  StartTimer();
+}
+
+EventsController::stage EventsController::GetGameStage() const {
+  return game_stage;
 }

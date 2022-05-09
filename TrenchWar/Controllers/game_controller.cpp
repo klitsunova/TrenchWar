@@ -2,30 +2,12 @@
 
 #include <memory>
 
-GameController::GameController(QWidget* parent) {
+GameController::GameController(
+    QWidget* parent,
+    const std::shared_ptr<World>& world) {
   setParent(parent);
-  world_ = std::make_shared<World>(":././Resources/Maps/map1.txt");
-  view_ = std::make_unique<GameView>(world_);
-  timer_ = std::make_unique<QBasicTimer>();
-  // temporary code
-  for (int i = 0; i < 1000; ++i) {
-    world_->AddSoldier();
-  }
-  world_->AddTerrainObject();
-  StartTimer();
+  world_ = world;
   InitializationWeapon();
-}
-
-void GameController::paintEvent(QPaintEvent*) {
-  QPainter qp(this);
-  view_->Update(&qp, world_->GetGameObjects());
-}
-
-void GameController::timerEvent(QTimerEvent*) {
-  for (const auto& soldier : world_->GetSoldiers()) {
-    soldier->MoveSoldier(world_->GetSize());
-  }
-  update();
 }
 
 void GameController::InitializationWeapon() {
@@ -50,19 +32,10 @@ void GameController::InitializationWeapon() {
                         kKnife_hit_chance, -kKnife_count_ammo);
 }
 
-void GameController::StartTimer() {
-  if (!timer_->isActive()) {
-    timer_->start(kTimerInterval, this);
+void GameController::SetWorldObjects() {
+  // temporary code
+  for (int i = 0; i < 1000; ++i) {
+    world_->AddSoldier();
   }
-}
-
-void GameController::PauseTimer() {
-  if (timer_->isActive()) {
-    timer_->stop();
-  }
-}
-
-void GameController::closeEvent(QCloseEvent* event) {
-  event->ignore();
-  Exit();
+  world_->AddTerrainObject();
 }
