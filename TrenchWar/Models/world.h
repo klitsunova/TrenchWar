@@ -64,7 +64,6 @@ class World {
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
-  // std::vector<std::vector<Landscape>> landscapes_;
   std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<GameObject>> game_objects_;
   bool is_need_update_distances{true};
