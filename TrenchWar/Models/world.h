@@ -1,9 +1,9 @@
 #pragma once
 
+#include <QFile>
 #include <QPainter>
 
 #include <memory>
-#include <queue>
 #include <stack>
 #include <string>
 #include <vector>
@@ -38,13 +38,22 @@ class World {
   void AddTerrainObject();
 
  private:
+  void LoadMap(const QString& path);
+
   struct Cell {
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
+  };
+
+  struct Landscape {
+    Landscape(const QColor& q_color, int speed);
+    QColor color = Qt::white;
+    int speed_characteristic{0};
   };
 
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
+  std::vector<std::vector<Landscape>> landscapes_;
   std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<GameObject>> game_objects_;
 

@@ -2,10 +2,10 @@
 
 #include "world.h"
 
-World::World(QSize size)
-    : size_(size) {
-  cells_.resize(size.width(),
-                std::vector<Cell>(size.height()));
+World::World(const QString& path) {
+  LoadMap(path);
+  cells_.resize(size_.width(),
+                std::vector<Cell>(size_.height()));
   picture_ = DrawWorld();
 }
 
@@ -20,14 +20,6 @@ std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() {
 void World::AddSoldier() {
   auto new_object = std::make_shared<Soldier>();
   new_object->SetRandomPosition(size_);
-  soldiers_.push_back(new_object);
-  game_objects_.push_back(new_object);
-}
-
-void World::AddSoldier(const QPoint& position, bool type) {
-  assert(position.x() >= 0 && position.x() < size_.width());
-  assert(position.y() >= 0 && position.x() < size_.height());
-  auto new_object = std::make_shared<Soldier>(position, type);
   soldiers_.push_back(new_object);
   game_objects_.push_back(new_object);
 }
@@ -68,131 +60,11 @@ const QPixmap& World::GetPixmap() const {
   return picture_;
 }
 
-void World::UpdateDistances() {
-  for (int i = 0; i < size_.width(); ++i) {
-    for (int j = 0; j < size_.height(); ++j) {
-      cells_[i][j].used = false;
-      cells_[i][j].distance = INT32_MAX;
-    }
-  }
-
-  std::queue<std::pair<int, int>> latest;
-  for (int i = 0; i < soldiers_.size(); ++i) {
-    int x = soldiers_[i]->GetPosition().x();
-    int y = soldiers_[i]->GetPosition().y();
-    cells_[x][y].used = true;
-    if (!soldiers_[i]->GetType()) {
-      continue;
-    }
-    cells_[x][y].distance = 0;
-    latest.push(std::make_pair(x, y));
-  }
-
-  while (!latest.empty()) {
-    int x = latest.front().first;
-    int y = latest.front().second;
-    // to do "+1"
-    // left neighbor
-    if (x != 0) {
-      if (!cells_[x - 1][y].used && cells_[x - 1][y].distance > cells_[x][y].distance + 1) {
-        cells_[x - 1][y].distance = cells_[x][y].distance + 1;
-        latest.push(std::make_pair(x - 1, y));
-      }
-    }
-    // right neighbor
-    if (x != size_.width() - 1) {
-      if (!cells_[x + 1][y].used && cells_[x + 1][y].distance > cells_[x][y].distance + 1) {
-        cells_[x + 1][y].distance = cells_[x][y].distance + 1;
-        latest.push(std::make_pair(x + 1, y));
-      }
-    }
-    // upper neighbor
-    if (y != 0) {
-      if (!cells_[x][y - 1].used && cells_[x][y - 1].distance > cells_[x][y].distance + 1) {
-        cells_[x][y - 1].distance = cells_[x][y].distance + 1;
-        latest.push(std::make_pair(x, y - 1));
-      }
-    }
-    // lower neighbor
-    if (y != size_.height() - 1) {
-      if (!cells_[x][y + 1].used && cells_[x][y + 1].distance > cells_[x][y].distance + 1) {
-        cells_[x][y + 1].distance = cells_[x][y].distance + 1;
-        latest.push(std::make_pair(x, y + 1));
-      }
-    }
-    latest.pop();
-  }
-}
-
-void World::MoveSoldiers() {
-  for (int i = 0; i < soldiers_.size(); ++i) {
-    if (soldiers_[i]->GetType()) {
-      continue;
-    }
-    UpdateDistances();
-    int x = soldiers_[i]->GetPosition().x();
-    int y = soldiers_[i]->GetPosition().y();
-    // to do
-    // if (cells_[x][y].distance == 1) {
-    //   continue;
-    // }
-    int distance = INT32_MAX;
-    // left neighbor
-    if (x != 0 && !cells_[x - 1][y].used) {
-      distance = std::min(distance, cells_[x - 1][y].distance);
-    }
-    // right neighbor
-    if (x != (size_.width() - 1) && !cells_[x + 1][y].used) {
-      distance = std::min(distance, cells_[x + 1][y].distance);
-    }
-    // upper neighbor
-    if (y != 0 && !cells_[x][y - 1].used) {
-      distance = std::min(distance, cells_[x][y - 1].distance);
-    }
-    // lower neighbor
-    if (y != (size_.height() - 1) && !cells_[x][y + 1].used) {
-      distance = std::min(distance, cells_[x][y + 1].distance);
-    }
-
-    // left neighbor
-    if (x != 0 && !cells_[x - 1][y].used) {
-      if (cells_[x - 1][y].distance == distance) {
-        soldiers_[i]->MoveLeft();
-        continue;
-      }
-    }
-    // right neighbor
-    if (x != size_.width() - 1 && !cells_[x + 1][y].used) {
-      if (cells_[x + 1][y].distance == distance) {
-        soldiers_[i]->MoveRight();
-        continue;
-      }
-    }
-    // upper neighbor
-    if (y != 0 && !cells_[x][y - 1].used) {
-      if (cells_[x][y - 1].distance == distance) {
-        soldiers_[i]->MoveUp();
-        continue;
-      }
-    }
-    // lower neighbor
-    if (y != size_.height() - 1 && !cells_[x][y + 1].used) {
-      if (cells_[x][y + 1].distance == distance) {
-        soldiers_[i]->MoveDown();
-        continue;
-      }
-    }
-  }
-}
-
 QPixmap World::DrawWorld() const {
   QPixmap picture(size_);
   auto painter = QPainter(&picture);
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
-
-  painter.setBrush(QBrush("#ff28e024")); // temporary
-  painter.setPen(QPen(QColor("#ff28e024"), 1));
   for (int i = 0; i < size_.width(); ++i) {
     for (int j = 0; j < size_.height(); ++j) {
       int x_top = (window_width * i) / size_.width();

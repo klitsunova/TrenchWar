@@ -11,7 +11,7 @@ GameController::GameController(QWidget* parent) {
   for (int i = 0; i < 1; ++i) {
     world_->AddSoldier();
   }
-  world_->AddSoldier(QPoint(10, 10), true);
+  // world_->AddSoldier(QPoint(10, 10), true);
   world_->AddTerrainObject();
   StartTimer();
   InitializationWeapon();
@@ -23,10 +23,10 @@ void GameController::paintEvent(QPaintEvent*) {
 }
 
 void GameController::timerEvent(QTimerEvent*) {
-  // for (const auto& soldier : world_->GetSoldiers()) {
-  //   soldier->MoveSoldier(world_->GetSize());
-  // }
-  world_->MoveSoldiers();
+  for (const auto& soldier : world_->GetSoldiers()) {
+    soldier->MoveSoldier(world_->GetSize());
+  }
+  // world_->MoveSoldiers();
   // assert(false);
   update();
 }
