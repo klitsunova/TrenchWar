@@ -27,7 +27,6 @@ class StoreView : public QWidget {
   void ConnectUI();
 
   QHBoxLayout* layout_;
-  static const std::shared_ptr<QPixmap>& soldier_image_;
   QPushButton* ready_button_;
   std::vector<QLabel*> items_;
 };

@@ -2,11 +2,12 @@
 
 #include <QLabel>
 
-#include "helpers/styles.h"
 #include "helpers/sizes.h"
+#include "helpers/styles.h"
 
-StoreView::StoreView(QWidget* parent) : layout_(new QHBoxLayout(this)),
-                                        ready_button_(new QPushButton("Ready", this)) {
+StoreView::StoreView(
+    QWidget* parent) : layout_(new QHBoxLayout(this)),
+                       ready_button_(new QPushButton("Ready", this)) {
   setParent(parent);
   AddItems();
   SetStyles();
@@ -21,7 +22,8 @@ void StoreView::AddItems() {
   // temporary code
   for (int i = 0; i < 5; ++i) {
     auto* soldier = new QLabel;
-    soldier->setPixmap(PixmapLoader::GetSoldier()->scaled(element_sizes::kStoreBox));
+    soldier->setPixmap(
+        PixmapLoader::GetSoldier()->scaled(element_sizes::kStoreBox));
     items_.push_back(soldier);
     layout_->addWidget(soldier);
   }

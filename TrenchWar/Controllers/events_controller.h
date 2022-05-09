@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <QKeyEvent>
 #include <QShortcut>
 #include <QWidget>

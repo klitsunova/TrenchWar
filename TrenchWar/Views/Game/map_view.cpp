@@ -26,14 +26,15 @@ void MapView::SetScale(int scale) {
 
 void MapView::paintEvent(QPaintEvent*) {
   QPainter painter(this);
-  const std::vector<std::shared_ptr<GameObject>>& objects = world_->GetGameObjects();
+  const std::vector<std::shared_ptr<GameObject>>& objects =
+      world_->GetGameObjects();
   painter.save();
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
   painter.drawPixmap(QRect(0, 0,
                            window_width, window_height),
                      world_->GetPixmap());
-  for (const auto& object: objects) {
+  for (const auto& object : objects) {
     int object_width = object->GetSize().width();
     int object_height = object->GetSize().height();
 
