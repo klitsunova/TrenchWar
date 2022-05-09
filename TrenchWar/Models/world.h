@@ -40,6 +40,7 @@ class World {
  private:
   void LoadMap(const QString& path);
 
+
   struct Landscape {
     Landscape(const QColor& q_color, int speed);
     QColor color = Qt::white;
