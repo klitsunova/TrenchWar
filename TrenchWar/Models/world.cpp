@@ -94,18 +94,16 @@ void World::LoadMap(const QString& path) {
   for (int i = 0; i < size_t; i++) {
     QString s = in.readLine();
     int index = static_cast<int>(s.indexOf(' '));
-    QString s1 = s.mid(0, index);
-    QString s2 = s.mid(index + 1, s.length() - index - 1);
-    color_and_value.emplace_back(s1.toLongLong(), s2.toInt());
+    long long color = s.mid(0, index).toLongLong();
+    int value  = s.mid(index + 1, s.length() - index - 1).toInt();
+    color_and_value.emplace_back(color, value);
   }
   in.readLine();
 
   QString sizes = in.readLine();
   int index_1 = static_cast<int>(sizes.indexOf(' '));
-  QString s1 = sizes.mid(0, index_1);
-  QString s2 = sizes.mid(index_1 + 1, sizes.length() - index_1 - 1);
-  int length = s1.toInt();
-  int width = s2.toInt();
+  int length = sizes.mid(0, index_1).toInt();
+  int width = sizes.mid(index_1 + 1, sizes.length() - index_1 - 1).toInt();
   size_.setHeight(length);
   size_.setWidth(width);
   cells_.resize(size_.width(),
@@ -115,7 +113,6 @@ void World::LoadMap(const QString& path) {
     QString s = in.readLine();
     int start_index = 0;
     int end_index = 0;
-    int index = 0;
     int j = 0;
     while (start_index < s.length()) {
       end_index = static_cast<int>(s.indexOf(' ', end_index));
@@ -126,7 +123,6 @@ void World::LoadMap(const QString& path) {
                                            end_index - start_index)).toInt();
       cells_[i][j].landscape = Landscape(color_and_value[color_index].first,
                                       color_and_value[color_index].second);
-      index++;
       end_index++;
       start_index = end_index;
       j++;
