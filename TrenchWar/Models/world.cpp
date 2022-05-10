@@ -4,8 +4,6 @@
 
 World::World(const QString& path) {
   LoadMap(path);
-  cells_.resize(size_.width(),
-                std::vector<Cell>(size_.height()));
   picture_ = DrawWorld();
 }
 
@@ -73,7 +71,7 @@ QPixmap World::DrawWorld() const {
       int y_bottom = ((window_height * (j + 1)) / size_.height());
       QRect cell_rect(QPoint(x_top, y_top),
                       QPoint(x_bottom, y_bottom));
-      QColor color = landscapes_[j][i].color;
+      QColor color = cells_[j][i].landscape.color;
       painter.setBrush(QBrush(color));
       painter.setPen(QPen(QColor(color), 1));
       painter.drawRect(cell_rect);
@@ -92,43 +90,29 @@ void World::LoadMap(const QString& path) {
   std::vector<std::pair<int64_t, int>> color_and_value;
 
   QString size = in.readLine();
-  int size_t = std::stoi(size.toStdString());
+  int size_t = size.toInt();
   for (int i = 0; i < size_t; i++) {
-    std::string s = in.readLine().toStdString();
-    int index = s.find_first_of(' ');
-    std::string s1 = s.substr(0, index);
-    std::string s2 = s.substr(index + 1, s.length() - index - 1);
-    color_and_value.emplace_back(std::stoll(s1), std::stoi(s2));
+    int64_t color;
+    int value;
+    in >> color >> value;
+    color_and_value.emplace_back(color, value);
   }
   in.readLine();
 
-  std::string sizes = in.readLine().toStdString();
-  int index_1 = sizes.find_first_of(' ');
-  std::string s1 = sizes.substr(0, index_1);
-  std::string s2 = sizes.substr(index_1 + 1, sizes.length() - index_1 - 1);
-  int length = std::stoi(s1);
-  int width = std::stoi(s2);
-  landscapes_.resize(length);
+  int length;
+  int width;
+  in >> length >> width;
   size_.setHeight(length);
   size_.setWidth(width);
+  cells_.resize(size_.width(),
+                std::vector<Cell>(size_.height()));
 
   for (int i = 0; i < length; ++i) {
-    std::string s = in.readLine().toStdString();
-    int start_index = 0;
-    int end_index = 0;
-    int index = 0;
-    while (start_index < s.length()) {
-      end_index = s.find(' ', end_index);
-      if (end_index == std::string::npos) {
-        end_index = s.length();
-      }
-      int color_index = std::stoi(s.substr(start_index,
-                                           end_index - start_index));
-      landscapes_[i].push_back(Landscape(color_and_value[color_index].first,
-                                         color_and_value[color_index].second));
-      index++;
-      end_index++;
-      start_index = end_index;
+    for (int j = 0; j < width; ++j) {
+      int color_index;
+      in >> color_index;
+      cells_[i][j].landscape = Landscape(color_and_value[color_index].first,
+                                         color_and_value[color_index].second);
     }
   }
 
