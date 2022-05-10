@@ -14,8 +14,8 @@ class EventsController : public QWidget {
 
  public:
   enum class Stage {
-    preparation,
-    active,
+    kPreparation,
+    kActive,
   };
 
   explicit EventsController(QWidget* parent = nullptr);
@@ -34,13 +34,14 @@ class EventsController : public QWidget {
   void ShowPauseMenu();
 
  private:
+  static constexpr int kTimerInterval{50};
+
   void ConnectUI();
 
-  static constexpr int kTimerInterval{50};
   std::shared_ptr<World> world_;
   std::unique_ptr<GameView> view_;
   std::unique_ptr<QBasicTimer> timer_;
   std::unique_ptr<GameController> game_controller_;
 
-  Stage game_stage = Stage::preparation;
+  Stage game_stage = Stage::kPreparation;
 };

@@ -46,7 +46,7 @@ void MainController::PauseGame() {
 }
 
 void MainController::ResumeGame() {
-  if (events_controller_->GetGameStage() == EventsController::Stage::active) {
+  if (events_controller_->GetGameStage() == EventsController::Stage::kActive) {
     events_controller_->StartTimer();
   }
   menu_controller_->HidePauseMenu();

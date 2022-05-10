@@ -47,7 +47,7 @@ void EventsController::HideGame() {
 
 void EventsController::Start() {
   view_->HideReadyButton();
-  game_stage = Stage::active;
+  game_stage = Stage::kActive;
   StartTimer();
 }
 
