@@ -1,3 +1,4 @@
+#include <random>
 #include <utility>
 
 #include "world.h"
@@ -89,7 +90,7 @@ void World::UpdateDistances() {
                       decltype(cmp)>
       latest(cmp);
 
-  for (auto& soldier : soldiers_) {
+  for (auto& soldier: soldiers_) {
     int x = soldier->GetPosition().x();
     int y = soldier->GetPosition().y();
     if (!soldier->IsDefender()) {
@@ -114,7 +115,7 @@ void World::UpdateDistances() {
     int x = latest.top().first;
     int y = latest.top().second;
     int current_distance = cells_[x][y].distance
-        + cells_[x][y].landscape.speed_characteristic;
+        + cells_[x][y].landscape.move_lag;
 
     // left neighbor
     push_if(x - 1, y, current_distance, (x != 0));
@@ -133,32 +134,110 @@ void World::UpdateDistances() {
 void World::MoveSoldiers() {
   UpdateDistances();
 
-  auto move_if = [&](int soldier_pos, int& current_dist,
-                     int to_x, int to_y, int condition = true) {
-    if (!condition) {
-      return;
-    }
-    if (current_dist > cells_[to_x][to_y].distance) {
-      current_dist = cells_[to_x][to_y].distance;
-      soldiers_[soldier_pos]->SetPosition(QPoint(to_x, to_y));
+  auto Lag = [&](int x, int y) {
+    return cells_[x][y].landscape.move_lag;
+  };
+
+  auto Distance = [&](int x, int y) {
+    return cells_[x][y].distance;
+  };
+
+  auto MoveIf = [&](int soldier_index, int& current_dist,
+                    int to_x, int to_y, int lag = 0) {
+    if (current_dist > Distance(to_x, to_y) + lag) {
+      current_dist = Distance(to_x, to_y) + lag;
+      soldiers_[soldier_index]->SetPosition(QPoint(to_x, to_y));
+      soldiers_[soldier_index]->SetTimeLag(Lag(to_x, to_y) + lag);
     }
   };
 
-  for (int i = 0; i < soldiers_.size(); ++i) {
-    if (soldiers_[i]->IsDefender()) {
-      continue;
+  auto IssueCommand = [&](int soldier_index,
+                          int from_x, int from_y,
+                          int& current_dist, int command_index) {
+    assert(command_index >= 0 && command_index <= 7);
+    switch (command_index) {
+      case 0: {
+        // left neighbor
+        if (from_x == 0) return;
+
+        return MoveIf(soldier_index, current_dist, from_x - 1, from_y);
+      }
+      case 1: {
+        // right neighbor
+        if (from_x == size_.width() - 1) return;
+
+        return MoveIf(soldier_index, current_dist, from_x + 1, from_y);
+      }
+      case 2: {
+        // upper neighbor
+        if (from_y == 0) return;
+
+        return MoveIf(soldier_index, current_dist, from_x, from_y - 1);
+      }
+      case 3: {
+        // lower neighbor
+        if (from_y == size_.height() - 1) return;
+
+        return MoveIf(soldier_index, current_dist, from_x, from_y + 1);
+      }
+      case 4: {
+        // left lower neighbor
+        if (from_x == 0 || from_y == size_.height() - 1) return;
+
+        int lag = std::min(Lag(from_x - 1, from_y),
+                           Lag(from_x, from_y + 1));
+        return MoveIf(soldier_index, current_dist,
+                      from_x - 1, from_y + 1, lag);
+      }
+      case 5: {
+        // left upper neighbor
+        if (from_x == 0 || from_y == 0) return;
+
+        int lag = std::min(Lag(from_x - 1, from_y),
+                           Lag(from_x, from_y - 1));
+        return MoveIf(soldier_index, current_dist,
+                      from_x - 1, from_y - 1, lag);
+      }
+      case 6: {
+        // right upper neighbor
+        if (from_x == size_.width() - 1 || from_y == 0) return;
+
+        int lag = std::min(Lag(from_x + 1, from_y),
+                           Lag(from_x, from_y - 1));
+        return MoveIf(soldier_index, current_dist,
+                      from_x + 1, from_y - 1, lag);
+      }
+      case 7: {
+        // right lower neighbor
+        if (from_x == size_.width() - 1
+            || from_y == size_.height() - 1) return;
+
+        int lag = std::min(Lag(from_x + 1, from_y),
+                           Lag(from_x, from_y + 1));
+        return MoveIf(soldier_index, current_dist,
+                      from_x + 1, from_y + 1, lag);
+      }
     }
+  };
+
+  std::vector<int> commands({4, 5, 6, 7, 0, 1, 2, 3});
+  // // TODO(AZYAVCHIKOV) - maybe not best solution
+  // std::shuffle(commands.begin(), commands.end(),
+  //              std::mt19937(std::random_device()()));
+
+  for (int i = 0; i < soldiers_.size(); ++i) {
+    if (soldiers_[i]->IsDefender()) continue;
+    soldiers_[i]->MakeTick();
+    if (soldiers_[i]->GetTimeLag() > 0) continue;
     int x = soldiers_[i]->GetPosition().x();
     int y = soldiers_[i]->GetPosition().y();
     int distance = cells_[x][y].distance;
-    // left neighbor
-    move_if(i, distance, x - 1, y, x != 0);
-    // right neighbor
-    move_if(i, distance, x + 1, y, x != size_.width() - 1);
-    // upper neighbor
-    move_if(i, distance, x, y - 1, y != 0);
-    // lower neighbor
-    move_if(i, distance, x, y + 1, y != size_.height() - 1);
+    if (distance == 0) continue;
+    // std::shuffle(commands.begin() + 4, commands.end(),
+    //              std::mt19937(std::random_device()()));
+    for (int j = 0; j < commands.size(); ++j) {
+      IssueCommand(i, x, y, distance, commands[j]);
+    }
   }
 }
 
@@ -180,7 +259,6 @@ void World::LoadMap(const QString& path) {
     color_and_value.emplace_back(color, value);
   }
   in.readLine();
-
 
   int length, width;
   in >> length >> width;
@@ -224,5 +302,5 @@ QPixmap World::DrawWorld() const {
 
 World::Landscape::Landscape(const QColor& q_color, int speed) {
   color = q_color;
-  speed_characteristic = speed;
+  move_lag = speed;
 }

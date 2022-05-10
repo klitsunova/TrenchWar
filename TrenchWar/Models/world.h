@@ -50,7 +50,7 @@ class World {
   struct Landscape {
     Landscape(const QColor& q_color, int speed);
     QColor color = Qt::white;
-    int speed_characteristic{0};
+    int move_lag{0};
   };
 
   struct Cell {
