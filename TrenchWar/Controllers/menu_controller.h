@@ -9,6 +9,8 @@
 #include "Views/Menu/pause_menu_view.h"
 #include "Views/Menu/settings_menu_view.h"
 
+#include "Models/Tools/settings.h"
+
 class MenuController : public QWidget {
   Q_OBJECT
 
@@ -33,6 +35,8 @@ class MenuController : public QWidget {
   void ResumeGame();
   void BackToMenu();
   void Exit();
+  void MusicVolumeChanged();
+  void FullScreenValueChanged();
 
  private:
   void ConnectUI();
@@ -43,8 +47,11 @@ class MenuController : public QWidget {
   void ConnectExitWindowUI();
   void ShowSettingsMenu();
   void SaveChanges();
+  void CancelChanges();
 
   void HideSettingsMenu();
+
+  void SetFullScreen(QWidget* widget);
 
   bool is_game_started_ = false;
   MenuView* menu_;

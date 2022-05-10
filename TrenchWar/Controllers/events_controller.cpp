@@ -29,3 +29,7 @@ void EventsController::ConnectUI() {
 void EventsController::HideGame() {
   game_controller_->hide();
 }
+
+void EventsController::SetFullScreen(bool is_fullscreen) {
+  game_controller_->SetFullScreen(is_fullscreen);
+}

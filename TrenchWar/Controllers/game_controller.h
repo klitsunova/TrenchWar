@@ -2,6 +2,7 @@
 
 #include <QBasicTimer>
 #include <QCloseEvent>
+#include <QStyle>
 #include <QWidget>
 
 #include <memory>
@@ -25,11 +26,14 @@ class GameController : public QWidget {
 
   void paintEvent(QPaintEvent*) override;
   void timerEvent(QTimerEvent*) override;
+  void SetStyle();
 
   void StartTimer();
   void PauseTimer();
 
   void closeEvent(QCloseEvent* event) override;
+
+  void SetFullScreen(bool is_fullscreen);
 
  signals:
   void Exit();
