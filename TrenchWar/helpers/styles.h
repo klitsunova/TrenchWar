@@ -34,4 +34,11 @@ const QString kExitButton =
 const QString kWidget =
     "QWidget {"
     "background-color: #BFB790;}";
+
+const QString kStoreBox =
+    "QLabel {"
+    "border: 2px solid green;"
+    "border-radius: 4px;"
+    "padding: 2px;"
+    "background-color: #BFB790;}";
 }  // namespace styles
