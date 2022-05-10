@@ -25,6 +25,9 @@ class GameView : public QWidget {
   void UpdateMap();
   void HideReadyButton();
 
+  void SetFullScreen(bool is_fullscreen);
+  void SetStyle();
+
  signals:
   void StartGame();
   void Close();

@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <QBasicTimer>
 #include <QKeyEvent>
 #include <QShortcut>
 #include <QWidget>
@@ -23,6 +24,7 @@ class EventsController : public QWidget {
 
   void Start();
   void HideGame();
+  void SetFullScreen(bool is_fullscreen);
 
   void StartTimer();
   void PauseTimer();

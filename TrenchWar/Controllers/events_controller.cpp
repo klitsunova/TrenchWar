@@ -54,3 +54,7 @@ void EventsController::Start() {
 EventsController::Stage EventsController::GetGameStage() const {
   return game_stage;
 }
+
+void EventsController::SetFullScreen(bool is_fullscreen) {
+  view_->SetFullScreen(is_fullscreen);
+}

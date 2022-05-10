@@ -1,19 +1,14 @@
 #pragma once
 
-#include <QBasicTimer>
-#include <QCloseEvent>
-#include <QWidget>
-
 #include <memory>
 #include <vector>
 
+#include <QWidget>
+
 #include "Models/GameObjects/soldier.h"
-#include "Models/GameObjects/terrain_object.h"
-#include "Models/Tools/pixmap_loader.h"
 #include "Models/weapon.h"
 #include "Models/world.h"
-#include "Views/Game/map_view.h"
-#include "helpers/sizes.h"
+
 
 class GameController : public QWidget {
   Q_OBJECT
@@ -25,6 +20,9 @@ class GameController : public QWidget {
   ~GameController() override = default;
 
   void SetWorldObjects();
+
+ signals:
+  void Exit();
 
  private:
   void InitializationWeapon();

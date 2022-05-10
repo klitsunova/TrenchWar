@@ -2,7 +2,8 @@
 
 MainController::MainController(QWidget* parent)
     : QWidget(parent),
-      menu_controller_(new MenuController(this)) {
+      menu_controller_(new MenuController(this)),
+      settings_(Settings::Instance()) {
   ConnectUI();
 }
 
@@ -23,18 +24,28 @@ void MainController::ConnectUI() {
           &MenuController::Exit,
           this,
           &MainController::Exit);
+  connect(menu_controller_,
+          &MenuController::MusicVolumeChanged,
+          this,
+          &MainController::ChangeMusic);
+  connect(menu_controller_,
+          &MenuController::FullScreenValueChanged,
+          this,
+          &MainController::ChangeScreenValue);
 }
 
 void MainController::StartGame() {
   menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
   events_controller_ = new EventsController(this);
+  events_controller_->SetFullScreen(Settings::Instance()->IsFullScreen());
   ConnectEventsControllerUI();
 }
 
 void MainController::ReturnToMenu() {
   events_controller_->HideGame();
   delete events_controller_;
+  events_controller_ = nullptr;
   menu_controller_->HidePauseMenu();
   menu_controller_->SetGameFinished();
   menu_controller_->ShowMenu();
@@ -61,4 +72,14 @@ void MainController::ConnectEventsControllerUI() {
 
 void MainController::Exit() {
   QApplication::exit(0);
+}
+
+
+// TODO(Zolokinos)
+void MainController::ChangeMusic() {}
+
+void MainController::ChangeScreenValue() {
+  if (events_controller_ != nullptr) {
+    events_controller_->SetFullScreen(settings_->IsFullScreen());
+  }
 }
