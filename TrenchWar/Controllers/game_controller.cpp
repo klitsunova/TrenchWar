@@ -2,8 +2,7 @@
 
 #include "game_controller.h"
 
-GameController::GameController(QWidget* parent) :
-    settings_(Settings::Instance()) {
+GameController::GameController(QWidget* parent) {
   setParent(parent);
   world_ = std::make_shared<World>(":././Resources/Maps/map1.txt");
   view_ = std::make_unique<GameView>(world_);
@@ -69,7 +68,7 @@ void GameController::closeEvent(QCloseEvent* event) {
   Exit();
 }
 
-void GameController::SetScreen(bool is_fullscreen) {
+void GameController::SetFullScreen(bool is_fullscreen) {
   if (is_fullscreen) {
     showFullScreen();
   } else {

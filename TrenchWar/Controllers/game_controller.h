@@ -11,7 +11,6 @@
 #include "Models/GameObjects/soldier.h"
 #include "Models/GameObjects/terrain_object.h"
 #include "Models/Tools/pixmap_loader.h"
-#include "Models/Tools/settings.h"
 #include "Models/weapon.h"
 #include "Models/world.h"
 #include "Views/game_view.h"
@@ -34,7 +33,7 @@ class GameController : public QWidget {
 
   void closeEvent(QCloseEvent* event) override;
 
-  void SetScreen(bool is_fullscreen);
+  void SetFullScreen(bool is_fullscreen);
 
  signals:
   void Exit();
@@ -49,5 +48,4 @@ class GameController : public QWidget {
   void InitializationWeapon();
 
   std::vector<Weapon> weapons_;
-  Settings* settings_;
 };

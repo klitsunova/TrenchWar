@@ -31,5 +31,5 @@ void EventsController::HideGame() {
 }
 
 void EventsController::SetFullScreen(bool is_fullscreen) {
-  game_controller_->SetScreen(is_fullscreen);
+  game_controller_->SetFullScreen(is_fullscreen);
 }
