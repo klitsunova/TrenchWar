@@ -13,7 +13,7 @@ class EventsController : public QWidget {
   Q_OBJECT
 
  public:
-  enum stage {
+  enum class Stage {
     preparation,
     active,
   };
@@ -28,7 +28,7 @@ class EventsController : public QWidget {
   void PauseTimer();
   void timerEvent(QTimerEvent*) override;
 
-  stage GetGameStage() const;
+  Stage GetGameStage() const;
 
  signals:
   void ShowPauseMenu();
@@ -42,5 +42,5 @@ class EventsController : public QWidget {
   std::unique_ptr<QBasicTimer> timer_;
   std::unique_ptr<GameController> game_controller_;
 
-  stage game_stage = preparation;
+  Stage game_stage = Stage::preparation;
 };

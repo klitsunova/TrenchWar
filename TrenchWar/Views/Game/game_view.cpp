@@ -1,4 +1,5 @@
 #include "game_view.h"
+
 #include <QLabel>
 #include <QPainter>
 
