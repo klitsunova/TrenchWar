@@ -3,13 +3,13 @@
 Soldier::Soldier()
     : GameObject() {
   picture_ = PixmapLoader::GetSoldier();
-  defender_type_ = false;
+  type_ = Type::attacker;
 }
 
-Soldier::Soldier(const QPoint& point, bool type)
+Soldier::Soldier(const QPoint& point, Type type)
     : GameObject(point) {
   picture_ = PixmapLoader::GetSoldier();
-  defender_type_ = type;
+  type_ = type;
 }
 
 Soldier::Health Soldier::GetHitPoints() const {
@@ -30,8 +30,8 @@ int Soldier::GetId() const {
   return id_;
 }
 
-bool Soldier::IsDefender() const {
-  return defender_type_;
+Soldier::Type Soldier::GetType() const {
+  return type_;
 }
 
 int Soldier::GetVisibilityRange() const {

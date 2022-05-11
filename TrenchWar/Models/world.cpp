@@ -23,7 +23,7 @@ void World::AddSoldier() {
   game_objects_.push_back(new_object);
 }
 
-void World::AddSoldier(const QPoint& position, bool type) {
+void World::AddSoldier(const QPoint& position, Soldier::Type type) {
   assert(position.x() >= 0 && position.x() < size_.width());
   assert(position.y() >= 0 && position.x() < size_.height());
   auto new_object = std::make_shared<Soldier>(position, type);
@@ -90,10 +90,10 @@ void World::UpdateDistances() {
                       decltype(cmp)>
       latest(cmp);
 
-  for (auto& soldier: soldiers_) {
+  for (auto& soldier : soldiers_) {
     int x = soldier->GetPosition().x();
     int y = soldier->GetPosition().y();
-    if (!soldier->IsDefender()) {
+    if (soldier->GetType() == Soldier::Type::attacker) {
       continue;
     }
     cells_[x][y].distance = 0;
@@ -226,7 +226,7 @@ void World::MoveSoldiers() {
   //              std::mt19937(std::random_device()()));
 
   for (int i = 0; i < soldiers_.size(); ++i) {
-    if (soldiers_[i]->IsDefender()) continue;
+    if (soldiers_[i]->GetType() == Soldier::Type::defender) continue;
     soldiers_[i]->MakeTick();
     if (soldiers_[i]->GetTimeLag() > 0) continue;
     int x = soldiers_[i]->GetPosition().x();

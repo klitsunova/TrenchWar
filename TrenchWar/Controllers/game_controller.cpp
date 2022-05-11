@@ -4,16 +4,16 @@
 
 GameController::GameController(QWidget* parent) {
   setParent(parent);
-  world_ = std::make_shared<World>(":././Resources/Maps/map2.txt");
+  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
   view_ = std::make_unique<GameView>(world_);
   timer_ = std::make_unique<QBasicTimer>();
   // temporary code (Azyavchikov)
   for (int i = 0; i < 500; ++i) {
     world_->AddSoldier();
   }
-  world_->AddSoldier(QPoint(200, 200), true);
-  world_->AddSoldier(QPoint(400, 400), true);
-  world_->AddSoldier(QPoint(600, 600), true);
+  world_->AddSoldier(QPoint(200, 200), Soldier::Type::defender);
+  world_->AddSoldier(QPoint(400, 400), Soldier::Type::defender);
+  world_->AddSoldier(QPoint(600, 600), Soldier::Type::defender);
   world_->AddTerrainObject();
   StartTimer();
   InitializationWeapon();

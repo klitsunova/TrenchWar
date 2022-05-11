@@ -13,8 +13,10 @@ class Soldier : public GameObject {
   using Health = int;
 
  public:
+  enum class Type{defender, attacker};
+
   Soldier();
-  explicit Soldier(const QPoint&, bool);
+  explicit Soldier(const QPoint&, Type);
 
   ~Soldier() override = default;
 
@@ -22,7 +24,7 @@ class Soldier : public GameObject {
   void MoveSoldier(QSize);
 
   int GetId() const;
-  bool IsDefender() const;
+  Type GetType() const;
   int GetVisibilityRange() const;
 
   void AddWeapon(const Weapon& weapon);
@@ -35,9 +37,10 @@ class Soldier : public GameObject {
   void TakeDamage(int damage);
 
  private:
+
   std::vector<Weapon> weapons_;
   int id_;
   int visibility_range_;
   Health hit_points_ = 100;
-  bool defender_type_;
+  Type type_;
 };
