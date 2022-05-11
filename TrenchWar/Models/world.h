@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QPainter>
 
+#include <algorithm>
 #include <functional>
 #include <memory>
 #include <queue>

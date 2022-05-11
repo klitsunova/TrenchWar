@@ -37,7 +37,6 @@ class Soldier : public GameObject {
   void TakeDamage(int damage);
 
  private:
-
   std::vector<Weapon> weapons_;
   int id_;
   int visibility_range_;
