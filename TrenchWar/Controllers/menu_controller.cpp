@@ -59,7 +59,7 @@ void MenuController::ConnectSettingsUI() {
   connect(settings_menu_,
           &SettingsMenuView::Cancel,
           this,
-          &MenuController::HideSettingsMenu);
+          &MenuController::CancelChanges);
 }
 
 void MenuController::ConnectExitWindowUI() {
@@ -79,7 +79,7 @@ void MenuController::ShowMenu() {
       Qt::AlignCenter,
       window_sizes::kMenu,
       QApplication::primaryScreen()->availableGeometry()));
-  menu_->show();
+  SetFullScreen(menu_);
 }
 
 void MenuController::HideMenu() {
@@ -114,7 +114,7 @@ void MenuController::ShowSettingsMenu() {
       Qt::AlignCenter,
       window_sizes::kSettingsMenu,
       QApplication::primaryScreen()->availableGeometry()));
-  settings_menu_->show();
+  SetFullScreen(settings_menu_);
 }
 
 void MenuController::HideSettingsMenu() {
@@ -148,6 +148,29 @@ void MenuController::HideExitWindow() {
 }
 
 void MenuController::SaveChanges() {
-  // TODO(klitsunova): Save changes in Models/Tools/settings.h
+  Settings* instance = Settings::Instance();
+
+  int volume_sound = settings_menu_->GetVolume();
+  instance->SetMusicVolume(volume_sound);
+  emit MusicVolumeChanged();
+
+  bool is_fullscreen = settings_menu_->IsFullScreen();
+  instance->SetFullScreenValue(is_fullscreen);
+  emit FullScreenValueChanged();
+
   HideSettingsMenu();
+}
+
+void MenuController::CancelChanges() {
+  settings_menu_->ReturnToDefault();
+
+  HideSettingsMenu();
+}
+
+void MenuController::SetFullScreen(QWidget* widget) {
+  if (Settings::Instance()->IsFullScreen()) {
+    widget->showFullScreen();
+  } else {
+    widget->showNormal();
+  }
 }

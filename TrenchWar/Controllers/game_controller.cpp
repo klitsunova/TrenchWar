@@ -2,7 +2,9 @@
 
 #include <memory>
 
-GameController::GameController(QWidget* parent) {
+GameController::GameController(
+    QWidget* parent,
+    const std::shared_ptr<World>& world) {
   setParent(parent);
   world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
   view_ = std::make_unique<GameView>(world_);
@@ -51,19 +53,10 @@ void GameController::InitializationWeapon() {
                         kKnife_hit_chance, -kKnife_count_ammo);
 }
 
-void GameController::StartTimer() {
-  if (!timer_->isActive()) {
-    timer_->start(kTimerInterval, this);
+void GameController::SetWorldObjects() {
+  // temporary code
+  for (int i = 0; i < 1000; ++i) {
+    world_->AddSoldier();
   }
-}
-
-void GameController::PauseTimer() {
-  if (timer_->isActive()) {
-    timer_->stop();
-  }
-}
-
-void GameController::closeEvent(QCloseEvent* event) {
-  event->ignore();
-  Exit();
+  world_->AddTerrainObject();
 }

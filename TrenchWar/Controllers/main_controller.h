@@ -19,6 +19,8 @@ class MainController : public QWidget {
   void ResumeGame();
   void ReturnToMenu();
   void Exit();
+  void ChangeMusic();
+  void ChangeScreenValue();
 
  private:
   void ConnectUI();
