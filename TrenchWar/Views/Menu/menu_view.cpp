@@ -21,7 +21,7 @@ void MenuView::SetStyles() {
   // setMinimumSize(window_sizes::kMenu);
   setBaseSize(window_sizes::kMenu);
   resize(size());
-  for (auto& widget: children()) {
+  for (auto& widget : children()) {
     auto* button_ptr = qobject_cast<QPushButton*>(widget);
     if (button_ptr != nullptr) {
       button_ptr->setFont(fonts::kMenuButton);

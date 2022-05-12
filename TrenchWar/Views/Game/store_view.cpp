@@ -34,7 +34,7 @@ void StoreView::AddItems() {
 }
 
 void StoreView::SetStyles() {
-  for (const auto& item: items_) {
+  for (const auto& item : items_) {
     item->setStyleSheet(styles::kStoreBox);
   }
   ready_button_->setStyleSheet(styles::kPushButton);
