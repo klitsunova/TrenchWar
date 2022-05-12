@@ -25,13 +25,9 @@ class GameController : public QWidget {
   void Exit();
 
  private:
-  static constexpr int kTimerInterval{10};
-
-  std::shared_ptr<World> world_;
-  std::unique_ptr<GameView> view_;
-  std::unique_ptr<QBasicTimer> timer_;
 
   void InitializationWeapon();
 
   std::vector<Weapon> weapons_;
+  std::shared_ptr<World> world_;
 };

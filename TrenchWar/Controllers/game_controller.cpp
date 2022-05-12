@@ -6,29 +6,9 @@ GameController::GameController(
     QWidget* parent,
     const std::shared_ptr<World>& world) {
   setParent(parent);
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
-  view_ = std::make_unique<GameView>(world_);
-  timer_ = std::make_unique<QBasicTimer>();
-  // temporary code (Azyavchikov)
-  for (int i = 0; i < 500; ++i) {
-    world_->AddSoldier();
-  }
-  world_->AddSoldier(QPoint(200, 200), Soldier::Type::defender);
-  world_->AddSoldier(QPoint(400, 400), Soldier::Type::defender);
-  world_->AddSoldier(QPoint(600, 600), Soldier::Type::defender);
-  world_->AddTerrainObject();
-  StartTimer();
+  world_ = world;
+  SetWorldObjects();
   InitializationWeapon();
-}
-
-void GameController::paintEvent(QPaintEvent*) {
-  QPainter qp(this);
-  view_->Update(&qp, world_->GetGameObjects());
-}
-
-void GameController::timerEvent(QTimerEvent*) {
-  world_->MoveSoldiers();
-  update();
 }
 
 void GameController::InitializationWeapon() {
@@ -55,8 +35,11 @@ void GameController::InitializationWeapon() {
 
 void GameController::SetWorldObjects() {
   // temporary code
-  for (int i = 0; i < 1000; ++i) {
+  for (int i = 0; i < 500; ++i) {
     world_->AddSoldier();
   }
+  world_->AddSoldier(QPoint(200, 200), Soldier::Type::defender);
+  world_->AddSoldier(QPoint(400, 400), Soldier::Type::defender);
+  world_->AddSoldier(QPoint(600, 600), Soldier::Type::defender);
   world_->AddTerrainObject();
 }
