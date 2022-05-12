@@ -6,6 +6,7 @@
 #include <QPoint>
 #include <QPointer>
 
+#include <algorithm>
 #include <memory>
 #include <utility>
 
@@ -33,6 +34,10 @@ class GameObject {
   QSize GetSize() const;
   void SetSize(const QSize&);
 
+  int GetTimeLag() const;
+  void SetTimeLag(int lag = 0);
+  void MakeTick();
+
  protected:
   static constexpr int kStep{1};
   static constexpr QSize kStandardSize{QSize(30, 30)};
@@ -40,4 +45,5 @@ class GameObject {
   QSize size_{kStandardSize};
   QPoint position_;
   std::shared_ptr<QPixmap> picture_;
+  int time_lag_{0};
 };

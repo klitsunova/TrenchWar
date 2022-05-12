@@ -1,5 +1,6 @@
 #include "map_view.h"
 
+#include <iostream>
 #include <vector>
 
 #include <QPainter>
@@ -12,7 +13,8 @@
 MapView::MapView(QWidget* parent,
                  const std::shared_ptr<World>& world) {
   setParent(parent);
-  setMinimumSize(window_sizes::kWorld);
+  // TODO(AZYAVCHIKOV): maybe not best solution
+  // setMinimumSize(window_sizes::kWorld);
   world_ = world;
 }
 
