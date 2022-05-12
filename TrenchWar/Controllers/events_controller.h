@@ -36,7 +36,7 @@ class EventsController : public QWidget {
   void ShowPauseMenu();
 
  private:
-  static constexpr int kTimerInterval{50};
+  static constexpr int kTimerInterval{10};
 
   void ConnectUI();
 
