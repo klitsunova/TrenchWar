@@ -31,10 +31,19 @@ class GameController : public QWidget {
 
   void closeEvent(QCloseEvent* event) override;
 
+  void mousePressEvent(QMouseEvent *event) override;
+  void mouseMoveEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent* event) override;
+
+
  signals:
   void Exit();
 
  private:
+  void TrenchUpdate();
+
+  std::pair<QPoint, QPoint> start_and_end_trench_points_;
+  bool is_trench_fixed_;
   static constexpr int kTimerInterval{50};
 
   std::shared_ptr<World> world_;

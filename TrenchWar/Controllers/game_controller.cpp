@@ -1,5 +1,6 @@
 #include "game_controller.h"
 
+#include <iostream>
 #include <memory>
 
 GameController::GameController(QWidget* parent) {
@@ -65,4 +66,24 @@ void GameController::PauseTimer() {
 void GameController::closeEvent(QCloseEvent* event) {
   event->ignore();
   Exit();
+}
+
+void GameController::mouseMoveEvent(QMouseEvent* event) {
+  start_and_end_trench_points_.second = event->pos();
+  TrenchUpdate();
+}
+
+void GameController::mousePressEvent(QMouseEvent* event) {
+  start_and_end_trench_points_.first = event->pos();
+}
+
+void GameController::mouseReleaseEvent(QMouseEvent* event) {
+  start_and_end_trench_points_.second = event->pos();
+}
+
+void GameController::TrenchUpdate() {
+  if (start_and_end_trench_points_.first == start_and_end_trench_points_.second) {
+    return;
+  }
+
 }
