@@ -13,7 +13,7 @@
 MapView::MapView(QWidget* parent,
                  const std::shared_ptr<World>& world) {
   setParent(parent);
-  // TODO (AZYAVCHIKOV): maybe not best solution
+  // TODO(AZYAVCHIKOV): maybe not best solution
   // setMinimumSize(window_sizes::kWorld);
   world_ = world;
 }
@@ -36,7 +36,7 @@ void MapView::paintEvent(QPaintEvent*) {
   painter.drawPixmap(QRect(0, 0,
                            window_width, window_height),
                      world_->GetPixmap());
-  for (const auto& object: objects) {
+  for (const auto& object : objects) {
     int object_width = object->GetSize().width();
     int object_height = object->GetSize().height();
 
