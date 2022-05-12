@@ -38,8 +38,8 @@ void GameController::SetWorldObjects() {
   for (int i = 0; i < 500; ++i) {
     world_->AddSoldier();
   }
-  world_->AddSoldier(QPoint(200, 200), Soldier::Type::defender);
-  world_->AddSoldier(QPoint(400, 400), Soldier::Type::defender);
-  world_->AddSoldier(QPoint(600, 600), Soldier::Type::defender);
+  world_->AddSoldier(QPoint(200, 200), Soldier::Type::kDefender);
+  world_->AddSoldier(QPoint(400, 400), Soldier::Type::kDefender);
+  world_->AddSoldier(QPoint(600, 600), Soldier::Type::kDefender);
   world_->AddTerrainObject();
 }

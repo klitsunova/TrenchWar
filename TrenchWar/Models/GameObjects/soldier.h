@@ -13,7 +13,8 @@ class Soldier : public GameObject {
   using Health = int;
 
  public:
-  enum class Type{defender, attacker};
+  enum class Type { kDefender,
+                    kAttacker };
 
   Soldier();
   explicit Soldier(const QPoint&, Type);

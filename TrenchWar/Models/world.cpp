@@ -93,7 +93,7 @@ void World::UpdateDistances() {
   for (auto& soldier : soldiers_) {
     int x = soldier->GetPosition().x();
     int y = soldier->GetPosition().y();
-    if (soldier->GetType() == Soldier::Type::attacker) {
+    if (soldier->GetType() == Soldier::Type::kAttacker) {
       continue;
     }
     cells_[x][y].distance = 0;
@@ -226,7 +226,7 @@ void World::MoveSoldiers() {
   //              std::mt19937(std::random_device()()));
 
   for (int i = 0; i < soldiers_.size(); ++i) {
-    if (soldiers_[i]->GetType() == Soldier::Type::defender) continue;
+    if (soldiers_[i]->GetType() == Soldier::Type::kDefender) continue;
     soldiers_[i]->MakeTick();
     if (soldiers_[i]->GetTimeLag() > 0) continue;
     int x = soldiers_[i]->GetPosition().x();

@@ -3,7 +3,7 @@
 Soldier::Soldier()
     : GameObject() {
   picture_ = PixmapLoader::GetSoldier();
-  type_ = Type::attacker;
+  type_ = Type::kAttacker;
 }
 
 Soldier::Soldier(const QPoint& point, Type type)
