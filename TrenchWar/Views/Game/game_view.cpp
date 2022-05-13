@@ -11,8 +11,8 @@ GameView::GameView(QWidget* parent, const std::shared_ptr<World>& world)
       map_(new MapView(this, world)),
       store_(new StoreView(this)),
       pause_(new QShortcut(Qt::Key_Escape, this)) {
-  layout_->addWidget(map_);
-  layout_->addWidget(store_);
+  layout_->addWidget(map_, 1);
+  layout_->addWidget(store_, 0);
   SetStyle();
   ConnectUI();
 }
