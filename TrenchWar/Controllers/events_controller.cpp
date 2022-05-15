@@ -95,8 +95,10 @@ void EventsController::MapReleaseEvent(QMouseEvent* event) {
   is_mouse_clicked_ = false;
   start_and_end_trench_points_.second = event->pos();
 
-  QPoint start_point = GlobalToCellsCoordinates(start_and_end_trench_points_.first);
-  QPoint end_point = GlobalToCellsCoordinates(start_and_end_trench_points_.second);
+  QPoint start_point =
+      GlobalToCellsCoordinates(start_and_end_trench_points_.first);
+  QPoint end_point =
+      GlobalToCellsCoordinates(start_and_end_trench_points_.second);
 
   if (changed_cells_.empty()) {
     is_trench_fixed_ = false;
