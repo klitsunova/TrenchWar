@@ -32,7 +32,7 @@ class World {
   const Cell& GetCell(const QPoint&) const;
   Cell& GetCell(const QPoint&);
 
-  const QPixmap& GetPixmap() const;
+  const QPixmap& GetPixmap();
 
   void AddSoldier();
   void AddTerrainObject();
@@ -40,6 +40,7 @@ class World {
  private:
   void LoadMap(const QString& path);
 
+  void Update();
 
   struct Landscape {
     Landscape(const QColor& q_color, int speed);
@@ -50,6 +51,7 @@ class World {
   struct Cell {
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
     Landscape landscape = Landscape(Qt::white, 1);
+    bool is_trench;
   };
 
   QSize size_;

@@ -8,6 +8,7 @@ ExitWindow::ExitWindow(
                        cancel_button_(new QPushButton("Cancel", this)) {
   setParent(parent);
   setModal(true);
+  setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
   SetStyles();
   SetLayout();
   ConnectUI();

@@ -8,6 +8,7 @@ PauseMenuView::PauseMenuView(
                        exit_button_(new QPushButton("Exit", this)) {
   setParent(parent);
   setWindowTitle("Pause");
+  setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
   SetStyles();
   SetLayout();
   ConnectUI();

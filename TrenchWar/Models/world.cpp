@@ -1,3 +1,4 @@
+#include <iostream>
 #include <utility>
 
 #include "world.h"
@@ -45,7 +46,7 @@ const QSize& World::GetSize() const {
 const World::Cell& World::GetCell(const QPoint& point) const {
   assert(point.x() >= 0 && point.x() < cells_.size());
   assert(point.y() >= 0 && point.y() < cells_[point.x()].size());
-  return cells_[point.x()][point.y()];
+  return cells_[point.y()][point.x()];
 }
 
 World::Cell& World::GetCell(const QPoint& point) {
@@ -54,7 +55,12 @@ World::Cell& World::GetCell(const QPoint& point) {
   return cells_[point.x()][point.y()];
 }
 
-const QPixmap& World::GetPixmap() const {
+void World::Update() {
+  picture_ = DrawWorld();
+}
+
+const QPixmap& World::GetPixmap() {
+  Update();
   return picture_;
 }
 
@@ -72,6 +78,9 @@ QPixmap World::DrawWorld() const {
       QRect cell_rect(QPoint(x_top, y_top),
                       QPoint(x_bottom, y_bottom));
       QColor color = cells_[j][i].landscape.color;
+      // if (color == Qt::black) {
+      //   std::cout << "(" << j << ", " << i << ") is black (Map)\n";
+      // }
       painter.setBrush(QBrush(color));
       painter.setPen(QPen(QColor(color), 1));
       painter.drawRect(cell_rect);
