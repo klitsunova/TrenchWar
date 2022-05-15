@@ -3,7 +3,6 @@
 #include <QLabel>
 #include <QPainter>
 #include <QStyle>
-#include <iostream>
 #include <utility>
 
 #include "helpers/sizes.h"

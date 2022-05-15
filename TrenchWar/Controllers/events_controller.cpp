@@ -1,5 +1,4 @@
 #include "events_controller.h"
-#include <iostream>
 
 EventsController::EventsController(QWidget* parent) {
   setParent(parent);
