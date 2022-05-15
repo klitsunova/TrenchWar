@@ -54,12 +54,12 @@ const QSize& World::GetSize() const {
 const World::Cell& World::GetCell(const QPoint& point) const {
   assert(point.x() >= 0 && point.x() < cells_.size());
   assert(point.y() >= 0 && point.y() < cells_[point.x()].size());
-  return cells_[point.y()][point.x()];
+  return cells_[point.x()][point.y()];
 }
 
 World::Cell& World::GetCell(const QPoint& point) {
-  assert(point.x() >= 0 && point.y() < cells_.size());
-  assert(point.y() >= 0 && point.x() < cells_[point.y()].size());
+  assert(point.x() >= 0 && point.x() < cells_.size());
+  assert(point.y() >= 0 && point.y() < cells_[point.x()].size());
   return cells_[point.x()][point.y()];
 }
 

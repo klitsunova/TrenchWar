@@ -1,6 +1,5 @@
 #include "game_controller.h"
 
-#include <iostream>
 #include <memory>
 
 GameController::GameController(
