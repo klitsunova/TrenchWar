@@ -20,8 +20,7 @@ class GameView : public QWidget {
       const std::shared_ptr<World>& world = nullptr,
       std::function<void(QMouseEvent*)> mousePress = [](QMouseEvent*){},
       std::function<void(QMouseEvent*)> mouseMove = [](QMouseEvent*){},
-      std::function<void(QMouseEvent*)> mouseRelease = [](QMouseEvent*){}
-      );
+      std::function<void(QMouseEvent*)> mouseRelease = [](QMouseEvent*){});
   ~GameView() = default;
 
   void closeEvent(QCloseEvent* event) override;

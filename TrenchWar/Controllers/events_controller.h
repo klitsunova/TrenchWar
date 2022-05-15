@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <vector>
+#include <utility>
 
 #include <QBasicTimer>
 #include <QKeyEvent>
@@ -54,13 +56,13 @@ class EventsController : public QWidget {
   QColor trench_color_ = Qt::black;
   int a = 0;
   std::pair<QPoint, QPoint> start_and_end_trench_points_ =
-      std::make_pair(QPoint(0,0), QPoint(0, 0));
+      std::make_pair(QPoint(0, 0), QPoint(0, 0));
   bool is_trench_fixed_;
   bool is_mouse_clicked_;
 
   std::vector<std::pair<QPoint, QColor>> changed_cells_;
 
-  static constexpr int kMinimumTrenchLength{3};
+  static constexpr int kMinimumTrenchLength{5};
   static constexpr int kTimerInterval{10};
 
   void ConnectUI();

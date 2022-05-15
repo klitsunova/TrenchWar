@@ -115,18 +115,23 @@ void EventsController::MapReleaseEvent(QMouseEvent* event) {
 }
 
 void EventsController::TrenchUpdate() {
-  QPoint start_point = GlobalToCellsCoordinates(start_and_end_trench_points_.first);
-  QPoint end_point = GlobalToCellsCoordinates(start_and_end_trench_points_.second);
+  QPoint start_point =
+      GlobalToCellsCoordinates(start_and_end_trench_points_.first);
+  QPoint end_point =
+      GlobalToCellsCoordinates(start_and_end_trench_points_.second);
 
   if (!CheckMinimumTrenchLength(start_point, end_point)) {
     return;
   }
 
   QPoint shift = TakeShiftDirection(start_point, end_point);
-  QPoint invert_shift = QPoint(1 - std::abs(shift.x()), 1 - std::abs(shift.y()));
+  QPoint invert_shift =
+      QPoint(1 - std::abs(shift.x()), 1 - std::abs(shift.y()));
 
-  end_point = QPoint(end_point.x() * std::abs(shift.x()) + invert_shift.x() * start_point.x(),
-                     end_point.y() * std::abs(shift.y()) + invert_shift.y() * start_point.y());
+  end_point = QPoint(end_point.x() * std::abs(shift.x()) +
+                         invert_shift.x() * start_point.x(),
+                     end_point.y() * std::abs(shift.y()) +
+                         invert_shift.y() * start_point.y());
   QPoint additional_trench_1 = start_point + invert_shift;
   QPoint additional_trench_2 = start_point - invert_shift;
   while (start_point != end_point + shift) {
@@ -155,7 +160,8 @@ QPoint EventsController::GlobalToCellsCoordinates(const QPoint& point) const {
   return {y, x};
 }
 
-bool EventsController::CheckMinimumTrenchLength(const QPoint& first, const QPoint& second) {
+bool EventsController::CheckMinimumTrenchLength(const QPoint& first,
+                                                const QPoint& second) {
   int delta_x = std::abs(first.x() - second.x());
   int delta_y = std::abs(first.y() - second.y());
 
@@ -170,14 +176,16 @@ bool EventsController::IsCorrectCell(const QPoint& point) const {
   int max_x = world_->GetSize().width();
   int max_y = world_->GetSize().height();
 
-  if (point.x() < 0 || point.y() < 0 || point.x() > max_x - 1 || point.y() > max_y - 1) {
+  if (point.x() < 0 || point.y() < 0 ||
+      point.x() > max_x - 1 || point.y() > max_y - 1) {
     return false;
   }
 
   return true;
 }
 
-QPoint EventsController::TakeShiftDirection(const QPoint& first, const QPoint& second) const {
+QPoint EventsController::TakeShiftDirection(const QPoint& first,
+                                            const QPoint& second) const {
   int delta_x = abs(first.x() - second.x());
   int delta_y = abs(first.y() - second.y());
 
@@ -201,13 +209,13 @@ QPoint EventsController::TakeShiftDirection(const QPoint& first, const QPoint& s
 }
 
 void EventsController::SetSaveCellsState() {
-  for (auto& changed_cell: changed_cells_) {
+  for (auto& changed_cell : changed_cells_) {
     world_->GetCell(changed_cell.first).landscape.color = changed_cell.second;
   }
 }
 
 void EventsController::BuildTrench() {
-  for (auto& changed_cell: changed_cells_) {
+  for (auto& changed_cell : changed_cells_) {
     world_->GetCell(changed_cell.first).is_trench = true;
   }
   changed_cells_.clear();

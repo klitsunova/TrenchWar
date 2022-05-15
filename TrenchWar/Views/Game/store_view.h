@@ -12,6 +12,7 @@
 
 class StoreView : public QWidget {
   Q_OBJECT
+
  public:
   explicit StoreView(QWidget* parent = nullptr);
   ~StoreView() = default;

@@ -1,12 +1,10 @@
 #include "map_view.h"
 
-#include <iostream>
 #include <vector>
 
 #include <QPainter>
 #include <QPixmap>
 #include <QPoint>
-#include <iostream>
 
 #include "Models/GameObjects/game_object.h"
 #include "helpers/sizes.h"

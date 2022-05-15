@@ -55,11 +55,17 @@ void StoreView::ConnectUI() {
           &QPushButton::clicked,
           this,
           &StoreView::Ready);
-  connect(build_trench_, &QPushButton::clicked, this, &StoreView::BuildTrenchButtonPressed);
-  connect(delete_trench_, &QPushButton::clicked, this, &StoreView::DeleteTrenchButtonPressed);
+  connect(build_trench_,
+          &QPushButton::clicked,
+          this,
+          &StoreView::BuildTrenchButtonPressed);
+  connect(delete_trench_,
+          &QPushButton::clicked,
+          this,
+          &StoreView::DeleteTrenchButtonPressed);
 }
 
-void StoreView::ShowTrenchButtons() const{
+void StoreView::ShowTrenchButtons() const {
   build_trench_->show();
   delete_trench_->show();
 }
