@@ -9,7 +9,6 @@
         <file>Resources/Maps/map1.txt</file>
         <file>Resources/Maps/map2.txt</file>
         <file>Resources/Maps/map3.txt</file>
-        <file>Resources/Maps/map4.txt</file>
         <file>Resources/Images/MenuBackground.jpg</file>
         <file>Resources/Images/MenuTitle.png</file>
     </qresource>
