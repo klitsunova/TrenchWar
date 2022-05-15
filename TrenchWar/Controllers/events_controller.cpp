@@ -3,17 +3,12 @@
 
 EventsController::EventsController(QWidget* parent) {
   setParent(parent);
-<<<<<<< HEAD
-  world_ = std::make_shared<World>(":Resources/Maps/map1.txt");
+  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
   view_ = std::make_unique<GameView>(
       this, world_,
       [&](QMouseEvent* event) { MapPressEvent(event); return; },
       [&](QMouseEvent* event) { MapMoveEvent(event); return; },
       [&](QMouseEvent* event) { MapReleaseEvent(event); return; });
-=======
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
-  view_ = std::make_unique<GameView>(this, world_);
->>>>>>> origin/dev
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
   game_controller_->SetWorldObjects();
@@ -22,16 +17,10 @@ EventsController::EventsController(QWidget* parent) {
 }
 
 void EventsController::timerEvent(QTimerEvent*) {
-<<<<<<< HEAD
-  for (const auto& soldier: world_->GetSoldiers()) {
-    soldier->MoveSoldier(world_->GetSize());
-  }
+  world_->MoveSoldiers();
   if (game_stage == Stage::kPreparation) {
     TrenchUpdate();
   }
-=======
-  world_->MoveSoldiers();
->>>>>>> origin/dev
   view_->UpdateMap();
 }
 
@@ -109,8 +98,7 @@ void EventsController::MapReleaseEvent(QMouseEvent* event) {
   QPoint start_point = GlobalToCellsCoordinates(start_and_end_trench_points_.first);
   QPoint end_point = GlobalToCellsCoordinates(start_and_end_trench_points_.second);
 
-  if (!CheckMinimumTrenchLength(start_point, end_point)
-      || (!IsCorrectCell(start_point) && !IsCorrectCell(end_point))) {
+  if (changed_cells_.empty()) {
     is_trench_fixed_ = false;
   } else {
     is_trench_fixed_ = true;
@@ -127,7 +115,6 @@ void EventsController::MapReleaseEvent(QMouseEvent* event) {
 }
 
 void EventsController::TrenchUpdate() {
-  //std::cout << "Draw";
   QPoint start_point = GlobalToCellsCoordinates(start_and_end_trench_points_.first);
   QPoint end_point = GlobalToCellsCoordinates(start_and_end_trench_points_.second);
 

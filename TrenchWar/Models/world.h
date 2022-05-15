@@ -58,8 +58,8 @@ class World {
 
   struct Cell {
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
+    Landscape landscape{Landscape(Qt::white, 0)};
     bool is_trench;
-
     bool used;
     int distance;
   };
