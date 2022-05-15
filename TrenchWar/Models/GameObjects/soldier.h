@@ -6,15 +6,18 @@
 #include <utility>
 #include <vector>
 
-#include "game_object.h"
 #include "Models/weapon.h"
+#include "game_object.h"
 
 class Soldier : public GameObject {
   using Health = int;
 
  public:
+  enum class Type { kDefender,
+                    kAttacker };
+
   Soldier();
-  explicit Soldier(const QPoint&);
+  explicit Soldier(const QPoint&, Type);
 
   ~Soldier() override = default;
 
@@ -22,6 +25,7 @@ class Soldier : public GameObject {
   void MoveSoldier(QSize);
 
   int GetId() const;
+  Type GetType() const;
   int GetVisibilityRange() const;
 
   void AddWeapon(const Weapon& weapon);
@@ -38,4 +42,5 @@ class Soldier : public GameObject {
   int id_;
   int visibility_range_;
   Health hit_points_ = 100;
+  Type type_;
 };

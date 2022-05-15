@@ -3,12 +3,17 @@
 
 EventsController::EventsController(QWidget* parent) {
   setParent(parent);
+<<<<<<< HEAD
   world_ = std::make_shared<World>(":Resources/Maps/map1.txt");
   view_ = std::make_unique<GameView>(
       this, world_,
       [&](QMouseEvent* event) { MapPressEvent(event); return; },
       [&](QMouseEvent* event) { MapMoveEvent(event); return; },
       [&](QMouseEvent* event) { MapReleaseEvent(event); return; });
+=======
+  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
+  view_ = std::make_unique<GameView>(this, world_);
+>>>>>>> origin/dev
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
   game_controller_->SetWorldObjects();
@@ -17,17 +22,22 @@ EventsController::EventsController(QWidget* parent) {
 }
 
 void EventsController::timerEvent(QTimerEvent*) {
+<<<<<<< HEAD
   for (const auto& soldier: world_->GetSoldiers()) {
     soldier->MoveSoldier(world_->GetSize());
   }
   if (game_stage == Stage::kPreparation) {
     TrenchUpdate();
   }
+=======
+  world_->MoveSoldiers();
+>>>>>>> origin/dev
   view_->UpdateMap();
 }
 
 void EventsController::StartTimer() {
   if (!timer_->isActive()) {
+    // TODO(AZYAVCHIKOV) temporary code
     timer_->start(kTimerInterval, this);
   }
 }

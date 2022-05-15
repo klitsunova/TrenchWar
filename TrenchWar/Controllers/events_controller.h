@@ -43,6 +43,7 @@ class EventsController : public QWidget {
   void ShowPauseMenu();
 
  private:
+<<<<<<< HEAD
   void TrenchUpdate();
   void DrawAndSaveTrench(const QPoint& pos);
   QPoint GlobalToCellsCoordinates(const QPoint& point) const;
@@ -62,6 +63,9 @@ class EventsController : public QWidget {
 
   static constexpr int kMinimumTrenchLength{3};
   static constexpr int kTimerInterval{50};
+=======
+  static constexpr int kTimerInterval{10};
+>>>>>>> origin/dev
 
   void ConnectUI();
 

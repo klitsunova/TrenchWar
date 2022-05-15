@@ -1,16 +1,18 @@
 #include "store_view.h"
 
 #include <QLabel>
+#include <QSizePolicy>
 
 #include "helpers/sizes.h"
 #include "helpers/styles.h"
 
-StoreView::StoreView(
-    QWidget* parent) : layout_(new QHBoxLayout(this)),
-                       ready_button_(new QPushButton("Ready", this)),
-                       build_trench_(new QPushButton("Build", this)),
-                       delete_trench_(new QPushButton("Delete", this)){
-  setParent(parent);
+StoreView::StoreView(QWidget* parent)
+    : QWidget(parent),
+      layout_(new QHBoxLayout(this)),
+      ready_button_(new QPushButton("Ready", this)),
+      build_trench_(new QPushButton("Build", this)),
+      delete_trench_(new QPushButton("Delete", this)) {
+  HideTrenchButtons();
   AddItems();
   SetStyles();
   ConnectUI();
@@ -21,22 +23,22 @@ void StoreView::HideReadyButton() {
 }
 
 void StoreView::AddItems() {
-  HideTrenchButtons();
+  layout_->addStretch(1);
   // temporary code
   for (int i = 0; i < 5; ++i) {
-    auto* soldier = new QLabel;
+    auto* soldier = new QLabel(this);
     soldier->setPixmap(
         PixmapLoader::GetSoldier()->scaled(element_sizes::kStoreBox));
     items_.push_back(soldier);
-    layout_->addWidget(soldier);
+    layout_->addWidget(soldier, 0);
   }
-  layout_->addWidget(ready_button_);
-  layout_->addWidget(build_trench_);
-  layout_->addWidget(delete_trench_);
+  layout_->addStretch(1);
+  layout_->addWidget(ready_button_, 0);
+  layout_->addWidget(build_trench_, 0);
+  layout_->addWidget(delete_trench_, 0);
 }
 
 void StoreView::SetStyles() {
-  setFixedSize(element_sizes::kStore);
   for (const auto& item : items_) {
     item->setStyleSheet(styles::kStoreBox);
   }
