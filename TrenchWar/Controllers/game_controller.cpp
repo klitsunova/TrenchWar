@@ -7,7 +7,6 @@ GameController::GameController(
     const std::shared_ptr<World>& world) {
   setParent(parent);
   world_ = world;
-  SetWorldObjects();
   InitializationWeapon();
 }
 
@@ -35,7 +34,7 @@ void GameController::InitializationWeapon() {
 
 void GameController::SetWorldObjects() {
   // temporary code
-  for (int i = 0; i < 500; ++i) {
+  for (int i = 0; i < 1000; ++i) {
     world_->AddSoldier();
   }
   world_->AddSoldier(QPoint(200, 200), Soldier::Type::kDefender);

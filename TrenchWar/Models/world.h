@@ -14,6 +14,7 @@
 #include "GameObjects/soldier.h"
 #include "GameObjects/terrain_object.h"
 #include "Tools/pixmap_loader.h"
+#include "helpers/sizes.h"
 
 class World {
  private:
@@ -24,8 +25,8 @@ class World {
 
   ~World() = default;
 
-  const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
-  std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
+  // const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
+  // std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
 
   const std::vector<std::shared_ptr<GameObject>>& GetGameObjects() const;
   std::vector<std::shared_ptr<GameObject>>& GetGameObjects();
@@ -46,8 +47,6 @@ class World {
   void MoveSoldiers();
 
  private:
-  void LoadMap(const QString& path);
-
   struct Landscape {
     Landscape(const QColor& q_color, int speed);
     QColor color = Qt::white;
@@ -57,17 +56,27 @@ class World {
   struct Cell {
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
     Landscape landscape{Landscape(Qt::white, 0)};
+    std::shared_ptr<Soldier> nearest_defender;
 
     bool used;
-    int distance;
+    int ground_distance;
+    int air_distance;
   };
 
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
-  std::vector<std::shared_ptr<Soldier>> soldiers_;
+  // std::vector<std::shared_ptr<Soldier>> soldiers_;
+  std::vector<std::shared_ptr<Soldier>> defenders_;
+  std::vector<std::shared_ptr<Soldier>> attackers_;
   std::vector<std::shared_ptr<GameObject>> game_objects_;
-  bool is_need_update_distances{true};
+  bool is_need_update_defenders{true};
+  bool is_need_update_attackers{true};
+
+  void LoadMap(const QString& path);
 
   QPixmap DrawWorld() const;
+
+  void UpdateAirDistances();
+  void UpdateGroundDistances();
 };

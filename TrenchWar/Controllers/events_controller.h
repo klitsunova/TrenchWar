@@ -37,6 +37,7 @@ class EventsController : public QWidget {
 
  private:
   static constexpr int kTimerInterval{10};
+  // static constexpr int kTimerInterval{100};
 
   void ConnectUI();
 

@@ -9,6 +9,7 @@ constexpr QSize kPauseMenu(400, 400);
 constexpr QSize kDialogWidget(350, 200);
 // TODO(Zolokinos) Move away
 constexpr QSize kWorld(500, 400);
+constexpr QSize kWorldPicture(2500, 2500);
 }  // namespace window_sizes
 
 namespace element_sizes {

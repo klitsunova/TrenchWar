@@ -33,10 +33,12 @@ void MapView::paintEvent(QPaintEvent*) {
   painter.save();
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
+  painter.setBrush(Qt::yellow);
+  painter.drawRect(0, 0, 5, 5);
   painter.drawPixmap(QRect(0, 0,
                            window_width, window_height),
                      world_->GetPixmap());
-  for (const auto& object : objects) {
+  for (const auto& object: objects) {
     int object_width = object->GetSize().width();
     int object_height = object->GetSize().height();
 
