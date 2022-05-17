@@ -62,14 +62,5 @@ void MapView::paintEvent(QPaintEvent*) {
     DrawObject(painter, object->GetPosition(),
                object->GetSize(), object->GetPixmap());
   }
-
-  // const std::vector<std::shared_ptr<Bullet>>& bullets =
-  //     world_->GetBullets();
-  //
-  // for (int i = 0; i < bullets.size(); ++i) {
-  //   DrawObject(painter, bullets[i]->GetPosition(), 7, 7,
-  //              bullets[i]->GetPixmap());
-  // }
-
   painter.restore();
 }

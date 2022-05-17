@@ -43,7 +43,8 @@ void World::AddTerrainObject() {
 }
 
 void World::AddBullet(const QPoint& from, const QPoint& to, int damage) {
-  std::shared_ptr<Bullet> new_bullet = std::make_shared<Bullet>(from, to, damage);
+  std::shared_ptr<Bullet> new_bullet =
+      std::make_shared<Bullet>(from, to, damage);
   game_objects_.push_back(new_bullet);
   bullets_.push_back(new_bullet);
 }
