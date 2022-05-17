@@ -26,6 +26,26 @@ void MapView::SetScale(int scale) {
   scale_ = scale;
 }
 
+void MapView::DrawObject(QPainter& painter, const QPoint& pos,
+                         const QSize& size, const QPixmap& picture) {
+  painter.save();
+  int window_width = painter.window().width() - 1;
+  int window_height = painter.window().height() - 1;
+  QPoint screen_point;
+  screen_point.setX((window_width * (2 * pos.x() + 1))
+                    / (2 * world_->GetSize().width()));
+  screen_point.setY((window_height * (2 * pos.y() + 1))
+                    / (2 * world_->GetSize().height()));
+
+  QPoint top_point = QPoint(screen_point.x() - size.width() / 2,
+                            screen_point.y() - size.height() / 2);
+  QPoint bottom_point = QPoint(top_point.x() + size.width(),
+                               top_point.y() + size.height());
+  painter.drawPixmap(QRect(top_point, bottom_point),
+                     picture);
+  painter.restore();
+}
+
 void MapView::paintEvent(QPaintEvent*) {
   QPainter painter(this);
   const std::vector<std::shared_ptr<GameObject>>& objects =
@@ -38,35 +58,18 @@ void MapView::paintEvent(QPaintEvent*) {
                            window_width, window_height),
                      world_->GetPixmap());
 
-  auto DrawObject = [&](const QPoint& pos,
-                        int width, int height, const QPixmap& picture) {
-    QPoint screen_point;
-    screen_point.setX((window_width * (2 * pos.x() + 1))
-                      / (2 * world_->GetSize().width()));
-    screen_point.setY((window_height * (2 * pos.y() + 1))
-                      / (2 * world_->GetSize().height()));
-
-    QPoint top_point = QPoint(screen_point.x() - width / 2,
-                              screen_point.y() - height / 2);
-    QPoint bottom_point = QPoint(top_point.x() + width,
-                                 top_point.y() + height);
-    painter.drawPixmap(QRect(top_point, bottom_point),
-                       picture);
-  };
-
-  for (const auto& object : objects) {
-    DrawObject(object->GetPosition(),
-               object->GetSize().width(), object->GetSize().height(),
-               object->GetPixmap());
+  for (const auto& object: objects) {
+    DrawObject(painter, object->GetPosition(),
+               object->GetSize(), object->GetPixmap());
   }
 
-  const std::vector<std::shared_ptr<Bullet>>& bullets =
-      world_->GetBullets();
-
-  for (int i = 0; i < bullets.size(); ++i) {
-    DrawObject(bullets[i]->GetPosition(), 7, 7,
-               bullets[i]->GetPixmap());
-  }
+  // const std::vector<std::shared_ptr<Bullet>>& bullets =
+  //     world_->GetBullets();
+  //
+  // for (int i = 0; i < bullets.size(); ++i) {
+  //   DrawObject(painter, bullets[i]->GetPosition(), 7, 7,
+  //              bullets[i]->GetPixmap());
+  // }
 
   painter.restore();
 }

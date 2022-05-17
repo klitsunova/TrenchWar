@@ -8,10 +8,8 @@ World::World(const QString& path) {
   picture_ = DrawWorld();
   // TODO(AZYAVCHIKOV) temporary code for demonstration
   for (int i = 200; i <= 700; i += 100) {
-    bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                                QPoint(700, i)));
-    bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                                QPoint(i, 700)));
+    AddBullet(QPoint(200, 200), QPoint(700, i));
+    AddBullet(QPoint(200, 200), QPoint(i, 700));
   }
 }
 
@@ -21,14 +19,6 @@ const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
 
 std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() {
   return soldiers_;
-}
-
-void World::AddSoldier() {
-  auto new_object = std::make_shared<Soldier>();
-  new_object->SetRandomPosition(size_);
-  soldiers_.push_back(new_object);
-  attackers_.push_back(new_object);
-  game_objects_.push_back(new_object);
 }
 
 void World::AddSoldier(const QPoint& position, Soldier::Type type) {
@@ -52,20 +42,18 @@ void World::AddTerrainObject() {
   game_objects_.push_back(new_object);
 }
 
+void World::AddBullet(const QPoint& from, const QPoint& to, int damage) {
+  std::shared_ptr<Bullet> new_bullet = std::make_shared<Bullet>(from, to, damage);
+  game_objects_.push_back(new_bullet);
+  bullets_.push_back(new_bullet);
+}
+
 const std::vector<std::shared_ptr<GameObject>>& World::GetGameObjects() const {
   return game_objects_;
 }
 
 std::vector<std::shared_ptr<GameObject>>& World::GetGameObjects() {
   return game_objects_;
-}
-
-const std::vector<std::shared_ptr<Bullet>>& World::GetBullets() const {
-  return bullets_;
-}
-
-std::vector<std::shared_ptr<Bullet>>& World::GetBullets() {
-  return bullets_;
 }
 
 const QSize& World::GetSize() const {
@@ -278,7 +266,7 @@ void World::UpdateAirDistances() {
 
   std::queue<std::pair<int, int>> latest_at_air;
 
-  for (auto& defender : defenders_) {
+  for (auto& defender: defenders_) {
     int x = defender->GetPosition().x();
     int y = defender->GetPosition().y();
     cells_[y][x].used = true;
@@ -334,7 +322,7 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& defender : defenders_) {
+  for (auto& defender: defenders_) {
     int x = defender->GetPosition().x();
     int y = defender->GetPosition().y();
     cells_[y][x].ground_distance = 0;
@@ -396,6 +384,9 @@ void World::MoveBullets() {
     // TODO(AZYAVCHIKOV) make damage
     // DamageArea(bullets_[i].GetPosition.x(), bullets_[i].GetPosition.y());
     if (bullets_[i]->GetToPosition() == bullets_[i]->GetPosition()) {
+      game_objects_.erase(std::find(game_objects_.begin(),
+                                    game_objects_.end(),
+                                    bullets_[i]));
       bullets_.erase(bullets_.begin() + i);
     }
   }

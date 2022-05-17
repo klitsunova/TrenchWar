@@ -1,23 +1,16 @@
 #include "bullet.h"
 
 Bullet::Bullet(const QPoint& from, const QPoint& to, int damage)
-    : from_(from),
+    : GameObject(from),
+      from_(from),
       to_(to),
-      damage_(damage),
-      position_(from) {
+      damage_(damage) {
+  size_ = QSize(7, 7);
   picture_ = PixmapLoader::GetBullet();
 }
 
 const QPoint& Bullet::GetPosition() const {
   return position_;
-}
-
-Equipment::EquipmentType Bullet::GetType() const {
-  return Equipment::EquipmentType::Weapon;
-}
-
-void Bullet::SetPosition(const QPoint& position) {
-  position_ = position;
 }
 
 const QPoint& Bullet::GetFromPosition() const {

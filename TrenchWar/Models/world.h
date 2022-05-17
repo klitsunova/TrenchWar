@@ -13,8 +13,8 @@
 
 #include "GameObjects/soldier.h"
 #include "GameObjects/terrain_object.h"
+#include "Models/GameObjects/bullet.h"
 #include "Tools/pixmap_loader.h"
-#include "bullet.h"
 #include "helpers/sizes.h"
 
 class World {
@@ -32,9 +32,6 @@ class World {
   const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
   std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
 
-  const std::vector<std::shared_ptr<Bullet>>& GetBullets() const;
-  std::vector<std::shared_ptr<Bullet>>& GetBullets();
-
   const QSize& GetSize() const;
 
   const Cell& GetCell(const QPoint&) const;
@@ -42,9 +39,9 @@ class World {
 
   const QPixmap& GetPixmap() const;
 
-  void AddSoldier();
   void AddSoldier(const QPoint&, Soldier::Type);
   void AddTerrainObject();
+  void AddBullet(const QPoint&, const QPoint&, int damage = 1);
 
   void UpdateDistances();
 
