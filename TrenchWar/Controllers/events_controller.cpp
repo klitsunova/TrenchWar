@@ -87,9 +87,9 @@ void EventsController::MapPressEvent(QMouseEvent* event) {
 }
 
 void EventsController::MapMoveEvent(QMouseEvent* event) {
-    if (is_mouse_clicked_ && !is_trench_fixed_) {
-      start_and_end_trench_points_.second = event->pos();
-    }
+  if (is_mouse_clicked_ && !is_trench_fixed_) {
+    start_and_end_trench_points_.second = event->pos();
+  }
 }
 
 void EventsController::MapReleaseEvent(QMouseEvent* event) {
@@ -104,6 +104,7 @@ void EventsController::MapReleaseEvent(QMouseEvent* event) {
   } else {
     is_trench_fixed_ = true;
   }
+
   if (!is_trench_fixed_) {
     SetSaveCellsState();
     view_->UpdateMap();
@@ -134,6 +135,7 @@ void EventsController::TrenchUpdate() {
                          invert_shift.y() * start_point.y());
   QPoint additional_trench_1 = start_point + invert_shift;
   QPoint additional_trench_2 = start_point - invert_shift;
+
   while (start_point != end_point + shift) {
     DrawAndSaveTrench(additional_trench_1);
     DrawAndSaveTrench(additional_trench_2);
@@ -141,17 +143,17 @@ void EventsController::TrenchUpdate() {
     additional_trench_1 += shift;
     additional_trench_2 += shift;
     start_point += shift;
-    view_->UpdateMap();
   }
+  view_->UpdateMap();
 }
 
 void EventsController::DrawAndSaveTrench(const QPoint& pos) {
   if (!IsCorrectCell(pos)) {
     return;
   }
-    changed_cells_.emplace_back(pos,
-                                world_->GetCell(pos).landscape.color);
-    world_->GetCell(pos).landscape.color = trench_color_;
+  changed_cells_.emplace_back(pos,
+                              world_->GetCell(pos).landscape.color);
+  world_->GetCell(pos).landscape.color = trench_color_;
 }
 
 QPoint EventsController::GlobalToCellsCoordinates(const QPoint& point) const {
