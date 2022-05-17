@@ -6,6 +6,20 @@
 World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
+  // TODO(AZYAVCHIKOV) temporary code for demonstration
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 200)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 300)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 400)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 500)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 600)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(600, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(500, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(400, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(300, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(200, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(200, 100)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(100, 200)));
 }
 
 // const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
@@ -53,6 +67,14 @@ std::vector<std::shared_ptr<GameObject>>& World::GetGameObjects() {
   return game_objects_;
 }
 
+const std::vector<std::shared_ptr<Bullet>>& World::GetBullets() const {
+  return bullets_;
+}
+
+std::vector<std::shared_ptr<Bullet>>& World::GetBullets() {
+  return bullets_;
+}
+
 const QSize& World::GetSize() const {
   return size_;
 }
@@ -64,22 +86,23 @@ const World::Cell& World::GetCell(const QPoint& point) const {
 }
 
 World::Cell& World::GetCell(const QPoint& point) {
-  assert(point.x() >= 0 && point.x() < cells_.size());
-  assert(point.y() >= 0 && point.y() < cells_[point.x()].size());
-  return cells_[point.x()][point.y()];
+  assert(point.y() >= 0 && point.y() < cells_.size());
+  assert(point.x() >= 0 && point.x() < cells_[point.y()].size());
+  return cells_[point.y()][point.x()];
 }
 
 const QPixmap& World::GetPixmap() const {
   return picture_;
 }
 
-#include <iostream>
 void World::UpdateDistances() {
   if (is_need_update_defenders) {
-    is_need_update_defenders = false;
     UpdateGroundDistances();
     UpdateAirDistances();
   }
+
+  is_need_update_defenders = false;
+  is_need_update_attackers = false;
 }
 
 void World::MoveSoldiers() {
@@ -228,7 +251,7 @@ void World::LoadMap(const QString& path) {
 }
 
 QPixmap World::DrawWorld() const {
-  QPixmap picture(window_sizes::kWorldPicture);
+  QPixmap picture(image_sizes::kWorldImage);
   auto painter = QPainter(&picture);
   painter.save();
   painter.translate(QPoint(0, 0));
@@ -276,7 +299,7 @@ void World::UpdateAirDistances() {
           return;
         }
         if (cells_[y][x].air_distance > dist + 1) {
-          cells_[y][x].air_distance = dist + cells_[y][x].landscape.move_lag;
+          cells_[y][x].air_distance = dist + 1;
           cells_[y][x].used = true;
           latest_at_air.push(std::make_pair(x, y));
         }
@@ -353,6 +376,35 @@ void World::UpdateGroundDistances() {
 
     cells_[y][x].used = true;
     latest_at_ground.pop();
+  }
+}
+
+void World::MoveBullets() {
+  // TODO(AZYAVCHIKOV) make damage in some radius
+  // int bullet_radius = 3;
+  //
+  //
+  // auto DamageArea = [&](int x, int y, int bullet_index) {
+  //   QPoint begin(0, cells_.size());
+  //   begin.setX(std::max(begin.x(), x - bullet_radius));
+  //   begin.setY(std::max(begin.y(), y - bullet_radius));
+  //   QPoint end(0, cells_[0].size());
+  //   end.setX(std::min(end.x(), x + bullet_radius));
+  //   end.setY(std::min(end.y(), y + bullet_radius));
+  //   for (int i = begin.y(); i <= end.y(); ++i) {
+  //     for (int j = begin.x(); j <= end.x(); ++j) {
+  //
+  //     }
+  //   }
+  // };
+
+  for (int i = bullets_.size() - 1; i >= 0; --i) {
+    bullets_[i]->Move();
+    // TODO(AZYAVCHIKOV) make damage
+    // DamageArea(bullets_[i].GetPosition.x(), bullets_[i].GetPosition.y());
+    if (bullets_[i]->GetToPosition() == bullets_[i]->GetPosition()) {
+      bullets_.erase(bullets_.begin() + i);
+    }
   }
 }
 

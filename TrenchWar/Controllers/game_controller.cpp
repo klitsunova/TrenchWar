@@ -33,12 +33,16 @@ void GameController::InitializationWeapon() {
 }
 
 void GameController::SetWorldObjects() {
-  // temporary code
-  for (int i = 0; i < 1000; ++i) {
-    world_->AddSoldier();
-  }
-  world_->AddSoldier(QPoint(200, 200), Soldier::Type::kDefender);
-  world_->AddSoldier(QPoint(400, 400), Soldier::Type::kDefender);
-  world_->AddSoldier(QPoint(600, 600), Soldier::Type::kDefender);
-  world_->AddTerrainObject();
+  // // temporary code
+  // for (int i = 0; i < 1000; ++i) {
+  //   world_->AddSoldier();
+  // }
+  // world_->AddSoldier(QPoint(200, 200), Soldier::Type::kDefender);
+  // world_->AddSoldier(QPoint(400, 400), Soldier::Type::kDefender);
+  // world_->AddSoldier(QPoint(600, 600), Soldier::Type::kDefender);
+  // world_->AddTerrainObject();
+  // world_->AddSoldier(QPoint(0, 0), Soldier::Type::kDefender);
+  // world_->AddSoldier(QPoint(6, 7), Soldier::Type::kAttacker);
+  // world_->AddSoldier(QPoint(0, 7), Soldier::Type::kAttacker);
+  // world_->AddTerrainObject();
 }

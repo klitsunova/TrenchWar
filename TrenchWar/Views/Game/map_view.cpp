@@ -33,28 +33,40 @@ void MapView::paintEvent(QPaintEvent*) {
   painter.save();
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
-  painter.setBrush(Qt::yellow);
-  painter.drawRect(0, 0, 5, 5);
+
   painter.drawPixmap(QRect(0, 0,
                            window_width, window_height),
                      world_->GetPixmap());
-  for (const auto& object: objects) {
-    int object_width = object->GetSize().width();
-    int object_height = object->GetSize().height();
 
+  auto DrawObject = [&](const QPoint& pos,
+                        int width, int height, const QPixmap& picture) {
     QPoint screen_point;
-    QPoint pos = object->GetPosition();
     screen_point.setX((window_width * (2 * pos.x() + 1))
                       / (2 * world_->GetSize().width()));
     screen_point.setY((window_height * (2 * pos.y() + 1))
                       / (2 * world_->GetSize().height()));
 
-    QPoint top_point = QPoint(screen_point.x() - object_width / 2,
-                              screen_point.y() - object_height / 2);
-    QPoint bottom_point = QPoint(top_point.x() + object_width,
-                                 top_point.y() + object_height);
+    QPoint top_point = QPoint(screen_point.x() - width / 2,
+                              screen_point.y() - height / 2);
+    QPoint bottom_point = QPoint(top_point.x() + width,
+                                 top_point.y() + height);
     painter.drawPixmap(QRect(top_point, bottom_point),
-                       object->GetPixmap());
+                       picture);
+  };
+
+  for (const auto& object: objects) {
+    DrawObject(object->GetPosition(),
+               object->GetSize().width(), object->GetSize().height(),
+               object->GetPixmap());
   }
+
+  const std::vector<std::shared_ptr<Bullet>>& bullets =
+      world_->GetBullets();
+
+  for (int i = 0; i < bullets.size(); ++i) {
+    DrawObject(bullets[i]->GetPosition(), 7, 7,
+               bullets[i]->GetPixmap());
+  }
+
   painter.restore();
 }
