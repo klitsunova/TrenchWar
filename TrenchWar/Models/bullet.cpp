@@ -51,11 +51,12 @@ void Bullet::Move() {
 
   int square_dx = (to_.x() - from_.x()) * (to_.x() - from_.x());
   int square_dy = (to_.y() - from_.y()) * (to_.y() - from_.y());
-  int t = 1;
+
   if ((position_.x() > to_.x()) || (position_.y() > to_.y())) {
-    t *= -1;
+    --moving_progress;
+  } else {
+    ++moving_progress;
   }
-  moving_progress += t;
   int x = from_.x()
       + moving_progress
           * sqrt(square_dx / static_cast<double>(square_dx + square_dy));

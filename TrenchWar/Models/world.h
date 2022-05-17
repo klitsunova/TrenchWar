@@ -29,6 +29,9 @@ class World {
   const std::vector<std::shared_ptr<GameObject>>& GetGameObjects() const;
   std::vector<std::shared_ptr<GameObject>>& GetGameObjects();
 
+  const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
+  std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
+
   const std::vector<std::shared_ptr<Bullet>>& GetBullets() const;
   std::vector<std::shared_ptr<Bullet>>& GetBullets();
 

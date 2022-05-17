@@ -7,46 +7,26 @@ World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
   // TODO(AZYAVCHIKOV) temporary code for demonstration
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(700, 200)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(700, 300)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(700, 400)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(700, 500)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(700, 600)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(700, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(600, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(500, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(400, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(300, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(200, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(200, 100)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
-                                              QPoint(100, 200)));
+  for(int i=200;i<=700;i+=100){
+    bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                                QPoint(700, i)));
+    bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                                QPoint(i, 700)));
+  }
 }
 
-// const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
-//   return soldiers_;
-// }
-//
-// std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() {
-//   return soldiers_;
-// }
+const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
+  return soldiers_;
+}
+
+std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() {
+  return soldiers_;
+}
 
 void World::AddSoldier() {
   auto new_object = std::make_shared<Soldier>();
   new_object->SetRandomPosition(size_);
-  // soldiers_.push_back(new_object);
+  soldiers_.push_back(new_object);
   attackers_.push_back(new_object);
   game_objects_.push_back(new_object);
 }
@@ -55,7 +35,7 @@ void World::AddSoldier(const QPoint& position, Soldier::Type type) {
   assert(position.y() >= 0 && position.y() < cells_.size());
   assert(position.x() >= 0 && position.x() < cells_[position.y()].size());
   auto new_object = std::make_shared<Soldier>(position, type);
-  // soldiers_.push_back(new_object);
+  soldiers_.push_back(new_object);
   if (type == Soldier::Type::kAttacker) {
     attackers_.push_back(new_object);
   } else if (type == Soldier::Type::kDefender) {
