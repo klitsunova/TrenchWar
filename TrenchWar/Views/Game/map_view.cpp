@@ -58,7 +58,7 @@ void MapView::paintEvent(QPaintEvent*) {
                            window_width, window_height),
                      world_->GetPixmap());
 
-  for (const auto& object: objects) {
+  for (const auto& object : objects) {
     DrawObject(painter, object->GetPosition(),
                object->GetSize(), object->GetPixmap());
   }
