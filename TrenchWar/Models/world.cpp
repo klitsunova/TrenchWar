@@ -7,19 +7,32 @@ World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
   // TODO(AZYAVCHIKOV) temporary code for demonstration
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 200)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 300)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 400)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 500)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 600)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(700, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(600, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(500, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(400, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(300, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(200, 700)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(200, 100)));
-  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200), QPoint(100, 200)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(700, 200)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(700, 300)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(700, 400)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(700, 500)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(700, 600)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(700, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(600, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(500, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(400, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(300, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(200, 700)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(200, 100)));
+  bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
+                                              QPoint(100, 200)));
 }
 
 // const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
@@ -285,7 +298,7 @@ void World::UpdateAirDistances() {
 
   std::queue<std::pair<int, int>> latest_at_air;
 
-  for (auto& defender: defenders_) {
+  for (auto& defender : defenders_) {
     int x = defender->GetPosition().x();
     int y = defender->GetPosition().y();
     cells_[y][x].used = true;
@@ -341,7 +354,7 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& defender: defenders_) {
+  for (auto& defender : defenders_) {
     int x = defender->GetPosition().x();
     int y = defender->GetPosition().y();
     cells_[y][x].ground_distance = 0;
