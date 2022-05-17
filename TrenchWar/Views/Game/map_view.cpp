@@ -55,3 +55,15 @@ void MapView::paintEvent(QPaintEvent*) {
   }
   painter.restore();
 }
+
+void MapView::mouseMoveEvent(QMouseEvent* event) {
+  MouseMoved(event);
+}
+
+void MapView::mousePressEvent(QMouseEvent* event) {
+  MousePressed(event);
+}
+
+void MapView::mouseReleaseEvent(QMouseEvent* event) {
+  MouseReleased(event);
+}

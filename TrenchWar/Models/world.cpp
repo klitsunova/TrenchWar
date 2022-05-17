@@ -138,7 +138,6 @@ void World::UpdateDistances() {
 
 void World::MoveSoldiers() {
   UpdateDistances();
-
   auto Lag = [&](int x, int y) {
     return cells_[x][y].landscape.move_lag;
   };

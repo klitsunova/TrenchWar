@@ -3,11 +3,7 @@
 EventsController::EventsController(QWidget* parent) {
   setParent(parent);
   world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
-  view_ = std::make_unique<GameView>(
-      this, world_,
-      [&](QMouseEvent* event) { MapPressEvent(event); return; },
-      [&](QMouseEvent* event) { MapMoveEvent(event); return; },
-      [&](QMouseEvent* event) { MapReleaseEvent(event); return; });
+  view_ = std::make_unique<GameView>(this, world_);
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
   game_controller_->SetWorldObjects();
@@ -17,9 +13,6 @@ EventsController::EventsController(QWidget* parent) {
 
 void EventsController::timerEvent(QTimerEvent*) {
   world_->MoveSoldiers();
-  if (game_stage == Stage::kPreparation) {
-    TrenchUpdate();
-  }
   view_->UpdateMap();
 }
 
@@ -53,6 +46,18 @@ void EventsController::ConnectUI() {
           &StoreView::DeleteTrenchButtonPressed,
           this,
           &EventsController::DeleteTrench);
+  connect(view_->GetMap(),
+          &MapView::MouseReleased,
+          this,
+          &EventsController::MapReleaseEvent);
+  connect(view_->GetMap(),
+          &MapView::MousePressed,
+          this,
+          &EventsController::MapPressEvent);
+  connect(view_->GetMap(),
+          &MapView::MouseMoved,
+          this,
+          &EventsController::MapMoveEvent);
 }
 
 void EventsController::HideGame() {
@@ -83,28 +88,22 @@ void EventsController::MapPressEvent(QMouseEvent* event) {
 
 void EventsController::MapMoveEvent(QMouseEvent* event) {
     if (is_mouse_clicked_ && !is_trench_fixed_) {
-      SetSaveCellsState();
-      changed_cells_.clear();
       start_and_end_trench_points_.second = event->pos();
-      TrenchUpdate();
     }
 }
 
 void EventsController::MapReleaseEvent(QMouseEvent* event) {
+  if (is_trench_fixed_) {
+    return;
+  }
+  TrenchUpdate();
   is_mouse_clicked_ = false;
-  start_and_end_trench_points_.second = event->pos();
-
-  QPoint start_point =
-      GlobalToCellsCoordinates(start_and_end_trench_points_.first);
-  QPoint end_point =
-      GlobalToCellsCoordinates(start_and_end_trench_points_.second);
 
   if (changed_cells_.empty()) {
     is_trench_fixed_ = false;
   } else {
     is_trench_fixed_ = true;
   }
-
   if (!is_trench_fixed_) {
     SetSaveCellsState();
     view_->UpdateMap();

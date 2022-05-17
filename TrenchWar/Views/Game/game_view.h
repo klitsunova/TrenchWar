@@ -17,10 +17,7 @@ class GameView : public QWidget {
  public:
   explicit GameView(
       QWidget* parent = nullptr,
-      const std::shared_ptr<World>& world = nullptr,
-      std::function<void(QMouseEvent*)> mousePress = [](QMouseEvent*){},
-      std::function<void(QMouseEvent*)> mouseMove = [](QMouseEvent*){},
-      std::function<void(QMouseEvent*)> mouseRelease = [](QMouseEvent*){});
+      const std::shared_ptr<World>& world = nullptr);
   ~GameView() = default;
 
   void closeEvent(QCloseEvent* event) override;
@@ -34,19 +31,11 @@ class GameView : public QWidget {
   void SetFullScreen(bool is_fullscreen);
   void SetStyle();
 
-  void mousePressEvent(QMouseEvent *event) override;
-  void mouseMoveEvent(QMouseEvent* event) override;
-  void mouseReleaseEvent(QMouseEvent* event) override;
-
  signals:
   void StartGame();
   void Close();
 
  private:
-  std::function<void(QMouseEvent*)> mousePressEvent_;
-  std::function<void(QMouseEvent*)> mouseMoveEvent_;
-  std::function<void(QMouseEvent*)> mouseReleaseEvent_;
-
   void ConnectUI();
 
   QVBoxLayout* layout_;

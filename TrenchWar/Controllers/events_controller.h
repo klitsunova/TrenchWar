@@ -53,7 +53,7 @@ class EventsController : public QWidget {
   QPoint TakeShiftDirection(const QPoint& first, const QPoint& second) const;
   void SetSaveCellsState();
 
-  QColor trench_color_ = Qt::black;
+  QColor trench_color_ = QColor(92, 64, 51);
   std::pair<QPoint, QPoint> start_and_end_trench_points_ =
       std::make_pair(QPoint(0, 0), QPoint(0, 0));
   bool is_trench_fixed_;
