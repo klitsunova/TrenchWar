@@ -7,7 +7,7 @@ World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
   // TODO(AZYAVCHIKOV) temporary code for demonstration
-  for(int i=200;i<=700;i+=100){
+  for (int i = 200; i <= 700; i += 100) {
     bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
                                                 QPoint(700, i)));
     bullets_.push_back(std::make_shared<Bullet>(QPoint(200, 200),
@@ -278,7 +278,7 @@ void World::UpdateAirDistances() {
 
   std::queue<std::pair<int, int>> latest_at_air;
 
-  for (auto& defender : defenders_) {
+  for (auto& defender: defenders_) {
     int x = defender->GetPosition().x();
     int y = defender->GetPosition().y();
     cells_[y][x].used = true;
@@ -334,7 +334,7 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& defender : defenders_) {
+  for (auto& defender: defenders_) {
     int x = defender->GetPosition().x();
     int y = defender->GetPosition().y();
     cells_[y][x].ground_distance = 0;
