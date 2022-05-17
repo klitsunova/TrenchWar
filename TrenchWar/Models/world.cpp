@@ -278,7 +278,7 @@ void World::UpdateAirDistances() {
 
   std::queue<std::pair<int, int>> latest_at_air;
 
-  for (auto& defender: defenders_) {
+  for (auto& defender : defenders_) {
     int x = defender->GetPosition().x();
     int y = defender->GetPosition().y();
     cells_[y][x].used = true;
@@ -334,7 +334,7 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& defender: defenders_) {
+  for (auto& defender : defenders_) {
     int x = defender->GetPosition().x();
     int y = defender->GetPosition().y();
     cells_[y][x].ground_distance = 0;
