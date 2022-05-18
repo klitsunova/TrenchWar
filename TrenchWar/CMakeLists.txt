@@ -25,6 +25,7 @@ set(MODELS
         Models/Tools/pixmap_loader.cpp
         Models/Tools/settings.cpp
         Models/weapon.cpp
+        Models/GameObjects/bullet.cpp
         )
 
 set(VIEWS
