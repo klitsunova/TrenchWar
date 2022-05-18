@@ -73,8 +73,8 @@ class World {
   std::vector<std::shared_ptr<Soldier>> attackers_;
   std::vector<std::shared_ptr<Bullet>> bullets_;
   std::vector<std::shared_ptr<GameObject>> game_objects_;
-  bool is_need_update_defenders{true};
-  bool is_need_update_attackers{true};
+  bool is_need_update_defenders_{true};
+  bool is_need_update_attackers_{true};
 
   void LoadMap(const QString& path);
 

@@ -5,7 +5,7 @@ Bullet::Bullet(const QPoint& from, const QPoint& to, int damage)
       from_(from),
       to_(to),
       damage_(damage) {
-  size_ = QSize(7, 7);
+  size_ = image_sizes::kBulletImage;
   picture_ = PixmapLoader::GetBullet();
 }
 
@@ -25,10 +25,6 @@ int Bullet::GetDamage() {
   return damage_;
 }
 
-const QPixmap& Bullet::GetPixmap() const {
-  return *picture_;
-}
-
 void Bullet::Move() {
   if (to_ == position_) {
     return;
@@ -38,15 +34,15 @@ void Bullet::Move() {
   int square_dy = (to_.y() - from_.y()) * (to_.y() - from_.y());
 
   if ((position_.x() > to_.x()) || (position_.y() > to_.y())) {
-    --moving_progress;
+    --moving_progress_;
   } else {
-    ++moving_progress;
+    ++moving_progress_;
   }
   int x = from_.x()
-      + moving_progress
+      + moving_progress_
           * sqrt(square_dx / static_cast<double>(square_dx + square_dy));
   int y = from_.y()
-      + moving_progress
+      + moving_progress_
           * sqrt(square_dy / static_cast<double>(square_dx + square_dy));
   position_ = QPoint(x, y);
 }

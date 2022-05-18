@@ -78,13 +78,13 @@ const QPixmap& World::GetPixmap() const {
 }
 
 void World::UpdateDistances() {
-  if (is_need_update_defenders) {
+  if (is_need_update_defenders_) {
     UpdateGroundDistances();
     UpdateAirDistances();
   }
 
-  is_need_update_defenders = false;
-  is_need_update_attackers = false;
+  is_need_update_defenders_ = false;
+  is_need_update_attackers_ = false;
 }
 
 void World::MoveSoldiers() {
@@ -236,7 +236,6 @@ QPixmap World::DrawWorld() const {
   QPixmap picture(image_sizes::kWorldImage);
   auto painter = QPainter(&picture);
   painter.save();
-  painter.translate(QPoint(0, 0));
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
   for (int y = 0; y < cells_.size(); ++y) {

@@ -11,7 +11,7 @@ constexpr QSize kDialogWidget(350, 200);
 
 namespace image_sizes {
 constexpr QSize kWorldImage(2500, 2500);
-constexpr QSize kBulletImage(500, 500);
+constexpr QSize kBulletImage(7, 7);
 }  // namespace image_sizes
 
 namespace element_sizes {

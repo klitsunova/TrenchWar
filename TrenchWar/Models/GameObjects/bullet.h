@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include "helpers/sizes.h"
 #include "Models/Tools/pixmap_loader.h"
 #include "Models/GameObjects/game_object.h"
 
@@ -19,14 +20,12 @@ class Bullet : public GameObject {
   const QPoint& GetFromPosition() const;
   const QPoint& GetToPosition() const;
 
-  int GetDamage();
-
-  const QPixmap& GetPixmap() const;
+  int GetDamage() const;
 
   void Move();
 
  private:
-  int moving_progress{0};
+  int moving_progress_{0};
   QPoint from_;
   QPoint to_;
 
