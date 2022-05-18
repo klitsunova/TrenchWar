@@ -1,7 +1,6 @@
 #include "store_view.h"
 
 #include <QLabel>
-#include <QSizePolicy>
 
 #include "helpers/sizes.h"
 #include "helpers/styles.h"

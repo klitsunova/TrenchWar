@@ -19,7 +19,7 @@ void EventsController::timerEvent(QTimerEvent*) {
 void EventsController::StartTimer() {
   if (!timer_->isActive()) {
     // TODO(AZYAVCHIKOV) temporary code
-    timer_->start(kTimerInterval, this);
+    timer_->start(kTimerInterval_, this);
   }
 }
 
@@ -46,12 +46,12 @@ void EventsController::HideGame() {
 
 void EventsController::Start() {
   view_->HideReadyButton();
-  game_stage = Stage::kActive;
+  game_stage_ = Stage::kActive;
   StartTimer();
 }
 
 EventsController::Stage EventsController::GetGameStage() const {
-  return game_stage;
+  return game_stage_;
 }
 
 void EventsController::SetFullScreen(bool is_fullscreen) {

@@ -13,8 +13,10 @@ class Soldier : public GameObject {
   using Health = int;
 
  public:
-  enum class Type { kDefender,
-                    kAttacker };
+  enum class Type {
+    kDefender,
+    kAttacker
+  };
 
   Soldier();
   explicit Soldier(const QPoint&, Type);
@@ -22,7 +24,6 @@ class Soldier : public GameObject {
   ~Soldier() override = default;
 
   Health GetHitPoints() const;
-  void MoveSoldier(QSize);
 
   int GetId() const;
   Type GetType() const;

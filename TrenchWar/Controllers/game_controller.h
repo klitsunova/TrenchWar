@@ -3,12 +3,13 @@
 #include <memory>
 #include <vector>
 
+#include <QBasicTimer>
 #include <QWidget>
 
 #include "Models/GameObjects/soldier.h"
 #include "Models/weapon.h"
 #include "Models/world.h"
-
+#include "Views/Game/game_view.h"
 
 class GameController : public QWidget {
   Q_OBJECT

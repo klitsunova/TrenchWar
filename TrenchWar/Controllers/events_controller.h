@@ -36,7 +36,7 @@ class EventsController : public QWidget {
   void ShowPauseMenu();
 
  private:
-  static constexpr int kTimerInterval{10};
+  static constexpr int kTimerInterval_{10};
 
   void ConnectUI();
 
@@ -45,5 +45,5 @@ class EventsController : public QWidget {
   std::unique_ptr<QBasicTimer> timer_;
   std::unique_ptr<GameController> game_controller_;
 
-  Stage game_stage = Stage::kPreparation;
+  Stage game_stage_ = Stage::kPreparation;
 };
