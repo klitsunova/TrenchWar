@@ -17,9 +17,7 @@ class Bullet : public GameObject {
 
   const QPoint& GetPosition() const;
   const QPoint& GetFromPosition() const;
-  QPoint& GetFromPosition();
   const QPoint& GetToPosition() const;
-  QPoint& GetToPosition();
 
   int GetDamage();
 

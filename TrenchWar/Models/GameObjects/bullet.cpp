@@ -17,15 +17,7 @@ const QPoint& Bullet::GetFromPosition() const {
   return from_;
 }
 
-QPoint& Bullet::GetFromPosition() {
-  return from_;
-}
-
 const QPoint& Bullet::GetToPosition() const {
-  return to_;
-}
-
-QPoint& Bullet::GetToPosition() {
   return to_;
 }
 

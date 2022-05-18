@@ -1,19 +1,19 @@
 #include "pixmap_loader.h"
 
 const QString PixmapLoader::soldier_path =
-    ":././Resources/Images/Soldier1.png";
+    ":Resources/Images/Soldier1.png";
 const QString PixmapLoader::left_soldier_path =
-    ":././Resources/Images/Soldier2.png";
+    ":Resources/Images/Soldier2.png";
 const QString PixmapLoader::right_soldier_path =
-    ":././Resources/Images/Soldier1.png";
+    ":Resources/Images/Soldier1.png";
 const QString PixmapLoader::terrain_object_path =
-    ":././Resources/Images/Tower2.png";
+    ":Resources/Images/Tower2.png";
 const QString PixmapLoader::bullet_path =
-    ":././Resources/Images/Bullet1.png";
+    ":Resources/Images/Bullet1.png";
 const QString PixmapLoader::menu_background_path =
-    ":././Resources/Images/MenuBackground.jpg";
+    ":Resources/Images/MenuBackground.jpg";
 const QString PixmapLoader::menu_title_path =
-    ":././Resources/Images/MenuTitle.png";
+    ":Resources/Images/MenuTitle.png";
 
 std::map<QString, std::shared_ptr<QPixmap>> PixmapLoader::images;
 
