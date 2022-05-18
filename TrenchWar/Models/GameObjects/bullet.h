@@ -12,7 +12,7 @@
 class Bullet : public GameObject {
  public:
   Bullet() = delete;
-  explicit Bullet(const QPoint&, const QPoint&, int damage = 1);
+  Bullet(const QPoint&, const QPoint&, int damage = 1);
 
   ~Bullet() = default;
 
