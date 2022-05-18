@@ -21,7 +21,7 @@ const QPoint& Bullet::GetToPosition() const {
   return to_;
 }
 
-int Bullet::GetDamage() {
+int Bullet::GetDamage() const {
   return damage_;
 }
 
