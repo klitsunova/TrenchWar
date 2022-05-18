@@ -39,8 +39,8 @@ void MapView::DrawObject(QPainter& painter, const QPoint& pos,
 
   QPoint top_point = QPoint(screen_point.x() - size.width() / 2,
                             screen_point.y() - size.height() / 2);
-  QPoint bottom_point = QPoint(top_point.x() + size.width(),
-                               top_point.y() + size.height());
+  QPoint bottom_point = QPoint(screen_point.x() + size.width() / 2,
+                               screen_point.y() + size.height() / 2);
   painter.drawPixmap(QRect(top_point, bottom_point),
                      picture);
   painter.restore();
