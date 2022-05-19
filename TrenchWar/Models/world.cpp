@@ -281,12 +281,14 @@ void World::LoadMap(const QString& path) {
 QPixmap World::DrawWorld() const {
   QPixmap picture(size_);
   auto painter = QPainter(&picture);
+  int window_width = painter.window().width() - 1;
+  int window_height = painter.window().height() - 1;
   for (int i = 0; i < size_.width(); ++i) {
     for (int j = 0; j < size_.height(); ++j) {
-      int x_top = i;
-      int x_bottom = (i + 1);
-      int y_top = j;
-      int y_bottom = (j + 1);
+      int x_top = (window_width * i) / size_.width();
+      int x_bottom = ((window_width * (i + 1)) / size_.width());
+      int y_top = (window_height * j) / size_.height();
+      int y_bottom = ((window_height * (j + 1)) / size_.height());
       QRect cell_rect(QPoint(x_top, y_top),
                       QPoint(x_bottom, y_bottom));
       QColor color = cells_[y_top][x_top].landscape.color;

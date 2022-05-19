@@ -7,6 +7,7 @@ GameController::GameController(
     const std::shared_ptr<World>& world) {
   setParent(parent);
   world_ = world;
+  SetWorldObjects();
   InitializationWeapon();
 }
 
