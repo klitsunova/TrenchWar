@@ -137,6 +137,7 @@ void TrenchController::ClearChangedCells() {
   changed_cells_.clear();
 }
 
-const std::vector<std::pair<QPoint, QColor>>& TrenchController::GetChangedCells() const {
+const std::vector<std::pair<QPoint, QColor>>& TrenchController::
+    GetChangedCells() const {
   return changed_cells_;
 }
