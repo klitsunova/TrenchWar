@@ -1,6 +1,9 @@
 #pragma once
 
+#include <memory>
 #include <QWidget>
+#include <utility>
+#include <vector>
 
 #include "Models/world.h"
 #include "Views/Game/map_view.h"
