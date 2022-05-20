@@ -36,6 +36,7 @@ class World {
   Cell& GetCell(const QPoint&);
 
   const QPixmap& GetPixmap();
+  void Update();
 
   void AddSoldier();
   void AddSoldier(const QPoint&, Soldier::Type);
@@ -47,8 +48,6 @@ class World {
 
  private:
   void LoadMap(const QString& path);
-
-  void Update();
 
   struct Landscape {
     Landscape(const QColor& q_color, int speed);

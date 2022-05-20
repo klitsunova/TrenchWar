@@ -2,8 +2,9 @@
 
 EventsController::EventsController(QWidget* parent) {
   setParent(parent);
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
+  world_ = std::make_unique<World>(":Resources/Maps/map2.txt");
   view_ = std::make_unique<GameView>(this, world_);
+  trench_controller_ = std::make_unique<TrenchController>(this, world_, view_->GetMap());
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
   game_controller_->SetWorldObjects();
@@ -47,17 +48,13 @@ void EventsController::ConnectUI() {
           this,
           &EventsController::DeleteTrench);
   connect(view_->GetMap(),
-          &MapView::MouseReleased,
+          &MapView::MouseReleasedHandler,
           this,
-          &EventsController::MapReleaseEvent);
+          &EventsController::MapReleaseHandler);
   connect(view_->GetMap(),
-          &MapView::MousePressed,
+          &MapView::MousePressedHandler,
           this,
-          &EventsController::MapPressEvent);
-  connect(view_->GetMap(),
-          &MapView::MouseMoved,
-          this,
-          &EventsController::MapMoveEvent);
+          &EventsController::MapPressHandler);
 }
 
 void EventsController::HideGame() {
@@ -78,157 +75,55 @@ void EventsController::SetFullScreen(bool is_fullscreen) {
   view_->SetFullScreen(is_fullscreen);
 }
 
-void EventsController::MapPressEvent(QMouseEvent* event) {
-  if (!is_trench_fixed_) {
-    is_mouse_clicked_ = true;
-    start_and_end_trench_points_.first = event->pos();
-    start_and_end_trench_points_.second = event->pos();
+void EventsController::MapPressHandler(QMouseEvent* event) {
+  if (!trench_controller_->IsTrenchFixed()
+      && game_stage == Stage::kPreparation) {
+    trench_controller_->SetMouseClicked(true);
+    trench_controller_->SetFirstPoint(event->pos());
+    trench_controller_->SetSecondPoint(event->pos());
   }
 }
 
-void EventsController::MapMoveEvent(QMouseEvent* event) {
-  if (is_mouse_clicked_ && !is_trench_fixed_) {
-    start_and_end_trench_points_.second = event->pos();
-  }
-}
-
-void EventsController::MapReleaseEvent(QMouseEvent* event) {
-  if (is_trench_fixed_) {
+void EventsController::MapReleaseHandler(QMouseEvent* event) {
+  if (trench_controller_->IsTrenchFixed()
+      || game_stage != Stage::kPreparation) {
     return;
   }
-  TrenchUpdate();
-  is_mouse_clicked_ = false;
 
-  if (changed_cells_.empty()) {
-    is_trench_fixed_ = false;
-  } else {
-    is_trench_fixed_ = true;
-  }
+  trench_controller_->SetSecondPoint(event->pos());
+  trench_controller_->Update();
+  world_->Update();
+  view_->UpdateMap();
 
-  if (!is_trench_fixed_) {
-    SetSaveCellsState();
+  trench_controller_->SetMouseClicked(true);
+  trench_controller_->SetTrenchFixed(
+      !trench_controller_->GetChangedCells().empty());
+
+  if (!trench_controller_->IsTrenchFixed()) {
+    trench_controller_->SetSaveCellsState();
+    world_->Update();
     view_->UpdateMap();
-    changed_cells_.clear();
+    trench_controller_->ClearChangedCells();
     return;
   }
 
   view_->GetStore()->ShowTrenchButtons();
 }
 
-void EventsController::TrenchUpdate() {
-  QPoint start_point =
-      GlobalToCellsCoordinates(start_and_end_trench_points_.first);
-  QPoint end_point =
-      GlobalToCellsCoordinates(start_and_end_trench_points_.second);
-
-  if (!CheckMinimumTrenchLength(start_point, end_point)) {
-    return;
-  }
-
-  QPoint shift = TakeShiftDirection(start_point, end_point);
-  QPoint invert_shift =
-      QPoint(1 - std::abs(shift.x()), 1 - std::abs(shift.y()));
-
-  end_point = QPoint(end_point.x() * std::abs(shift.x()) +
-                         invert_shift.x() * start_point.x(),
-                     end_point.y() * std::abs(shift.y()) +
-                         invert_shift.y() * start_point.y());
-  QPoint additional_trench_1 = start_point + invert_shift;
-  QPoint additional_trench_2 = start_point - invert_shift;
-
-  while (start_point != end_point + shift) {
-    DrawAndSaveTrench(additional_trench_1);
-    DrawAndSaveTrench(additional_trench_2);
-    DrawAndSaveTrench(start_point);
-    additional_trench_1 += shift;
-    additional_trench_2 += shift;
-    start_point += shift;
-  }
-  view_->UpdateMap();
-}
-
-void EventsController::DrawAndSaveTrench(const QPoint& pos) {
-  if (!IsCorrectCell(pos)) {
-    return;
-  }
-  changed_cells_.emplace_back(pos,
-                              world_->GetCell(pos).landscape.color);
-  world_->GetCell(pos).landscape.color = trench_color_;
-}
-
-QPoint EventsController::GlobalToCellsCoordinates(const QPoint& point) const {
-  int x = world_->GetSize().width() * point.x() / view_->GetMap()->width();
-  int y = world_->GetSize().height() * point.y() / view_->GetMap()->height();
-  return {y, x};
-}
-
-bool EventsController::CheckMinimumTrenchLength(const QPoint& first,
-                                                const QPoint& second) {
-  int delta_x = std::abs(first.x() - second.x());
-  int delta_y = std::abs(first.y() - second.y());
-
-  if (delta_x >= kMinimumTrenchLength || delta_y >= kMinimumTrenchLength) {
-    return true;
-  }
-
-  return false;
-}
-
-bool EventsController::IsCorrectCell(const QPoint& point) const {
-  int max_x = world_->GetSize().width();
-  int max_y = world_->GetSize().height();
-
-  if (point.x() < 0 || point.y() < 0 ||
-      point.x() > max_x - 1 || point.y() > max_y - 1) {
-    return false;
-  }
-
-  return true;
-}
-
-QPoint EventsController::TakeShiftDirection(const QPoint& first,
-                                            const QPoint& second) const {
-  int delta_x = abs(first.x() - second.x());
-  int delta_y = abs(first.y() - second.y());
-
-  QPoint shift;
-
-  if (delta_x >= delta_y) {
-    if (first.x() >= second.x()) {
-      shift = QPoint(-1, 0);
-    } else {
-      shift = QPoint(1, 0);
-    }
-  } else {
-    if (first.y() >= second.y()) {
-      shift = QPoint(0, -1);
-    } else {
-      shift = QPoint(0, 1);
-    }
-  }
-
-  return shift;
-}
-
-void EventsController::SetSaveCellsState() {
-  for (auto& changed_cell : changed_cells_) {
-    world_->GetCell(changed_cell.first).landscape.color = changed_cell.second;
-  }
-}
-
 void EventsController::BuildTrench() {
-  for (auto& changed_cell : changed_cells_) {
+  for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
     world_->GetCell(changed_cell.first).is_trench = true;
   }
-  changed_cells_.clear();
+  trench_controller_->ClearChangedCells();
   view_->GetStore()->HideTrenchButtons();
-  is_trench_fixed_ = false;
+  trench_controller_->SetTrenchFixed(false);
 }
 
 void EventsController::DeleteTrench() {
-  SetSaveCellsState();
+  trench_controller_->SetSaveCellsState();
+  world_->Update();
   view_->UpdateMap();
-  changed_cells_.clear();
+  trench_controller_->ClearChangedCells();
   view_->GetStore()->HideTrenchButtons();
-  is_trench_fixed_ = false;
+  trench_controller_->SetTrenchFixed(false);
 }

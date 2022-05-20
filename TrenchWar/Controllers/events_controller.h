@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <vector>
 #include <utility>
+#include <vector>
 
 #include <QBasicTimer>
 #include <QKeyEvent>
@@ -10,6 +10,8 @@
 #include <QWidget>
 
 #include "Controllers/game_controller.h"
+#include "Controllers/trench_update.h"
+#include "helpers/styles.h"
 #include "Views/Game/game_view.h"
 
 class EventsController : public QWidget {
@@ -37,36 +39,19 @@ class EventsController : public QWidget {
 
   Stage GetGameStage() const;
 
-  void MapPressEvent(QMouseEvent* event);
-  void MapMoveEvent(QMouseEvent* event);
-  void MapReleaseEvent(QMouseEvent* event);
+  void MapPressHandler(QMouseEvent* event);
+  void MapReleaseHandler(QMouseEvent* event);
 
  signals:
   void ShowPauseMenu();
 
  private:
-  void TrenchUpdate();
-  void DrawAndSaveTrench(const QPoint& pos);
-  QPoint GlobalToCellsCoordinates(const QPoint& point) const;
-  bool CheckMinimumTrenchLength(const QPoint& first, const QPoint& second);
-  bool IsCorrectCell(const QPoint& point) const;
-  QPoint TakeShiftDirection(const QPoint& first, const QPoint& second) const;
-  void SetSaveCellsState();
-
-  QColor trench_color_ = QColor(92, 64, 51);
-  std::pair<QPoint, QPoint> start_and_end_trench_points_ =
-      std::make_pair(QPoint(0, 0), QPoint(0, 0));
-  bool is_trench_fixed_;
-  bool is_mouse_clicked_;
-
-  std::vector<std::pair<QPoint, QColor>> changed_cells_;
-
-  static constexpr int kMinimumTrenchLength{5};
   static constexpr int kTimerInterval{10};
 
   void ConnectUI();
 
   std::shared_ptr<World> world_;
+  std::unique_ptr<TrenchController> trench_controller_;
   std::unique_ptr<GameView> view_;
   std::unique_ptr<QBasicTimer> timer_;
   std::unique_ptr<GameController> game_controller_;

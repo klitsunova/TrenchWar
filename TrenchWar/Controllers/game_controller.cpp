@@ -43,4 +43,3 @@ void GameController::SetWorldObjects() {
   world_->AddSoldier(QPoint(600, 600), Soldier::Type::kDefender);
   world_->AddTerrainObject();
 }
-

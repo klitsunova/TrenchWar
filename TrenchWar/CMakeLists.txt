@@ -48,7 +48,7 @@ set(SOURCES
         main.cpp
         ${MODELS}
         ${VIEWS}
-        ${CONTROLLERS})
+        ${CONTROLLERS} Controllers/trench_update.cpp Controllers/trench_update.h)
 
 qt6_add_big_resources(RESOURCES resources.qrc)
 

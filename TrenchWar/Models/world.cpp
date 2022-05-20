@@ -68,7 +68,6 @@ void World::Update() {
 }
 
 const QPixmap& World::GetPixmap() {
-  Update();
   return picture_;
 }
 
