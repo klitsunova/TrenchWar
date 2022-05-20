@@ -65,6 +65,7 @@ void EventsController::HideGame() {
 }
 
 void EventsController::Start() {
+  DeleteTrench();
   view_->HideReadyButton();
   game_stage = Stage::kActive;
   StartTimer();

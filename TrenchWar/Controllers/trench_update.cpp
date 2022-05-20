@@ -68,15 +68,15 @@ void TrenchController::DrawAndSaveTrench(const QPoint& pos) {
 QPoint TrenchController::GlobalToCellsCoordinates(const QPoint& point) const {
   int x = world_->GetSize().width() * point.x() / map_view_->width();
   int y = world_->GetSize().height() * point.y() / map_view_->height();
-  return {y, x};
+  return {x, y};
 }
 
 bool TrenchController::CheckMinimumTrenchLength(const QPoint& first,
                                                 const QPoint& second) {
-  int delta_x = std::abs(first.x() - second.x());
-  int delta_y = std::abs(first.y() - second.y());
+  int dx = std::abs(first.x() - second.x());
+  int dy = std::abs(first.y() - second.y());
 
-  if (delta_x >= kMinimumTrenchLength || delta_y >= kMinimumTrenchLength) {
+  if (dx >= kMinimumTrenchLength || dy >= kMinimumTrenchLength) {
     return true;
   }
 
