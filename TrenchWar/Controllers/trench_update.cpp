@@ -1,3 +1,7 @@
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "trench_update.h"
 #include "helpers/styles.h"
 
@@ -39,8 +43,10 @@ void TrenchController::Update() {
   QPoint invert_shift =
       QPoint(1 - std::abs(shift.x()), 1 - std::abs(shift.y()));
 
-  end_point = QPoint(end_point.x() * std::abs(shift.x()) + invert_shift.x() * start_point.x(),
-                     end_point.y() * std::abs(shift.y()) + invert_shift.y() * start_point.y());
+  end_point = QPoint(end_point.x() * std::abs(shift.x())
+                         + invert_shift.x() * start_point.x(),
+                     end_point.y() * std::abs(shift.y())
+                         + invert_shift.y() * start_point.y());
   QPoint additional_trench_1 = start_point + invert_shift;
   QPoint additional_trench_2 = start_point - invert_shift;
 
@@ -85,7 +91,8 @@ bool TrenchController::IsCorrectCell(const QPoint& point) const {
   int max_x = world_->GetSize().width();
   int max_y = world_->GetSize().height();
 
-  if (point.x() < 0 || point.y() < 0 || point.x() > max_x - 1 || point.y() > max_y - 1) {
+  if (point.x() < 0 || point.y() < 0 ||
+      point.x() > max_x - 1 || point.y() > max_y - 1) {
     return false;
   }
 

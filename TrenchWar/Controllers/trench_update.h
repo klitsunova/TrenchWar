@@ -36,7 +36,8 @@ class TrenchController : public QWidget {
   QPoint GlobalToCellsCoordinates(const QPoint& point) const;
   bool CheckMinimumTrenchLength(const QPoint& first, const QPoint& second);
   bool IsCorrectCell(const QPoint& point) const;
-  QPoint TakeShiftDirection(const QPoint& start_point, const QPoint& end_point) const;
+  QPoint TakeShiftDirection(const QPoint& start_point,
+                            const QPoint& end_point) const;
 
   std::vector<std::pair<QPoint, QColor>> changed_cells_;
   std::pair<QPoint, QPoint> start_and_end_trench_points_ =
