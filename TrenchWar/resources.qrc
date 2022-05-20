@@ -6,9 +6,11 @@
         <file>Resources/Images/Soldier4.png</file>
         <file>Resources/Images/Tower1.png</file>
         <file>Resources/Images/Tower2.png</file>
+        <file>Resources/Images/Bullet1.png</file>
         <file>Resources/Maps/map1.txt</file>
         <file>Resources/Maps/map2.txt</file>
         <file>Resources/Maps/map3.txt</file>
+        <file>Resources/Maps/map_test.txt</file>
         <file>Resources/Images/MenuBackground.jpg</file>
         <file>Resources/Images/MenuTitle.png</file>
     </qresource>

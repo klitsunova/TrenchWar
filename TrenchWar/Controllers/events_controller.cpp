@@ -14,6 +14,7 @@ EventsController::EventsController(QWidget* parent) {
 
 void EventsController::timerEvent(QTimerEvent*) {
   world_->MoveSoldiers();
+  world_->MoveBullets();
   view_->UpdateMap();
 }
 
