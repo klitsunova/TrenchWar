@@ -10,9 +10,9 @@
 #include <QWidget>
 
 #include "Controllers/game_controller.h"
-#include "Controllers/trench_update.h"
-#include "helpers/styles.h"
+#include "Controllers/trench_controller.h"
 #include "Views/Game/game_view.h"
+#include "helpers/styles.h"
 
 class EventsController : public QWidget {
   Q_OBJECT

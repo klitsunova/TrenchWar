@@ -1,5 +1,5 @@
-#include "trench_update.h"
 #include "helpers/styles.h"
+#include "trench_controller.h"
 
 TrenchController::TrenchController(QWidget* parent,
                                    const std::shared_ptr<World>& world,
