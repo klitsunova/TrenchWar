@@ -47,7 +47,9 @@ void MapView::DrawObject(QPainter& painter, const QPoint& pos,
 }
 
 void MapView::paintEvent(QPaintEvent*) {
-  QPainter painter(this);
+  QPixmap buffer(this->size());
+  QPainter painter;
+  painter.begin(&buffer);
   const std::vector<std::shared_ptr<GameObject>>& objects =
       world_->GetGameObjects();
   painter.save();
@@ -58,9 +60,14 @@ void MapView::paintEvent(QPaintEvent*) {
                            window_width, window_height),
                      world_->GetPixmap());
 
-  for (const auto& object : objects) {
+  for (const auto& object: objects) {
     DrawObject(painter, object->GetPosition(),
                object->GetSize(), object->GetPixmap());
   }
   painter.restore();
+  painter.end();
+
+  painter.begin(this);
+  painter.drawPixmap(this->rect(), buffer);
+  painter.end();
 }

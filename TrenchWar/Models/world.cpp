@@ -21,6 +21,18 @@ std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() {
   return soldiers_;
 }
 
+void World::AddSoldier(Soldier::Type type) {
+  auto new_object = std::make_shared<Soldier>(type);
+  new_object->SetRandomPosition(size_);
+  soldiers_.push_back(new_object);
+  if (type == Soldier::Type::kDefender) {
+    defenders_.push_back(new_object);
+  } else if (type == Soldier::Type::kAttacker) {
+    attackers_.push_back(new_object);
+  }
+  game_objects_.push_back(new_object);
+}
+
 void World::AddSoldier(const QPoint& position, Soldier::Type type) {
   assert(position.y() >= 0 && position.y() < cells_.size());
   assert(position.x() >= 0 && position.x() < cells_[position.y()].size());
@@ -266,7 +278,7 @@ void World::UpdateAirDistances() {
 
   std::queue<std::pair<int, int>> latest_at_air;
 
-  for (auto& defender : defenders_) {
+  for (auto& defender: defenders_) {
     int x = defender->GetPosition().x();
     int y = defender->GetPosition().y();
     cells_[y][x].used = true;
@@ -322,7 +334,7 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& defender : defenders_) {
+  for (auto& defender: defenders_) {
     int x = defender->GetPosition().x();
     int y = defender->GetPosition().y();
     cells_[y][x].ground_distance = 0;
