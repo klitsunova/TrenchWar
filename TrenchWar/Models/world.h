@@ -39,6 +39,7 @@ class World {
 
   const QPixmap& GetPixmap() const;
 
+  void AddSoldier(Soldier::Type);
   void AddSoldier(const QPoint&, Soldier::Type);
   void AddTerrainObject();
   void AddBullet(const QPoint&, const QPoint&, int damage = 1);

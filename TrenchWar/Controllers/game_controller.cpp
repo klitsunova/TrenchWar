@@ -33,6 +33,9 @@ void GameController::InitializationWeapon() {
 }
 
 void GameController::SetWorldObjects() {
+  for (int i = 0; i < 5000; ++i) {
+    world_->AddSoldier(Soldier::Type::kAttacker);
+  }
   // temporary code
   world_->AddSoldier(QPoint(200, 200), Soldier::Type::kDefender);
   world_->AddSoldier(QPoint(400, 400), Soldier::Type::kDefender);
