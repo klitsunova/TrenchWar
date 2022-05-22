@@ -9,6 +9,7 @@
 
 #include "Controllers/game_controller.h"
 #include "Views/Game/game_view.h"
+#include "Network/network_view.h"
 
 class EventsController : public QWidget {
   Q_OBJECT
@@ -44,6 +45,7 @@ class EventsController : public QWidget {
   std::unique_ptr<GameView> view_;
   std::unique_ptr<QBasicTimer> timer_;
   std::unique_ptr<GameController> game_controller_;
+  std::unique_ptr<NetworkView> network_view_;
 
   Stage game_stage = Stage::kPreparation;
 };

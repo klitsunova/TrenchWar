@@ -1,19 +1,24 @@
 #include "events_controller.h"
 
+#include "Network/network_view.h"
+
 EventsController::EventsController(QWidget* parent) {
   setParent(parent);
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
-  view_ = std::make_unique<GameView>(this, world_);
-  timer_ = std::make_unique<QBasicTimer>();
-  game_controller_ = std::make_unique<GameController>(this, world_);
-  game_controller_->SetWorldObjects();
-  ConnectUI();
-  view_->show();
+  network_view_ = std::make_unique<NetworkView>(this);
+  network_view_->show();
+  // world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
+  // view_ = std::make_unique<GameView>(this, world_);
+  // timer_ = std::make_unique<QBasicTimer>();
+  // game_controller_ = std::make_unique<GameController>(this, world_);
+  // game_controller_->SetWorldObjects();
+  //
+  // ConnectUI();
+  // view_->show();
 }
 
 void EventsController::timerEvent(QTimerEvent*) {
-  world_->MoveSoldiers();
-  view_->UpdateMap();
+  // world_->MoveSoldiers();
+  // view_->UpdateMap();
 }
 
 void EventsController::StartTimer() {
