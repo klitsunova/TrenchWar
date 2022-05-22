@@ -68,6 +68,10 @@ void MainController::ConnectEventsControllerUI() {
           &EventsController::ShowPauseMenu,
           this,
           &MainController::PauseGame);
+  connect(events_controller_,
+          &EventsController::ReturnToMainMenu,
+          this,
+          &MainController::ReturnToMenu);
 }
 
 void MainController::Exit() {

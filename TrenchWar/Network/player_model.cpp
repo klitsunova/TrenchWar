@@ -22,3 +22,19 @@ bool Player::IsReady() const {
 void Player::SetReady(bool is_ready) {
   is_ready_ = is_ready;
 }
+
+bool Player::IsPrepared() const {
+  return is_prepared_;
+}
+
+void Player::SetPrepared(bool is_prepared) {
+  is_prepared_ = is_prepared;
+}
+
+Player::Type Player::GetType() const {
+  return type_;
+}
+
+void Player::SetType(Type type) {
+  type_ = type;
+}

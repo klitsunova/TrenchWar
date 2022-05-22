@@ -19,8 +19,9 @@ class Server : public QWidget {
   void timerEvent(QTimerEvent*) override;
 
  private:
-  std::vector<Player> players_;
-  std::vector<PlayerData> players_data_;
+  std::vector<std::shared_ptr<Player>> players_;
+  QString defender_data_;
+  QString attacker_data_;
   QLabel ip_;
   QTcpServer server_;
   int timer_id_ = -1;
@@ -29,7 +30,12 @@ class Server : public QWidget {
   void DisconnectClient();
   void ReceiveClientData();
   void UpdateClientsInfo();
+
+  bool IsAllPrepared();
+
   void SendStartSignal(const QVariant& q_variant);
+  void SendActiveStageSignal(const QVariant& q_variant);
+
   void SendGameStateToAllPlayers();
   void ShowIp();
 };

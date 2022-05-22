@@ -6,12 +6,15 @@
 #include <QVariant>
 
 #include "Network/player_model.h"
+#include "Models/GameObjects/soldier.h"
+#include "Models/GameObjects/bullet.h"
 
 enum class MessageType {
   kPlayersVector,
   kReadyStatus,
   kSignalToStart,
   kPlayersData,
+  kEndPreparationStatus,
 };
 
 struct NetworkData {
@@ -20,6 +23,9 @@ struct NetworkData {
 };
 
 struct PlayerData {
+  std::vector<Soldier> soldiers;
+  std::vector<Bullet> bullets;
+  bool is_updated;
 };
 
 class Network {
@@ -33,7 +39,7 @@ class Network {
       MessageType type);
 
   static void WriteDataForAll(
-      std::vector<Player>* players_,
+      const std::vector<std::shared_ptr<Player>>& players_,
       const QVariant& q_variant,
       MessageType type);
 
@@ -45,7 +51,9 @@ class Network {
 
 class JsonHelper {
  public:
-  static QString EncodePlayersVectorJson(const std::vector<Player>& players);
+  static QString EncodePlayersVector(const std::vector<std::shared_ptr<Player>>& players);
   static std::vector<std::pair<size_t, bool>> DecodePlayersVectorJson(
       const QString& json);
+  static QString EncodePlayerData(const PlayerData& data);
+  static PlayerData DecodePlayerData(const QVariant& q_variant);
 };

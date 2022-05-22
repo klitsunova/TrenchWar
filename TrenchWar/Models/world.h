@@ -32,6 +32,8 @@ class World {
   const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
   std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
 
+  std::vector<Soldier>* GetDefendersData();
+
   const QSize& GetSize() const;
 
   const Cell& GetCell(const QPoint&) const;

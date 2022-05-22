@@ -6,7 +6,10 @@
 #include <QJsonObject>
 #include <QObject>
 
-NetworkController::NetworkController(Player* player) : player_(player) {
+#include <QMessageBox>
+#include <utility>
+
+NetworkController::NetworkController(std::shared_ptr<Player> player) : player_(std::move(player)) {
   connect(player_->Socket(),
           &QTcpSocket::readyRead,
           this,
@@ -17,6 +20,12 @@ void NetworkController::SendReadyStatus() {
   Network::WriteData(player_->Socket(),
                      QVariant::fromValue(player_->GetId()),
                      MessageType::kReadyStatus);
+}
+
+void NetworkController::SendEndPreparationStatus() {
+  Network::WriteData(player_->Socket(),
+                     QVariant::fromValue(player_->GetId()),
+                     MessageType::kEndPreparationStatus);
 }
 
 void NetworkController::ParseData() {
@@ -36,8 +45,14 @@ void NetworkController::ParseData() {
       emit GotSignalToStart();
       break;
     }
+    case MessageType::kEndPreparationStatus: {
+      q_variant_ = data.data;
+      is_started_ = true;
+      emit GotSignalForActiveStage();
+      break;
+    }
     case MessageType::kPlayersData: {
-      DecodePlayersData(data.data);
+      enemy_data_ = JsonHelper::DecodePlayerData(data.data);
       break;
     }
     default: {
@@ -46,36 +61,29 @@ void NetworkController::ParseData() {
   }
 }
 
-void NetworkController::DecodePlayersData(const QVariant& q_variant) {
-}
-
 QVariant NetworkController::GetData() {
   return q_variant_;
 }
 
-void NetworkController::SendStartSignal(const QString& json) {
+void NetworkController::SendStartSignal() {
   Network::WriteData(player_->Socket(),
-                     QVariant::fromValue(json),
+                     QVariant(),
                      MessageType::kSignalToStart);
 }
 
-bool NetworkController::DataUpdated(size_t id) {
-  // if (players_data_[id].is_updated) {
-  //   players_data_[id].is_updated = false;
-  //   return true;
-  // } else {
-  return false;
-  // }
-}
+// bool NetworkController::DataUpdated(size_t id) {
+//   if (player_->IsDataUpdated()) {
+//     player_->SetDataUpdated(false);
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
 
-PlayerData NetworkController::GetPlayersData(size_t id) {
-  return players_data_[id];
-}
-
-void NetworkController::SendData(PlayerData data) {
-  // Network::WriteData(player_->Socket(),
-  //                    QVariant::fromValue(JsonHelper::EncodePlayerCarData(data)),
-  //                    MessageType::kPlayersCarData);
+void NetworkController::SendData() {
+  Network::WriteData(player_->Socket(),
+                     QVariant::fromValue(JsonHelper::EncodePlayerData(own_data_)),
+                     MessageType::kPlayersData);
 }
 
 size_t NetworkController::GetId() {
@@ -88,4 +96,12 @@ bool NetworkController::IsStarted() const {
 
 void NetworkController::SetStarted(bool is_started) {
   is_started_ = is_started;
+}
+
+PlayerData& NetworkController::GetEnemyData() {
+  return enemy_data_;
+}
+
+void NetworkController::SetOwnData(PlayerData data) {
+  own_data_ = std::move(data);
 }

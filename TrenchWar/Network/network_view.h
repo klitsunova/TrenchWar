@@ -25,8 +25,13 @@ class NetworkView : public QWidget {
   ~NetworkView() override = default;
   void Disconnect();
 
+  void SetEndPreparationStatus();
+
+  std::shared_ptr<NetworkController> GetNetworkController() const;
+
  signals:
   void StartGame();
+  void StartActiveStage();
   void ReturnToMainMenu();
   void ExitDisconnected();
 
@@ -55,10 +60,10 @@ class NetworkView : public QWidget {
   QVBoxLayout* main_layout_;
   QVBoxLayout* connection_layout_;
   QHBoxLayout* buttons_layout_;
-
   QVBoxLayout* players_layout_;
+
   bool is_first_packet_received_ = false;
-  Player* network_player_ = nullptr;
+  std::shared_ptr<Player> network_player_ = nullptr;
   std::vector<PlayerView*> players_;
-  NetworkController* network_controller_ = nullptr;
+  std::shared_ptr<NetworkController> network_controller_ = nullptr;
 };

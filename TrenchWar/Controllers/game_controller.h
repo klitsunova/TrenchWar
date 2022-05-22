@@ -8,7 +8,7 @@
 #include "Models/GameObjects/soldier.h"
 #include "Models/weapon.h"
 #include "Models/world.h"
-
+#include "Network/helpers.h"
 
 class GameController : public QWidget {
   Q_OBJECT
@@ -20,6 +20,8 @@ class GameController : public QWidget {
   ~GameController() override = default;
 
   void SetWorldObjects();
+  void UpdateEnemyObjects(const PlayerData& data);
+  PlayerData GetDataToSend();
 
  signals:
   void Exit();

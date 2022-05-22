@@ -404,6 +404,14 @@ void World::MoveBullets() {
   }
 }
 
+std::vector<Soldier>* World::GetDefendersData() {
+  std::vector<Soldier>* defenders = new std::vector<Soldier>;
+  for (const auto& soldier : defenders_) {
+    defenders->push_back(*soldier);
+  }
+  return defenders;
+}
+
 World::Landscape::Landscape(const QColor& q_color, int speed) {
   color = q_color;
   move_lag = speed;

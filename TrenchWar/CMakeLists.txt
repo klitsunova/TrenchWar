@@ -78,7 +78,7 @@ set(LIBRARIES
 qt6_add_big_resources(RESOURCES resources.qrc)
 
 add_executable(TrenchWar ${SOURCES} ${RESOURCES})
-add_executable(TrenchWarServer ${SERVER} ${NETWORK})
+add_executable(TrenchWarServer ${SERVER} ${NETWORK} ${MODELS})
 
 target_link_libraries(TrenchWar ${LIBRARIES})
 target_link_libraries(TrenchWarServer ${LIBRARIES})

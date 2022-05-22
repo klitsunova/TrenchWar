@@ -11,15 +11,16 @@ class NetworkController : public QObject {
   Q_OBJECT
 
  public:
-  explicit NetworkController(Player* player);
+  explicit NetworkController(std::shared_ptr<Player> player);
 
   void SendReadyStatus();
-  void SendStartSignal(const QString& json);
-  bool DataUpdated(size_t id);
+  void SendStartSignal();
+  void SendEndPreparationStatus();
 
   QVariant GetData();
-  PlayerData GetPlayersData(size_t id);
-  void SendData(PlayerData player_data);
+  void SendData();
+  PlayerData& GetEnemyData();
+  void SetOwnData(PlayerData data);
 
   size_t GetId();
   bool IsStarted() const;
@@ -29,13 +30,15 @@ class NetworkController : public QObject {
   void StartGame();
   void GotPlayersVector();
   void GotSignalToStart();
+  void GotSignalForActiveStage();
 
  private:
   void ParseData();
-  void DecodePlayersData(const QVariant& q_variant);
 
-  Player* player_;
+  std::shared_ptr<Player> player_;
   QVariant q_variant_;
-  std::vector<PlayerData> players_data_;
+  // std::vector<PlayerData> players_data_;
   bool is_started_ = false;
+  PlayerData own_data_;
+  PlayerData enemy_data_;
 };

@@ -79,19 +79,19 @@ void NetworkView::Connect() {
     return;
   }
   connection_status_->setText("Connected Successfully");
-  network_controller_ = new NetworkController(network_player_);
-  connect(network_controller_,
+  network_controller_ = std::make_shared<NetworkController>(network_player_);
+  connect(network_controller_.get(),
           &NetworkController::StartGame,
           this,
-          &NetworkView::SetUpAndStartGame);
-  connect(network_controller_,
+          &NetworkView::StartGame);
+  connect(network_controller_.get(),
           &NetworkController::GotPlayersVector,
           this,
           &NetworkView::UpdatePlayersVector);
-  connect(network_controller_,
+  connect(network_controller_.get(),
           &NetworkController::GotSignalToStart,
           this,
-          &NetworkView::SetUpAndStartGame);
+          &NetworkView::StartGame);
 }
 
 void NetworkView::ChangeReadyStatus() {
@@ -105,7 +105,7 @@ void NetworkView::ChangeReadyStatus() {
 
 void NetworkView::SetUpAndStartGame() {
   if (!network_controller_->IsStarted()) {
-    // emit StartGame();
+    emit StartGame();
   }
 }
 
@@ -159,11 +159,15 @@ void NetworkView::PrepareForStart() {
       return;
     }
   }
+  network_controller_->SendStartSignal();
   SetUpAndStartGame();
 }
 
-void NetworkView::DecodeGameData() {
+void NetworkView::SetEndPreparationStatus() {
+  network_controller_->SendEndPreparationStatus();
+}
 
+void NetworkView::DecodeGameData() {
 }
 
 void NetworkView::Disconnect() {
@@ -186,7 +190,11 @@ void NetworkView::Disconnect() {
   start_button_ = nullptr;
   players_.clear();
   network_player_->SetReady(false);
-  delete network_controller_;
+  network_controller_.reset();
   network_controller_ = nullptr;
   is_first_packet_received_ = false;
+}
+
+std::shared_ptr<NetworkController> NetworkView::GetNetworkController() const {
+  return network_controller_;
 }

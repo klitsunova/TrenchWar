@@ -65,3 +65,7 @@ void Soldier::TakeDamage(int damage) {
     hit_points_ = 0;
   }
 }
+
+void Soldier::SetId(int id) {
+  id_ = id;
+}

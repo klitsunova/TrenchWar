@@ -1,7 +1,9 @@
 #include "server.h"
 
-#include <QTcpSocket>
+#include <string>
+
 #include <QNetworkInterface>
+#include <QTcpSocket>
 
 Server::Server() : ip_(this),
                    server_(this) {
@@ -17,7 +19,7 @@ Server::Server() : ip_(this),
 void Server::ShowIp() {
   QString ip_addresses;
   QList<QHostAddress> addresses = QNetworkInterface::allAddresses();
-  for (const auto& address : addresses) {
+  for (const auto& address: addresses) {
     ip_addresses += address.toString();
     ip_addresses += '\n';
   }
@@ -25,13 +27,18 @@ void Server::ShowIp() {
 }
 
 void Server::ConnectClient() {
-  players_.emplace_back(server_.nextPendingConnection());
-  players_.back().SetId(players_.size() - 1);
-  connect(players_.back().Socket(),
+  players_.emplace_back(std::make_shared<Player>(server_.nextPendingConnection()));
+  players_.back()->SetId(players_.size() - 1);
+  if (players_.back()->GetId() == 0) {
+    players_.back()->SetType(Player::Type::kDefender);
+  } else {
+    players_.back()->SetType(Player::Type::kAttacker);
+  }
+  connect(players_.back()->Socket(),
           &QTcpSocket::readyRead,
           this,
           &Server::ReceiveClientData);
-  connect(players_.back().Socket(),
+  connect(players_.back()->Socket(),
           &QTcpSocket::disconnected,
           this,
           &Server::DisconnectClient);
@@ -40,17 +47,20 @@ void Server::ConnectClient() {
 
 void Server::DisconnectClient() {
   for (size_t i = 0; i < players_.size(); i++) {
-    if (players_[i].Socket()->state() == QAbstractSocket::UnconnectedState) {
+    if (players_[i]->Socket()->state() == QAbstractSocket::UnconnectedState) {
       players_.erase(players_.begin() + i);
-      if (!players_data_.empty()) {
-        players_data_.erase(players_data_.begin() + i);
+      if (defender_data_.size() != 0) {
+        defender_data_.clear();
+      }
+      if (attacker_data_.size() != 0) {
+        attacker_data_.clear();
       }
     }
   }
   for (size_t i = 0; i < players_.size(); i++) {
-    players_[i].SetId(i);
+    players_[i]->SetId(i);
   }
-  if (players_data_.empty()) {
+  if (defender_data_.size() == 0 && attacker_data_.size() == 0) {
     killTimer(timer_id_);
     timer_id_ = -1;
   }
@@ -62,28 +72,40 @@ void Server::timerEvent(QTimerEvent*) {
 }
 
 void Server::ReceiveClientData() {
-  for (auto& player : players_) {
-    if (player.Socket()->bytesAvailable()) {
-      QByteArray arr = player.Socket()->readAll();
+  for (auto& player: players_) {
+    if (player->Socket()->bytesAvailable()) {
+      QByteArray arr = player->Socket()->readAll();
       QDataStream data_stream(&arr, QIODevice::ReadOnly);
       NetworkData data;
       data_stream >> data.type;
       data_stream >> data.data;
       switch (data.type) {
-        case MessageType::kReadyStatus : {
+        case MessageType::kReadyStatus: {
           size_t id = data.data.toInt();
-          players_[id].SetReady(!players_[id].IsReady());
+          players_[id]->SetReady(!players_[id]->IsReady());
           UpdateClientsInfo();
           break;
         }
-        case MessageType::kSignalToStart : {
-          players_data_.clear();
+        case MessageType::kEndPreparationStatus: {
+          size_t id = data.data.toInt();
+          players_[id]->SetPrepared(true);
+          if (IsAllPrepared()) {
+            SendActiveStageSignal(data.data);
+          }
+          break;
+        }
+        case MessageType::kSignalToStart: {
+          defender_data_.clear();
+          attacker_data_.clear();
           SendStartSignal(data.data);
           break;
         }
-        case MessageType::kPlayersData : {
-          // players_data_[player.GetId()] =
-          //     JsonHelper::DecodePlayersData(data.data.toString());
+        case MessageType::kPlayersData: {
+          if (player->GetType() == Player::Type::kDefender) {
+            defender_data_ = data.data.toString();
+          } else {
+            attacker_data_ = data.data.toString();
+          }
           break;
         }
         case MessageType::kPlayersVector: {
@@ -95,26 +117,47 @@ void Server::ReceiveClientData() {
 }
 
 void Server::UpdateClientsInfo() {
-  Network::WriteDataForAll(
-      &players_,
-      QVariant::fromValue(JsonHelper::EncodePlayersVectorJson(players_)),
-      MessageType::kPlayersVector);
+  Network::WriteDataForAll(players_,
+                           QVariant::fromValue(JsonHelper::EncodePlayersVector(players_)),
+                           MessageType::kPlayersVector);
 }
 
 void Server::SendStartSignal(const QVariant& q_variant) {
-  Network::WriteDataForAll(&players_,
+  Network::WriteDataForAll(players_,
                            q_variant,
                            MessageType::kSignalToStart);
+  defender_data_.clear();
+  attacker_data_.clear();
+}
+
+void Server::SendActiveStageSignal(const QVariant& q_variant) {
+  Network::WriteDataForAll(players_,
+                           q_variant,
+                           MessageType::kEndPreparationStatus);
   if (timer_id_ == -1) {
     timer_id_ = startTimer(Network::kMillisDataSend);
   }
-  players_data_.clear();
-  players_data_.resize(players_.size());
 }
 
 void Server::SendGameStateToAllPlayers() {
-  // QString json = JsonHelper::EncodeServerPlayersData(players_cars_data_);
-  // Network::WriteDataForAll(&players_,
-  //                          QVariant::fromValue(json),
-  //                          MessageType::kPlayersData);
+  for (auto& player: players_) {
+    if (player->GetType() == Player::Type::kDefender) {
+      Network::WriteData(player->Socket(),
+                         QVariant::fromValue(attacker_data_),
+                         MessageType::kPlayersData);
+    } else {
+      Network::WriteData(player->Socket(),
+                         QVariant::fromValue(defender_data_),
+                         MessageType::kPlayersData);
+    }
+  }
+}
+
+bool Server::IsAllPrepared() {
+  for (const auto& player: players_) {
+    if (!player->IsPrepared()) {
+      return false;
+    }
+  }
+  return true;
 }

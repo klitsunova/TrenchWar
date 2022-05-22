@@ -4,6 +4,9 @@
 
 class Player {
  public:
+  enum class Type { kDefender,
+                    kAttacker };
+
   explicit Player(QTcpSocket* p_socket);
 
   QTcpSocket* Socket();
@@ -14,8 +17,20 @@ class Player {
   bool IsReady() const;
   void SetReady(bool is_ready);
 
+  bool IsPrepared() const;
+  void SetPrepared(bool is_prepared);
+
+  Type GetType() const;
+  void SetType(Type type);
+
+  bool IsDataUpdated() const;
+  void SetDataUpdated(bool state);
+
  private:
   size_t id_;
+
   QTcpSocket* socket_;
   bool is_ready_ = false;
+  bool is_prepared_ = false;
+  Type type_;
 };

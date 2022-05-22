@@ -22,9 +22,11 @@ class Soldier : public GameObject {
   ~Soldier() override = default;
 
   Health GetHitPoints() const;
+
   void MoveSoldier(QSize);
 
   int GetId() const;
+  void SetId(int id);
   Type GetType() const;
   int GetVisibilityRange() const;
 

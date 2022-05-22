@@ -23,7 +23,9 @@ class EventsController : public QWidget {
   explicit EventsController(QWidget* parent = nullptr);
   ~EventsController() override = default;
 
-  void Start();
+  void StartPreparationStage();
+  void SetPreparedStatus();
+  void StartActiveStage();
   void HideGame();
   void SetFullScreen(bool is_fullscreen);
 
@@ -35,6 +37,7 @@ class EventsController : public QWidget {
 
  signals:
   void ShowPauseMenu();
+  void ReturnToMainMenu();
 
  private:
   static constexpr int kTimerInterval{10};
@@ -46,6 +49,7 @@ class EventsController : public QWidget {
   std::unique_ptr<QBasicTimer> timer_;
   std::unique_ptr<GameController> game_controller_;
   std::unique_ptr<NetworkView> network_view_;
+  std::shared_ptr<NetworkController> network_controller_;
 
   Stage game_stage = Stage::kPreparation;
 };
