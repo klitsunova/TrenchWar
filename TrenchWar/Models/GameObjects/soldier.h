@@ -16,7 +16,7 @@ class Soldier : public GameObject {
   enum class Type { kDefender,
                     kAttacker };
 
-  Soldier();
+  explicit Soldier(Type);
   explicit Soldier(const QPoint&, Type);
 
   ~Soldier() override = default;

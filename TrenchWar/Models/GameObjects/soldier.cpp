@@ -1,9 +1,9 @@
 #include "soldier.h"
 
-Soldier::Soldier()
+Soldier::Soldier(Type type)
     : GameObject() {
   picture_ = PixmapLoader::GetSoldier();
-  type_ = Type::kAttacker;
+  type_ = type;
 }
 
 Soldier::Soldier(const QPoint& point, Type type)

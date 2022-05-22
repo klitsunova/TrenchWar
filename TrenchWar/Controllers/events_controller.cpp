@@ -17,8 +17,9 @@ EventsController::EventsController(QWidget* parent) {
 }
 
 void EventsController::timerEvent(QTimerEvent*) {
-  // world_->MoveSoldiers();
-  // view_->UpdateMap();
+  world_->MoveSoldiers();
+  world_->MoveBullets();
+  view_->UpdateMap();
 }
 
 void EventsController::StartTimer() {

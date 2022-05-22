@@ -26,33 +26,48 @@ void MapView::SetScale(int scale) {
   scale_ = scale;
 }
 
+void MapView::DrawObject(QPainter& painter, const QPoint& pos,
+                         const QSize& size, const QPixmap& picture) {
+  painter.save();
+  int window_width = painter.window().width() - 1;
+  int window_height = painter.window().height() - 1;
+  QPoint screen_point;
+  screen_point.setX((window_width * pos.x())
+                    / world_->GetSize().width());
+  screen_point.setY((window_height * pos.y())
+                    / world_->GetSize().height());
+
+  QPoint top_point = QPoint(screen_point.x() - size.width() / 2,
+                            screen_point.y() - size.height() / 2);
+  QPoint bottom_point = QPoint(screen_point.x() + size.width() / 2,
+                               screen_point.y() + size.height() / 2);
+  painter.drawPixmap(QRect(top_point, bottom_point),
+                     picture);
+  painter.restore();
+}
+
 void MapView::paintEvent(QPaintEvent*) {
-  QPainter painter(this);
+  QPixmap buffer(this->size());
+  QPainter painter;
+  painter.begin(&buffer);
   const std::vector<std::shared_ptr<GameObject>>& objects =
       world_->GetGameObjects();
   painter.save();
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
+
   painter.drawPixmap(QRect(0, 0,
                            window_width, window_height),
                      world_->GetPixmap());
+
   for (const auto& object : objects) {
-    int object_width = object->GetSize().width();
-    int object_height = object->GetSize().height();
-
-    QPoint screen_point;
-    QPoint pos = object->GetPosition();
-    screen_point.setX((window_width * (2 * pos.x() + 1))
-                      / (2 * world_->GetSize().width()));
-    screen_point.setY((window_height * (2 * pos.y() + 1))
-                      / (2 * world_->GetSize().height()));
-
-    QPoint top_point = QPoint(screen_point.x() - object_width / 2,
-                              screen_point.y() - object_height / 2);
-    QPoint bottom_point = QPoint(top_point.x() + object_width,
-                                 top_point.y() + object_height);
-    painter.drawPixmap(QRect(top_point, bottom_point),
-                       object->GetPixmap());
+    DrawObject(painter, object->GetPosition(),
+               object->GetSize(), object->GetPixmap());
   }
   painter.restore();
+  painter.end();
+
+  painter.begin(this);
+  painter.drawPixmap(this->rect(), buffer);
+  painter.end();
 }
