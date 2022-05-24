@@ -7,6 +7,7 @@
 #include <functional>
 #include <memory>
 #include <queue>
+#include <set>
 #include <stack>
 #include <string>
 #include <vector>
@@ -25,12 +26,13 @@ class World {
   explicit World(const QString& path);
 
   ~World() = default;
+  // const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
+  // std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
 
-  const std::vector<std::shared_ptr<GameObject>>& GetGameObjects() const;
-  std::vector<std::shared_ptr<GameObject>>& GetGameObjects();
-
-  const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
-  std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
+  const std::vector<std::shared_ptr<Soldier>>& GetDefenders() const;
+  const std::vector<std::shared_ptr<Soldier>>& GetAttackers() const;
+  const std::vector<std::shared_ptr<TerrainObject>>& GetTerrainObjects() const;
+  const std::vector<std::shared_ptr<Bullet>>& GetBullets() const;
 
   const QSize& GetSize() const;
 
@@ -42,7 +44,7 @@ class World {
   void AddSoldier(Soldier::Type);
   void AddSoldier(const QPoint&, Soldier::Type);
   void AddTerrainObject();
-  void AddBullet(const QPoint&, const QPoint&, int damage = 1);
+  void AddBullet(const QPoint&, const QPoint&, Soldier::Type, int damage = 100);
 
   void UpdateDistances();
 
@@ -58,8 +60,11 @@ class World {
   };
 
   struct Cell {
-    std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
+    std::vector<std::shared_ptr<TerrainObject>> terrain_objects_;
     Landscape landscape{Landscape(Qt::white, 0)};
+
+    std::set<std::shared_ptr<Soldier>> attackers;
+    std::set<std::shared_ptr<Soldier>> defenders;
 
     bool used;
     int ground_distance;
@@ -69,11 +74,10 @@ class World {
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
-  std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<Soldier>> defenders_;
   std::vector<std::shared_ptr<Soldier>> attackers_;
   std::vector<std::shared_ptr<Bullet>> bullets_;
-  std::vector<std::shared_ptr<GameObject>> game_objects_;
+  std::vector<std::shared_ptr<TerrainObject>> terrain_objects_;
   bool is_need_update_defenders_{true};
   bool is_need_update_attackers_{true};
 
@@ -81,6 +85,7 @@ class World {
 
   QPixmap DrawWorld() const;
 
-  void UpdateAirDistances();
+  // void UpdateAirDistances();
   void UpdateGroundDistances();
+  void DamageArea(int, int, int, int);
 };

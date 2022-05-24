@@ -1,9 +1,11 @@
 #include "bullet.h"
 
-Bullet::Bullet(const QPoint& from, const QPoint& to, int damage)
+Bullet::Bullet(const QPoint& from, const QPoint& to,
+               Soldier::Type type, int damage)
     : GameObject(from),
       from_(from),
       to_(to),
+      type_(type),
       damage_(damage) {
   size_ = image_sizes::kBulletImage;
   picture_ = PixmapLoader::GetBullet();
@@ -22,11 +24,18 @@ const QPoint& Bullet::GetToPosition() const {
 }
 
 int Bullet::GetDamage() const {
+  assert(!IsUsed());
   return damage_;
 }
 
+Soldier::Type Bullet::GetType() const {
+  return type_;
+}
+
 void Bullet::Move() {
+  assert(!IsUsed());
   if (to_ == position_) {
+    is_used_ = true;
     return;
   }
 
@@ -45,4 +54,12 @@ void Bullet::Move() {
       + moving_progress_
           * sqrt(square_dy / static_cast<double>(square_dx + square_dy));
   position_ = QPoint(x, y);
+}
+
+bool Bullet::IsUsed() const {
+  return is_used_;
+}
+
+void Bullet::MakeUsed() {
+  is_used_ = true;
 }

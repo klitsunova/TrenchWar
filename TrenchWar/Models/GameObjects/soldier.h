@@ -37,6 +37,8 @@ class Soldier : public GameObject {
 
   void TakeDamage(int damage);
 
+  bool IsDead() const;
+
  private:
   std::vector<Weapon> weapons_;
   int id_;
