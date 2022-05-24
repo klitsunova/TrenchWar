@@ -7,14 +7,11 @@ World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
   // TODO(AZYAVCHIKOV) temporary code for demonstration
-  for (int i = 200; i <= 700; i += 100) {
-    AddBullet(QPoint(200, 200), QPoint(700, i), Soldier::Type::kDefender);
-    AddBullet(QPoint(200, 200), QPoint(i, 700), Soldier::Type::kDefender);
+  for (int i = 200; i <= 500; i += 100) {
+    AddBullet(QPoint(200, 200), QPoint(500, i), Soldier::Type::kDefender);
+    AddBullet(QPoint(200, 200), QPoint(i, 500), Soldier::Type::kDefender);
   }
-  // AddBullet(QPoint(1, 0), QPoint(1, 7), Soldier::Type::kDefender);
-  // AddBullet(QPoint(1, 0), QPoint(1, 7), Soldier::Type::kDefender);
-  // AddBullet(QPoint(1, 0), QPoint(1, 7), Soldier::Type::kDefender);
-  // AddBullet(QPoint(1, 0), QPoint(1, 7), Soldier::Type::kDefender);
+  AddTerrainObject();
 }
 
 void World::AddSoldier(Soldier::Type type) {
@@ -57,6 +54,10 @@ void World::AddTerrainObject() {
 
 void World::AddBullet(const QPoint& from, const QPoint& to,
                       Soldier::Type type, int damage) {
+  assert(to.y() >= 0 && to.y() < cells_.size());
+  assert(to.x() >= 0 && to.x() < cells_[to.y()].size());
+  assert(from.y() >= 0 && from.y() < cells_.size());
+  assert(from.x() >= 0 && from.x() < cells_[from.y()].size());
   std::shared_ptr<Bullet> new_bullet =
       std::make_shared<Bullet>(from, to, type, damage);
   bullets_.push_back(new_bullet);
@@ -98,17 +99,15 @@ const QPixmap& World::GetPixmap() const {
   return picture_;
 }
 
-void World::UpdateMap() {
-  if (is_need_update_defenders_) {
+void World::Update() {
+  if (is_need_update_towers_) {
     UpdateGroundDistances();
   }
-
-  is_need_update_defenders_ = false;
-  is_need_update_attackers_ = false;
+  is_need_update_towers_ = false;
 }
 
 void World::MoveSoldiers() {
-  UpdateMap();
+  Update();
 
   auto Lag = [&](int x, int y) {
     return cells_[y][x].landscape.move_lag;
@@ -207,9 +206,6 @@ void World::MoveSoldiers() {
   // // TODO(AZYAVCHIKOV) - maybe not best solution
   // std::shuffle(commands.begin(), commands.end(),
   //              std::mt19937(std::random_device()()));
-
-  bool updated = false;
-
   for (int i = 0; i < attackers_.size(); ++i) {
     if (attackers_[i]->IsDead()) continue;
     attackers_[i]->MakeTick();
@@ -218,10 +214,6 @@ void World::MoveSoldiers() {
     int y = attackers_[i]->GetPosition().y();
     int distance = Distance(x, y);
     if (distance == 0) continue;
-    if (!updated) {
-      updated = true;
-      UpdateMap();
-    }
     cells_[y][x].attackers.erase(attackers_[i]);
     // std::shuffle(commands.begin() + 4, commands.end(),
     //              std::mt19937(std::random_device()()));
@@ -312,10 +304,9 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& defender: defenders_) {
-    if (defender->IsDead()) continue;
-    int x = defender->GetPosition().x();
-    int y = defender->GetPosition().y();
+  for (auto& object: terrain_objects_) {
+    int x = object->GetPosition().x();
+    int y = object->GetPosition().y();
     cells_[y][x].ground_distance = 0;
     latest_at_ground.push(std::make_pair(x, y));
   }
@@ -355,20 +346,16 @@ void World::MoveBullets() {
 
   // TODO(AZYAVCHIKOV) temporary code
   int bullet_radius = 2;
+  int repeat = 4;
 
-  auto start = std::chrono::system_clock::now();
   for (int i = 0; i < bullets_.size(); ++i) {
-    if (bullets_[i]->IsUsed()) continue;
-    bullets_[i]->Move();
-    DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
-               bullet_radius, i);
-    if (bullets_[i]->IsUsed()) continue;
-    bullets_[i]->Move();
-    DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
-               bullet_radius, i);
+    for (int j = 0; j < repeat; ++j) {
+      if (bullets_[i]->IsUsed()) continue;
+      bullets_[i]->Move();
+      DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
+                 bullet_radius, i);
+    }
   }
-
-  auto end = std::chrono::system_clock::now();
 }
 
 void World::DamageArea(int x, int y, int radius, int bullet_index) {
@@ -389,8 +376,6 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
         bullets_[bullet_index]->MakeUsed();
         if ((*cells_[i][j].defenders.begin())->IsDead()) {
           cells_[i][j].defenders.erase(cells_[i][j].defenders.begin());
-
-          is_need_update_defenders_ = true;
         }
         return;
       } else if (bullets_[bullet_index]->GetType()
@@ -401,11 +386,62 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
         bullets_[bullet_index]->MakeUsed();
         if ((*cells_[i][j].attackers.begin())->IsDead()) {
           cells_[i][j].attackers.erase(cells_[i][j].attackers.begin());
-          is_need_update_attackers_ = true;
         }
         return;
       }
     }
+  }
+}
+
+void World::MakeShot(std::shared_ptr<Soldier>& soldier) {
+  assert(!soldier->IsDead());
+  int nearest_index = -1;
+  int64_t from_x = soldier->GetPosition().x();
+  int64_t from_y = soldier->GetPosition().y();
+  int64_t dist = INT64_MAX, new_dist;
+  int64_t to_x, to_y;
+
+  if (soldier->GetType() == Soldier::Type::kDefender) {
+    for (int i = 0; i < attackers_.size(); ++i) {
+      if (attackers_[i]->IsDead()) continue;
+      to_x = attackers_[i]->GetPosition().x();
+      to_y = attackers_[i]->GetPosition().y();
+      new_dist =
+          (from_x - to_x) * (from_x - to_x) + (from_y - to_y) * (from_y - to_y);
+      if (new_dist < dist) {
+        dist = new_dist;
+        nearest_index = i;
+      }
+    }
+    if (nearest_index == -1) return;
+    AddBullet(QPoint(from_x, from_y), QPoint(to_x, to_y),
+              Soldier::Type::kAttacker);
+  } else if (soldier->GetType() == Soldier::Type::kAttacker) {
+    for (int i = 0; i < defenders_.size(); ++i) {
+      if (defenders_[i]->IsDead()) continue;
+      to_x = defenders_[i]->GetPosition().x();
+      to_y = defenders_[i]->GetPosition().y();
+      new_dist =
+          (from_x - to_x) * (from_x - to_x) + (from_y - to_y) * (from_y - to_y);
+      if (new_dist < dist) {
+        dist = new_dist;
+        nearest_index = i;
+      }
+    }
+    if (nearest_index == -1) return;
+    AddBullet(QPoint(from_x, from_y), QPoint(to_x, to_y),
+              Soldier::Type::kDefender);
+  }
+}
+
+void World::MakeShots() {
+  for (int i = 0; i < attackers_.size(); ++i) {
+    if (attackers_[i]->IsDead()) continue;
+    MakeShot(attackers_[i]);
+  }
+  for (int i = 0; i < defenders_.size(); ++i) {
+    if (defenders_[i]->IsDead()) continue;
+    MakeShot(defenders_[i]);
   }
 }
 

@@ -26,8 +26,6 @@ class World {
   explicit World(const QString& path);
 
   ~World() = default;
-  // const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
-  // std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
 
   const std::vector<std::shared_ptr<Soldier>>& GetDefenders() const;
   const std::vector<std::shared_ptr<Soldier>>& GetAttackers() const;
@@ -46,11 +44,12 @@ class World {
   void AddTerrainObject();
   void AddBullet(const QPoint&, const QPoint&, Soldier::Type, int damage = 100);
 
-  void UpdateMap();
+  void Update();
 
   void MoveSoldiers();
-
   void MoveBullets();
+
+  void MakeShots();
 
  private:
   struct Landscape {
@@ -77,14 +76,15 @@ class World {
   std::vector<std::shared_ptr<Soldier>> attackers_;
   std::vector<std::shared_ptr<Bullet>> bullets_;
   std::vector<std::shared_ptr<TerrainObject>> terrain_objects_;
-  bool is_need_update_defenders_{true};
-  bool is_need_update_attackers_{true};
+  bool is_need_update_towers_{true};
 
   void LoadMap(const QString& path);
 
   QPixmap DrawWorld() const;
 
-  // void UpdateAirDistances();
   void UpdateGroundDistances();
+
   void DamageArea(int, int, int, int);
+
+  void MakeShot(std::shared_ptr<Soldier>&);
 };
