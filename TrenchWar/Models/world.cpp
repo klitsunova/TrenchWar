@@ -6,11 +6,6 @@
 World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
-  // TODO(AZYAVCHIKOV) temporary code for demonstration
-  for (int i = 200; i <= 500; i += 100) {
-    AddBullet(QPoint(200, 200), QPoint(500, i), Soldier::Type::kDefender);
-    AddBullet(QPoint(200, 200), QPoint(i, 500), Soldier::Type::kDefender);
-  }
   AddTerrainObject();
 }
 
@@ -343,9 +338,8 @@ void World::UpdateGroundDistances() {
 }
 
 void World::MoveBullets() {
-
   // TODO(AZYAVCHIKOV) temporary code
-  int bullet_radius = 2;
+  int bullet_radius = 3;
   int repeat = 4;
 
   for (int i = 0; i < bullets_.size(); ++i) {

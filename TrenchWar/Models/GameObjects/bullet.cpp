@@ -37,10 +37,9 @@ void Bullet::Move() {
   int square_dx = (to_.x() - from_.x()) * (to_.x() - from_.x());
   int square_dy = (to_.y() - from_.y()) * (to_.y() - from_.y());
 
+  moving_progress_ = abs(moving_progress_) + 1;
   if ((position_.x() > to_.x()) || (position_.y() > to_.y())) {
-    --moving_progress_;
-  } else {
-    ++moving_progress_;
+    moving_progress_ *= -1;
   }
   int x = from_.x()
       + moving_progress_
