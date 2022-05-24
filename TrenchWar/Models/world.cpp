@@ -11,6 +11,10 @@ World::World(const QString& path) {
     AddBullet(QPoint(200, 200), QPoint(700, i), Soldier::Type::kDefender);
     AddBullet(QPoint(200, 200), QPoint(i, 700), Soldier::Type::kDefender);
   }
+  // AddBullet(QPoint(1, 0), QPoint(1, 7), Soldier::Type::kDefender);
+  // AddBullet(QPoint(1, 0), QPoint(1, 7), Soldier::Type::kDefender);
+  // AddBullet(QPoint(1, 0), QPoint(1, 7), Soldier::Type::kDefender);
+  // AddBullet(QPoint(1, 0), QPoint(1, 7), Soldier::Type::kDefender);
 }
 
 void World::AddSoldier(Soldier::Type type) {
@@ -94,10 +98,9 @@ const QPixmap& World::GetPixmap() const {
   return picture_;
 }
 
-void World::UpdateDistances() {
+void World::UpdateMap() {
   if (is_need_update_defenders_) {
     UpdateGroundDistances();
-    // UpdateAirDistances();
   }
 
   is_need_update_defenders_ = false;
@@ -105,7 +108,7 @@ void World::UpdateDistances() {
 }
 
 void World::MoveSoldiers() {
-  UpdateDistances();
+  UpdateMap();
 
   auto Lag = [&](int x, int y) {
     return cells_[y][x].landscape.move_lag;
@@ -200,18 +203,25 @@ void World::MoveSoldiers() {
   std::vector<Command> commands({Command::MoveLeftDown, Command::MoveLeftUp,
                                  Command::MoveRightUp, Command::MoveRightDown,
                                  Command::MoveLeft, Command::MoveRight,
-                                 Command::MoveUp, Command::MoveDown});
+                                 Command::MoveUp, Command::MoveDown,});
   // // TODO(AZYAVCHIKOV) - maybe not best solution
   // std::shuffle(commands.begin(), commands.end(),
   //              std::mt19937(std::random_device()()));
 
+  bool updated = false;
+
   for (int i = 0; i < attackers_.size(); ++i) {
+    if (attackers_[i]->IsDead()) continue;
     attackers_[i]->MakeTick();
     if (attackers_[i]->GetTimeLag() > 0) continue;
     int x = attackers_[i]->GetPosition().x();
     int y = attackers_[i]->GetPosition().y();
     int distance = Distance(x, y);
     if (distance == 0) continue;
+    if (!updated) {
+      updated = true;
+      UpdateMap();
+    }
     cells_[y][x].attackers.erase(attackers_[i]);
     // std::shuffle(commands.begin() + 4, commands.end(),
     //              std::mt19937(std::random_device()()));
@@ -284,55 +294,6 @@ QPixmap World::DrawWorld() const {
   return picture;
 }
 
-// void World::UpdateAirDistances() {
-//   for (int i = 0; i < cells_.size(); ++i) {
-//     for (int j = 0; j < cells_[i].size(); ++j) {
-//       cells_[i][j].used = false;
-//       cells_[i][j].air_distance = INT32_MAX;
-//     }
-//   }
-//
-//   std::queue<std::pair<int, int>> latest_at_air;
-//
-//   for (auto& defender: defenders_) {
-//     if (defender.->IsDead) continue;
-//     int x = defender->GetPosition().x();
-//     int y = defender->GetPosition().y();
-//     cells_[y][x].used = true;
-//     cells_[y][x].air_distance = 0;
-//     latest_at_air.push(std::make_pair(x, y));
-//   }
-//
-//   auto push_if =
-//       [&](int x, int y, int dist, bool condition = true) {
-//         if (!condition || cells_[y][x].used) {
-//           return;
-//         }
-//         if (cells_[y][x].air_distance > dist + 1) {
-//           cells_[y][x].air_distance = dist + 1;
-//           cells_[y][x].used = true;
-//           latest_at_air.push(std::make_pair(x, y));
-//         }
-//       };
-//
-//   while (!latest_at_air.empty()) {
-//     int x = latest_at_air.front().first;
-//     int y = latest_at_air.front().second;
-//     int current_dist = cells_[y][x].air_distance;
-//
-//     // left neighbor
-//     push_if(x - 1, y, current_dist, (x != 0));
-//     // right neighbor
-//     push_if(x + 1, y, current_dist, (x != cells_[y].size() - 1));
-//     // upper neighbor
-//     push_if(x, y - 1, current_dist, (y != 0));
-//     // lower neighbor
-//     push_if(x, y + 1, current_dist, (y != cells_.size() - 1));
-//
-//     latest_at_air.pop();
-//   }
-// }
-
 void World::UpdateGroundDistances() {
   for (int i = 0; i < cells_.size(); ++i) {
     for (int j = 0; j < cells_[i].size(); ++j) {
@@ -391,23 +352,26 @@ void World::UpdateGroundDistances() {
 }
 
 void World::MoveBullets() {
-  // TODO(AZYAVCHIKOV) temporary code
-  int bullet_radius = 4;
 
-  for (int i = bullets_.size() - 1; i >= 0; --i) {
+  // TODO(AZYAVCHIKOV) temporary code
+  int bullet_radius = 2;
+
+  auto start = std::chrono::system_clock::now();
+  for (int i = 0; i < bullets_.size(); ++i) {
     if (bullets_[i]->IsUsed()) continue;
     bullets_[i]->Move();
     DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
                bullet_radius, i);
-    if (bullets_[i]->GetPosition() == bullets_[i]->GetToPosition()) {
-      bullets_[i]->MakeUsed();
-    }
+    if (bullets_[i]->IsUsed()) continue;
+    bullets_[i]->Move();
+    DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
+               bullet_radius, i);
   }
+
+  auto end = std::chrono::system_clock::now();
 }
 
 void World::DamageArea(int x, int y, int radius, int bullet_index) {
-  assert(!bullets_[bullet_index]->IsUsed());
-
   QPoint top(0, 0);
   top.setX(std::max(top.x(), x - radius));
   top.setY(std::max(top.y(), y - radius));
@@ -425,6 +389,7 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
         bullets_[bullet_index]->MakeUsed();
         if ((*cells_[i][j].defenders.begin())->IsDead()) {
           cells_[i][j].defenders.erase(cells_[i][j].defenders.begin());
+
           is_need_update_defenders_ = true;
         }
         return;

@@ -24,7 +24,6 @@ const QPoint& Bullet::GetToPosition() const {
 }
 
 int Bullet::GetDamage() const {
-  assert(!IsUsed());
   return damage_;
 }
 
@@ -34,10 +33,6 @@ Soldier::Type Bullet::GetType() const {
 
 void Bullet::Move() {
   assert(!IsUsed());
-  if (to_ == position_) {
-    is_used_ = true;
-    return;
-  }
 
   int square_dx = (to_.x() - from_.x()) * (to_.x() - from_.x());
   int square_dy = (to_.y() - from_.y()) * (to_.y() - from_.y());
@@ -54,6 +49,9 @@ void Bullet::Move() {
       + moving_progress_
           * sqrt(square_dy / static_cast<double>(square_dx + square_dy));
   position_ = QPoint(x, y);
+  if (to_ == position_) {
+    is_used_ = true;
+  }
 }
 
 bool Bullet::IsUsed() const {

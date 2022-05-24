@@ -32,10 +32,10 @@ void MapView::DrawObject(QPainter& painter, const QPoint& pos,
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
   QPoint screen_point;
-  screen_point.setX((window_width * pos.x())
-                        / world_->GetSize().width());
-  screen_point.setY((window_height * pos.y())
-                        / world_->GetSize().height());
+  screen_point.setX((window_width * (2 * pos.x() + 1))
+                        / (2 * world_->GetSize().width()));
+  screen_point.setY((window_height * (2 * pos.y() + 1))
+                        / (2 * world_->GetSize().height()));
 
   QPoint top_point = QPoint(screen_point.x() - size.width() / 2,
                             screen_point.y() - size.height() / 2);
@@ -57,7 +57,7 @@ void MapView::paintEvent(QPaintEvent*) {
   int window_height = painter.window().height() - 1;
 
   painter.drawPixmap(QRect(0, 0,
-                           window_width, window_height),
+                           window_width + 1, window_height + 1),
                      world_->GetPixmap());
   for (const auto& object: terrain_objects) {
     DrawObject(painter, object->GetPosition(),

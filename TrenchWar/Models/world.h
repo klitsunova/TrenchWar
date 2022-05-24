@@ -46,7 +46,7 @@ class World {
   void AddTerrainObject();
   void AddBullet(const QPoint&, const QPoint&, Soldier::Type, int damage = 100);
 
-  void UpdateDistances();
+  void UpdateMap();
 
   void MoveSoldiers();
 
@@ -67,8 +67,7 @@ class World {
     std::set<std::shared_ptr<Soldier>> defenders;
 
     bool used;
-    int ground_distance;
-    int air_distance;
+    int64_t ground_distance;
   };
 
   QSize size_;
