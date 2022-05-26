@@ -389,7 +389,7 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
 void World::MakeShots() {
   for (int i = 0; i < attackers_.size(); ++i) {
     if (attackers_[i]->IsDead()) continue;
-    auto nearest = FindNearest(defenders_, defenders_[i]->GetPosition());
+    auto nearest = FindNearest(defenders_, attackers_[i]->GetPosition());
     if (!nearest.has_value()) continue;
     auto bullet = attackers_[i]->Fire(attackers_[i]->GetPosition(),
                                       nearest.value()->GetPosition());
@@ -408,6 +408,7 @@ void World::MakeShots() {
     }
   }
 }
+
 std::optional<std::shared_ptr<Soldier>> World::FindNearest(
     const std::vector<std::shared_ptr<Soldier>>& soldiers,
     const QPoint& point) const {
