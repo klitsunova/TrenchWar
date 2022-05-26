@@ -59,14 +59,14 @@ void MapView::paintEvent(QPaintEvent*) {
   painter.drawPixmap(QRect(0, 0,
                            window_width + 1, window_height + 1),
                      world_->GetPixmap());
-  for (const auto& object: terrain_objects) {
+  for (const auto& object : terrain_objects) {
     DrawObject(painter, object->GetPosition(),
                object->GetSize(), object->GetPixmap());
   }
 
   const std::vector<std::shared_ptr<Soldier>>& defenders =
       world_->GetDefenders();
-  for (const auto& soldier: defenders) {
+  for (const auto& soldier : defenders) {
     if (soldier->IsDead()) continue;
     DrawObject(painter, soldier->GetPosition(),
                soldier->GetSize(), soldier->GetPixmap());
@@ -74,7 +74,7 @@ void MapView::paintEvent(QPaintEvent*) {
 
   const std::vector<std::shared_ptr<Soldier>>& attackers =
       world_->GetAttackers();
-  for (const auto& soldier: attackers) {
+  for (const auto& soldier : attackers) {
     if (soldier->IsDead()) continue;
     DrawObject(painter, soldier->GetPosition(),
                soldier->GetSize(), soldier->GetPixmap());
@@ -82,7 +82,7 @@ void MapView::paintEvent(QPaintEvent*) {
 
   const std::vector<std::shared_ptr<Bullet>>& bullets =
       world_->GetBullets();
-  for (const auto& bullet: bullets) {
+  for (const auto& bullet : bullets) {
     if (bullet->IsUsed()) continue;
     DrawObject(painter, bullet->GetPosition(),
                bullet->GetSize(), bullet->GetPixmap());

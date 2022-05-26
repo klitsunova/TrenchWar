@@ -7,7 +7,7 @@
 #include "Models/world.h"
 
 class MapView : public QWidget {
-  Q_OBJECT
+ Q_OBJECT
  public:
   explicit MapView(QWidget* parent = nullptr,
                    const std::shared_ptr<World>& world = nullptr);

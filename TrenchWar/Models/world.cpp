@@ -14,11 +14,13 @@ void World::AddSoldier(Soldier::Type type) {
   new_object->SetRandomPosition(size_);
   if (type == Soldier::Type::kAttacker) {
     attackers_.push_back(new_object);
-    cells_[new_object->GetPosition().y()][new_object->GetPosition().x()].attackers.insert(
+    cells_[new_object->GetPosition().y()]
+    [new_object->GetPosition().x()].attackers.insert(
         new_object);
   } else if (type == Soldier::Type::kDefender) {
     defenders_.push_back(new_object);
-    cells_[new_object->GetPosition().y()][new_object->GetPosition().x()].defenders.insert(
+    cells_[new_object->GetPosition().y()]
+    [new_object->GetPosition().x()].defenders.insert(
         new_object);
   }
 }
@@ -29,11 +31,13 @@ void World::AddSoldier(const QPoint& position, Soldier::Type type) {
   auto new_object = std::make_shared<Soldier>(position, type);
   if (type == Soldier::Type::kAttacker) {
     attackers_.push_back(new_object);
-    cells_[new_object->GetPosition().y()][new_object->GetPosition().x()].attackers.insert(
+    cells_[new_object->GetPosition().y()]
+    [new_object->GetPosition().x()].attackers.insert(
         new_object);
   } else if (type == Soldier::Type::kDefender) {
     defenders_.push_back(new_object);
-    cells_[new_object->GetPosition().y()][new_object->GetPosition().x()].defenders.insert(
+    cells_[new_object->GetPosition().y()]
+    [new_object->GetPosition().x()].defenders.insert(
         new_object);
   }
 
@@ -66,7 +70,8 @@ const std::vector<std::shared_ptr<Soldier>>& World::GetAttackers() const {
   return attackers_;
 }
 
-const std::vector<std::shared_ptr<TerrainObject>>& World::GetTerrainObjects() const {
+const std::vector<std::shared_ptr<TerrainObject>>&
+World::GetTerrainObjects() const {
   return terrain_objects_;
 }
 
@@ -197,7 +202,7 @@ void World::MoveSoldiers() {
   std::vector<Command> commands({Command::MoveLeftDown, Command::MoveLeftUp,
                                  Command::MoveRightUp, Command::MoveRightDown,
                                  Command::MoveLeft, Command::MoveRight,
-                                 Command::MoveUp, Command::MoveDown,});
+                                 Command::MoveUp, Command::MoveDown});
   // // TODO(AZYAVCHIKOV) - maybe not best solution
   // std::shuffle(commands.begin(), commands.end(),
   //              std::mt19937(std::random_device()()));
@@ -299,7 +304,7 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& object: terrain_objects_) {
+  for (auto& object : terrain_objects_) {
     int x = object->GetPosition().x();
     int y = object->GetPosition().y();
     cells_[y][x].ground_distance = 0;
