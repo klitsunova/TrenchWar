@@ -29,8 +29,6 @@ class World {
   ~World() = default;
 
   const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
-  // const std::vector<std::shared_ptr<Soldier>>& GetDefenders() const;
-  // const std::vector<std::shared_ptr<Soldier>>& GetAttackers() const;
   const std::vector<std::shared_ptr<TerrainObject>>& GetTerrainObjects() const;
   const std::vector<std::shared_ptr<Bullet>>& GetBullets() const;
 
