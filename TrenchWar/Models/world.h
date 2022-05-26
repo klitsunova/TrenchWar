@@ -28,8 +28,7 @@ class World {
 
   ~World() = default;
 
-  const std::vector<std::shared_ptr<Soldier>>& GetDefenders() const;
-  const std::vector<std::shared_ptr<Soldier>>& GetAttackers() const;
+  const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
   const std::vector<std::shared_ptr<TerrainObject>>& GetTerrainObjects() const;
   const std::vector<std::shared_ptr<Bullet>>& GetBullets() const;
 
@@ -63,9 +62,7 @@ class World {
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
     Landscape landscape{Landscape(Qt::white, 0)};
 
-    std::set<std::shared_ptr<Soldier>> attackers;
-    std::set<std::shared_ptr<Soldier>> defenders;
-
+    std::set<std::shared_ptr<Soldier>> soldiers;
     bool used;
     int64_t ground_distance;
   };
@@ -73,8 +70,7 @@ class World {
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
-  std::vector<std::shared_ptr<Soldier>> defenders_;
-  std::vector<std::shared_ptr<Soldier>> attackers_;
+  std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<Bullet>> bullets_;
   std::vector<std::shared_ptr<TerrainObject>> terrain_objects_;
   bool is_need_update_towers_{true};
@@ -88,6 +84,5 @@ class World {
   void DamageArea(int, int, int, int);
 
   std::optional<std::shared_ptr<Soldier>> FindNearest(
-      const std::vector<std::shared_ptr<Soldier>>&,
-      const QPoint&) const;
+      const std::shared_ptr<Soldier>&) const;
 };
