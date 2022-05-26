@@ -6,67 +6,73 @@
 World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
-  // TODO(AZYAVCHIKOV) temporary code for demonstration
-  for (int i = 200; i <= 700; i += 100) {
-    AddBullet(QPoint(200, 200), QPoint(700, i));
-    AddBullet(QPoint(200, 200), QPoint(i, 700));
-  }
-}
-
-const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
-  return soldiers_;
-}
-
-std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() {
-  return soldiers_;
+  AddTerrainObject();
 }
 
 void World::AddSoldier(Soldier::Type type) {
   auto new_object = std::make_shared<Soldier>(type);
   new_object->SetRandomPosition(size_);
-  soldiers_.push_back(new_object);
-  if (type == Soldier::Type::kDefender) {
-    defenders_.push_back(new_object);
-  } else if (type == Soldier::Type::kAttacker) {
+  auto& cell =
+      cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
+  if (type == Soldier::Type::kAttacker) {
     attackers_.push_back(new_object);
+    cell.attackers.insert(new_object);
+  } else if (type == Soldier::Type::kDefender) {
+    defenders_.push_back(new_object);
+    cell.defenders.insert(new_object);
   }
-  game_objects_.push_back(new_object);
 }
 
 void World::AddSoldier(const QPoint& position, Soldier::Type type) {
   assert(position.y() >= 0 && position.y() < cells_.size());
   assert(position.x() >= 0 && position.x() < cells_[position.y()].size());
   auto new_object = std::make_shared<Soldier>(position, type);
-  soldiers_.push_back(new_object);
+  auto& cell =
+      cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
   if (type == Soldier::Type::kAttacker) {
     attackers_.push_back(new_object);
+    cell.attackers.insert(new_object);
   } else if (type == Soldier::Type::kDefender) {
     defenders_.push_back(new_object);
+    cell.defenders.insert(new_object);
   }
-  game_objects_.push_back(new_object);
 }
 
 void World::AddTerrainObject() {
   auto new_object = std::make_shared<TerrainObject>();
   new_object->SetRandomPosition(size_);
   QPoint pos = new_object->GetPosition();
-  cells_[pos.y()][pos.x()].terrain_objects.push_back(new_object);
-  game_objects_.push_back(new_object);
+  auto& cell = cells_[pos.y()][pos.x()];
+  cell.terrain_objects.push_back(new_object);
+  terrain_objects_.push_back(new_object);
 }
 
-void World::AddBullet(const QPoint& from, const QPoint& to, int damage) {
+void World::AddBullet(const QPoint& from, const QPoint& to,
+                      Soldier::Type type, int damage) {
+  assert(to.y() >= 0 && to.y() < cells_.size());
+  assert(to.x() >= 0 && to.x() < cells_[to.y()].size());
+  assert(from.y() >= 0 && from.y() < cells_.size());
+  assert(from.x() >= 0 && from.x() < cells_[from.y()].size());
   std::shared_ptr<Bullet> new_bullet =
-      std::make_shared<Bullet>(from, to, damage);
-  game_objects_.push_back(new_bullet);
+      std::make_shared<Bullet>(from, to, type, damage);
   bullets_.push_back(new_bullet);
 }
 
-const std::vector<std::shared_ptr<GameObject>>& World::GetGameObjects() const {
-  return game_objects_;
+const std::vector<std::shared_ptr<Soldier>>& World::GetDefenders() const {
+  return defenders_;
 }
 
-std::vector<std::shared_ptr<GameObject>>& World::GetGameObjects() {
-  return game_objects_;
+const std::vector<std::shared_ptr<Soldier>>& World::GetAttackers() const {
+  return attackers_;
+}
+
+const std::vector<std::shared_ptr<TerrainObject>>&
+World::GetTerrainObjects() const {
+  return terrain_objects_;
+}
+
+const std::vector<std::shared_ptr<Bullet>>& World::GetBullets() const {
+  return bullets_;
 }
 
 const QSize& World::GetSize() const {
@@ -89,18 +95,15 @@ const QPixmap& World::GetPixmap() const {
   return picture_;
 }
 
-void World::UpdateDistances() {
-  if (is_need_update_defenders_) {
+void World::Update() {
+  if (is_need_update_towers_) {
     UpdateGroundDistances();
-    UpdateAirDistances();
   }
-
-  is_need_update_defenders_ = false;
-  is_need_update_attackers_ = false;
+  is_need_update_towers_ = false;
 }
 
 void World::MoveSoldiers() {
-  UpdateDistances();
+  Update();
 
   auto Lag = [&](int x, int y) {
     return cells_[y][x].landscape.move_lag;
@@ -119,37 +122,42 @@ void World::MoveSoldiers() {
     }
   };
 
+  enum class Command {
+    MoveLeftDown,
+    MoveLeftUp,
+    MoveRightUp,
+    MoveRightDown,
+    MoveLeft,
+    MoveRight,
+    MoveUp,
+    MoveDown
+  };
+
   auto IssueCommand = [&](int soldier_index,
                           int from_x, int from_y,
-                          int& current_dist, int command_index) {
-    assert(command_index >= 0 && command_index <= 7);
-    switch (command_index) {
-      case 0: {
-        // left neighbor
+                          int& current_dist, Command command) {
+    switch (command) {
+      case Command::MoveLeft: {
         if (from_x == 0) return;
 
         return MoveIf(soldier_index, current_dist, from_x - 1, from_y);
       }
-      case 1: {
-        // right neighbor
+      case Command::MoveRight: {
         if (from_x == cells_[from_y].size() - 1) return;
 
         return MoveIf(soldier_index, current_dist, from_x + 1, from_y);
       }
-      case 2: {
-        // upper neighbor
+      case Command::MoveUp: {
         if (from_y == 0) return;
 
         return MoveIf(soldier_index, current_dist, from_x, from_y - 1);
       }
-      case 3: {
-        // lower neighbor
+      case Command::MoveDown: {
         if (from_y == cells_.size() - 1) return;
 
         return MoveIf(soldier_index, current_dist, from_x, from_y + 1);
       }
-      case 4: {
-        // left lower neighbor
+      case Command::MoveLeftDown: {
         if (from_x == 0 || from_y == cells_.size() - 1) return;
 
         int lag = std::min(Lag(from_x - 1, from_y),
@@ -157,8 +165,7 @@ void World::MoveSoldiers() {
         return MoveIf(soldier_index, current_dist,
                       from_x - 1, from_y + 1, lag);
       }
-      case 5: {
-        // left upper neighbor
+      case Command::MoveLeftUp: {
         if (from_x == 0 || from_y == 0) return;
 
         int lag = std::min(Lag(from_x - 1, from_y),
@@ -166,8 +173,7 @@ void World::MoveSoldiers() {
         return MoveIf(soldier_index, current_dist,
                       from_x - 1, from_y - 1, lag);
       }
-      case 6: {
-        // right upper neighbor
+      case Command::MoveRightUp: {
         if (from_x == cells_[from_y].size() - 1 || from_y == 0) return;
 
         int lag = std::min(Lag(from_x + 1, from_y),
@@ -175,10 +181,10 @@ void World::MoveSoldiers() {
         return MoveIf(soldier_index, current_dist,
                       from_x + 1, from_y - 1, lag);
       }
-      case 7: {
-        // right lower neighbor
+      case Command::MoveRightDown: {
         if (from_x == cells_[from_y].size() - 1
-            || from_y == cells_.size() - 1) return;
+            || from_y == cells_.size() - 1)
+          return;
 
         int lag = std::min(Lag(from_x + 1, from_y),
                            Lag(from_x, from_y + 1));
@@ -188,23 +194,30 @@ void World::MoveSoldiers() {
     }
   };
 
-  std::vector<int> commands({4, 5, 6, 7, 0, 1, 2, 3});
+  std::vector<Command> commands({Command::MoveLeftDown, Command::MoveLeftUp,
+                                 Command::MoveRightUp, Command::MoveRightDown,
+                                 Command::MoveLeft, Command::MoveRight,
+                                 Command::MoveUp, Command::MoveDown});
   // // TODO(AZYAVCHIKOV) - maybe not best solution
   // std::shuffle(commands.begin(), commands.end(),
   //              std::mt19937(std::random_device()()));
-
   for (int i = 0; i < attackers_.size(); ++i) {
+    if (attackers_[i]->IsDead()) continue;
     attackers_[i]->MakeTick();
     if (attackers_[i]->GetTimeLag() > 0) continue;
     int x = attackers_[i]->GetPosition().x();
     int y = attackers_[i]->GetPosition().y();
     int distance = Distance(x, y);
     if (distance == 0) continue;
+    cells_[y][x].attackers.erase(attackers_[i]);
     // std::shuffle(commands.begin() + 4, commands.end(),
     //              std::mt19937(std::random_device()()));
     for (int j = 0; j < commands.size(); ++j) {
       IssueCommand(i, x, y, distance, commands[j]);
     }
+    x = attackers_[i]->GetPosition().x();
+    y = attackers_[i]->GetPosition().y();
+    cells_[y][x].attackers.insert(attackers_[i]);
   }
 }
 
@@ -268,54 +281,6 @@ QPixmap World::DrawWorld() const {
   return picture;
 }
 
-void World::UpdateAirDistances() {
-  for (int i = 0; i < cells_.size(); ++i) {
-    for (int j = 0; j < cells_[i].size(); ++j) {
-      cells_[i][j].used = false;
-      cells_[i][j].air_distance = INT32_MAX;
-    }
-  }
-
-  std::queue<std::pair<int, int>> latest_at_air;
-
-  for (auto& defender : defenders_) {
-    int x = defender->GetPosition().x();
-    int y = defender->GetPosition().y();
-    cells_[y][x].used = true;
-    cells_[y][x].air_distance = 0;
-    latest_at_air.push(std::make_pair(x, y));
-  }
-
-  auto push_if =
-      [&](int x, int y, int dist, bool condition = true) {
-        if (!condition || cells_[y][x].used) {
-          return;
-        }
-        if (cells_[y][x].air_distance > dist + 1) {
-          cells_[y][x].air_distance = dist + 1;
-          cells_[y][x].used = true;
-          latest_at_air.push(std::make_pair(x, y));
-        }
-      };
-
-  while (!latest_at_air.empty()) {
-    int x = latest_at_air.front().first;
-    int y = latest_at_air.front().second;
-    int current_dist = cells_[y][x].air_distance;
-
-    // left neighbor
-    push_if(x - 1, y, current_dist, (x != 0));
-    // right neighbor
-    push_if(x + 1, y, current_dist, (x != cells_[y].size() - 1));
-    // upper neighbor
-    push_if(x, y - 1, current_dist, (y != 0));
-    // lower neighbor
-    push_if(x, y + 1, current_dist, (y != cells_.size() - 1));
-
-    latest_at_air.pop();
-  }
-}
-
 void World::UpdateGroundDistances() {
   for (int i = 0; i < cells_.size(); ++i) {
     for (int j = 0; j < cells_[i].size(); ++j) {
@@ -334,9 +299,9 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& defender : defenders_) {
-    int x = defender->GetPosition().x();
-    int y = defender->GetPosition().y();
+  for (auto& object : terrain_objects_) {
+    int x = object->GetPosition().x();
+    int y = object->GetPosition().y();
     cells_[y][x].ground_distance = 0;
     latest_at_ground.push(std::make_pair(x, y));
   }
@@ -347,7 +312,7 @@ void World::UpdateGroundDistances() {
           return;
         }
         if (cells_[y][x].ground_distance > dist
-                + cells_[y][x].landscape.move_lag) {
+            + cells_[y][x].landscape.move_lag) {
           cells_[y][x].ground_distance = dist + cells_[y][x].landscape.move_lag;
           latest_at_ground.push(std::make_pair(x, y));
         }
@@ -373,34 +338,113 @@ void World::UpdateGroundDistances() {
 }
 
 void World::MoveBullets() {
-  // TODO(AZYAVCHIKOV) make damage in some radius
+  // TODO(AZYAVCHIKOV) temporary code
+  int bullet_radius = 0;
   // int bullet_radius = 3;
-  //
-  //
-  // auto DamageArea = [&](int x, int y, int bullet_index) {
-  //   QPoint begin(0, cells_.size());
-  //   begin.setX(std::max(begin.x(), x - bullet_radius));
-  //   begin.setY(std::max(begin.y(), y - bullet_radius));
-  //   QPoint end(0, cells_[0].size());
-  //   end.setX(std::min(end.x(), x + bullet_radius));
-  //   end.setY(std::min(end.y(), y + bullet_radius));
-  //   for (int i = begin.y(); i <= end.y(); ++i) {
-  //     for (int j = begin.x(); j <= end.x(); ++j) {
-  //
-  //     }
-  //   }
-  // };
+  // int repeat = 4;
+  int repeat = 1;
 
-  for (int i = bullets_.size() - 1; i >= 0; --i) {
-    bullets_[i]->Move();
-    // TODO(AZYAVCHIKOV) make damage
-    // DamageArea(bullets_[i].GetPosition.x(), bullets_[i].GetPosition.y());
-    if (bullets_[i]->GetToPosition() == bullets_[i]->GetPosition()) {
-      game_objects_.erase(std::find(game_objects_.begin(),
-                                    game_objects_.end(),
-                                    bullets_[i]));
-      bullets_.erase(bullets_.begin() + i);
+  for (int i = 0; i < bullets_.size(); ++i) {
+    for (int j = 0; j < repeat; ++j) {
+      if (bullets_[i]->IsUsed()) continue;
+      bullets_[i]->Move();
+      DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
+                 bullet_radius, i);
     }
+  }
+}
+
+void World::DamageArea(int x, int y, int radius, int bullet_index) {
+  QPoint top(0, 0);
+  top.setX(std::max(top.x(), x - radius));
+  top.setY(std::max(top.y(), y - radius));
+  QPoint bottom(cells_[0].size() - 1, cells_.size() - 1);
+  bottom.setX(std::min(bottom.x(), x + radius));
+  bottom.setY(std::min(bottom.y(), y + radius));
+
+  auto& bullet = bullets_[bullet_index];
+
+  auto DamageFirstInContainer =
+      [](std::set<std::shared_ptr<Soldier>>& container,
+         std::shared_ptr<Bullet>& bullet) {
+        if (container.empty()) {
+          return false;
+        }
+
+        (*container.begin())->TakeDamage(bullet->GetDamage());
+        bullet->MakeUsed();
+        if ((*container.begin())->IsDead()) {
+          container.erase(container.begin());
+        }
+        return true;
+      };
+
+  for (int i = top.y(); i <= bottom.y(); ++i) {
+    for (int j = top.x(); j <= bottom.x(); ++j) {
+      if (bullet->GetType() == Soldier::Type::kDefender) {
+        auto& container = cells_[i][j].defenders;
+        if (DamageFirstInContainer(container, bullet)) return;
+      } else if (bullet->GetType() == Soldier::Type::kAttacker) {
+        auto& container = cells_[i][j].attackers;
+        if (DamageFirstInContainer(container, bullet)) return;
+      }
+    }
+  }
+}
+
+void World::MakeShot(std::shared_ptr<Soldier>& soldier) {
+  assert(!soldier->IsDead());
+  int nearest_index = -1;
+  int64_t from_x = soldier->GetPosition().x();
+  int64_t from_y = soldier->GetPosition().y();
+  int64_t dist = INT64_MAX, new_dist;
+  int64_t to_x, to_y;
+
+  if (soldier->GetType() == Soldier::Type::kDefender) {
+    for (int i = 0; i < attackers_.size(); ++i) {
+      if (attackers_[i]->IsDead()) continue;
+      to_x = attackers_[i]->GetPosition().x();
+      to_y = attackers_[i]->GetPosition().y();
+      new_dist =
+          (from_x - to_x) * (from_x - to_x) + (from_y - to_y) * (from_y - to_y);
+      if (new_dist < dist) {
+        dist = new_dist;
+        nearest_index = i;
+      }
+    }
+    if (nearest_index == -1) return;
+    to_x = attackers_[nearest_index]->GetPosition().x();
+    to_y = attackers_[nearest_index]->GetPosition().y();
+    AddBullet(QPoint(from_x, from_y), QPoint(to_x, to_y),
+              Soldier::Type::kAttacker);
+  } else if (soldier->GetType() == Soldier::Type::kAttacker) {
+    for (int i = 0; i < defenders_.size(); ++i) {
+      if (defenders_[i]->IsDead()) continue;
+      to_x = defenders_[i]->GetPosition().x();
+      to_y = defenders_[i]->GetPosition().y();
+      new_dist =
+          (from_x - to_x) * (from_x - to_x) + (from_y - to_y) * (from_y - to_y);
+      if (new_dist < dist) {
+        dist = new_dist;
+        nearest_index = i;
+      }
+    }
+    if (nearest_index == -1) return;
+    to_x = defenders_[nearest_index]->GetPosition().x();
+    to_y = defenders_[nearest_index]->GetPosition().y();
+    AddBullet(QPoint(from_x, from_y), QPoint(to_x, to_y),
+              Soldier::Type::kDefender);
+  }
+}
+
+void World::MakeShots() {
+  for (int i = 0; i < attackers_.size(); ++i) {
+    if (attackers_[i]->IsDead()) continue;
+    MakeShot(attackers_[i]);
+  }
+  for (int i = 0; i < defenders_.size(); ++i) {
+    if (defenders_[i]->IsDead()) continue;
+    MakeShot(defenders_[i]);
   }
 }
 

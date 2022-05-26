@@ -1,9 +1,11 @@
 #include "bullet.h"
 
-Bullet::Bullet(const QPoint& from, const QPoint& to, int damage)
+Bullet::Bullet(const QPoint& from, const QPoint& to,
+               Soldier::Type type, int damage)
     : GameObject(from),
       from_(from),
       to_(to),
+      type_(type),
       damage_(damage) {
   size_ = image_sizes::kBulletImage;
   picture_ = PixmapLoader::GetBullet();
@@ -25,24 +27,33 @@ int Bullet::GetDamage() const {
   return damage_;
 }
 
+Soldier::Type Bullet::GetType() const {
+  return type_;
+}
+
 void Bullet::Move() {
-  if (to_ == position_) {
-    return;
-  }
+  assert(!IsUsed());
 
-  int square_dx = (to_.x() - from_.x()) * (to_.x() - from_.x());
-  int square_dy = (to_.y() - from_.y()) * (to_.y() - from_.y());
+  int64_t square_dx = (to_.x() - from_.x()) * (to_.x() - from_.x());
+  int64_t square_dy = (to_.y() - from_.y()) * (to_.y() - from_.y());
 
-  if ((position_.x() > to_.x()) || (position_.y() > to_.y())) {
-    --moving_progress_;
-  } else {
-    ++moving_progress_;
-  }
-  int x = from_.x()
-      + moving_progress_
-          * sqrt(square_dx / static_cast<double>(square_dx + square_dy));
-  int y = from_.y()
-      + moving_progress_
-          * sqrt(square_dy / static_cast<double>(square_dx + square_dy));
+  ++moving_progress_;
+
+  double len = sqrt(static_cast<double>(square_dx + square_dy));
+
+  int x = from_.x() + moving_progress_ * (to_.x() - from_.x()) / len;
+  int y = from_.y() + moving_progress_ * (to_.y() - from_.y()) / len;
+
   position_ = QPoint(x, y);
+  if (to_ == position_) {
+    is_used_ = true;
+  }
+}
+
+bool Bullet::IsUsed() const {
+  return is_used_;
+}
+
+void Bullet::MakeUsed() {
+  is_used_ = true;
 }

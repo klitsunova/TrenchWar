@@ -65,3 +65,7 @@ void Soldier::TakeDamage(int damage) {
     hit_points_ = 0;
   }
 }
+
+bool Soldier::IsDead() const {
+  return hit_points_ <= 0;
+}
