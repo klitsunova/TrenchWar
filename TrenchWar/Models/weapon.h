@@ -4,7 +4,7 @@
 
 #include "equipment.h"
 #include "Models/GameObjects/bullet.h"
-#include "helpers/rivals.h"
+#include "helpers/sides.h"
 #include "helpers/weapons.h"
 
 class Weapon : public Equipment {
@@ -31,7 +31,7 @@ class Weapon : public Equipment {
   void AddAmmo(int count);
 
   std::optional<std::shared_ptr<Bullet>> Fire(const QPoint&, const QPoint&,
-                                              Rival);
+                                              Side);
 
  private:
   void InitializationFromType();

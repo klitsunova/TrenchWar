@@ -11,6 +11,6 @@ GameController::GameController(
 
 void GameController::SetWorldObjects() {
   // temporary code
-  world_->AddSoldier(QPoint(5, 7), Rival::kAttacker);
-  world_->AddSoldier(QPoint(3, 3), Rival::kDefender);
+  world_->AddSoldier(QPoint(5, 7), Side::kAttacker);
+  world_->AddSoldier(QPoint(3, 3), Side::kDefender);
 }

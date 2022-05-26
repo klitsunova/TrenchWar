@@ -3,8 +3,6 @@
 #include <QString>
 
 namespace weapons {
-// constexpr int kRifle_count_ammo = 30;
-// constexpr int kKnife_count_ammo = -1;
 const int kKnifeDamage = 100;
 const int kKnifeRange = 1;  // 1*1
 const int kKnifeReloadTime = 2;

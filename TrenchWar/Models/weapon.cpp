@@ -50,13 +50,13 @@ void Weapon::AddAmmo(int count) {
 }
 std::optional<std::shared_ptr<Bullet>> Weapon::Fire(const QPoint& from,
                                                     const QPoint& to,
-                                                    Rival side) {
+                                                    Side side) {
   if (reload_lag_ > 0) {
     --reload_lag_;
     return std::nullopt;
   }
-  int dist = (to.x() - from.x()) * (to.x() - from.x())
-      + (to.y() - from.y()) * (to.y() - from.y());
+  int dist = (to.x() - from.x()) * (to.x() - from.x()) +
+      (to.y() - from.y()) * (to.y() - from.y());
   if (dist > range_) {
     return std::nullopt;
   }

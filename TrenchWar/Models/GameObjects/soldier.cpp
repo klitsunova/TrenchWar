@@ -1,13 +1,13 @@
 #include "soldier.h"
 
-Soldier::Soldier(Rival side)
+Soldier::Soldier(Side side)
     : GameObject() {
   picture_ = PixmapLoader::GetSoldier();
   side_ = side;
   weapons_.emplace_back(Weapon(Weapon::WeaponType::Rifle));
 }
 
-Soldier::Soldier(const QPoint& point, Rival side)
+Soldier::Soldier(const QPoint& point, Side side)
     : GameObject(point) {
   picture_ = PixmapLoader::GetSoldier();
   side_ = side;
@@ -32,7 +32,7 @@ int Soldier::GetId() const {
   return id_;
 }
 
-Rival Soldier::GetSide() const {
+Side Soldier::GetSide() const {
   return side_;
 }
 
@@ -64,10 +64,10 @@ void Soldier::AddAmmo(Weapon::WeaponType type, int count_ammo) {
 std::optional<std::shared_ptr<Bullet>> Soldier::Fire(const QPoint& from,
                                                      const QPoint& to) {
   assert(!weapons_.empty());
-  if (side_ == Rival::kDefender) {
-    return weapons_[0].Fire(from, to, Rival::kAttacker);
-  } else if (side_ == Rival::kAttacker) {
-    return weapons_[0].Fire(from, to, Rival::kDefender);
+  if (side_ == Side::kDefender) {
+    return weapons_[0].Fire(from, to, Side::kAttacker);
+  } else if (side_ == Side::kAttacker) {
+    return weapons_[0].Fire(from, to, Side::kDefender);
   }
 }
 

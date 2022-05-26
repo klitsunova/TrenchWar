@@ -1,6 +1,6 @@
 #pragma once
 
-enum class Rival {
+enum class Side {
   kDefender,
   kAttacker
 };

@@ -16,7 +16,7 @@
 #include "GameObjects/terrain_object.h"
 #include "Models/GameObjects/bullet.h"
 #include "Tools/pixmap_loader.h"
-#include "helpers/rivals.h"
+#include "helpers/sides.h"
 #include "helpers/sizes.h"
 
 class World {
@@ -40,8 +40,8 @@ class World {
 
   const QPixmap& GetPixmap() const;
 
-  void AddSoldier(Rival);
-  void AddSoldier(const QPoint&, Rival);
+  void AddSoldier(Side);
+  void AddSoldier(const QPoint&, Side);
   void AddTerrainObject();
   void AddBullet(const std::shared_ptr<Bullet>&);
 

@@ -9,30 +9,30 @@ World::World(const QString& path) {
   AddTerrainObject();
 }
 
-void World::AddSoldier(Rival side) {
+void World::AddSoldier(Side side) {
   auto new_object = std::make_shared<Soldier>(side);
   new_object->SetRandomPosition(size_);
   auto& cell =
       cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
-  if (side == Rival::kAttacker) {
+  if (side == Side::kAttacker) {
     attackers_.push_back(new_object);
     cell.attackers.insert(new_object);
-  } else if (side == Rival::kDefender) {
+  } else if (side == Side::kDefender) {
     defenders_.push_back(new_object);
     cell.defenders.insert(new_object);
   }
 }
 
-void World::AddSoldier(const QPoint& position, Rival side) {
+void World::AddSoldier(const QPoint& position, Side side) {
   assert(position.y() >= 0 && position.y() < cells_.size());
   assert(position.x() >= 0 && position.x() < cells_[position.y()].size());
   auto new_object = std::make_shared<Soldier>(position, side);
   auto& cell =
       cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
-  if (side == Rival::kAttacker) {
+  if (side == Side::kAttacker) {
     attackers_.push_back(new_object);
     cell.attackers.insert(new_object);
-  } else if (side == Rival::kDefender) {
+  } else if (side == Side::kDefender) {
     defenders_.push_back(new_object);
     cell.defenders.insert(new_object);
   }
@@ -375,10 +375,10 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
 
   for (int i = top.y(); i <= bottom.y(); ++i) {
     for (int j = top.x(); j <= bottom.x(); ++j) {
-      if (bullet->GetSide() == Rival::kDefender) {
+      if (bullet->GetSide() == Side::kDefender) {
         auto& container = cells_[i][j].defenders;
         if (DamageFirstInContainer(container, bullet)) return;
-      } else if (bullet->GetSide() == Rival::kAttacker) {
+      } else if (bullet->GetSide() == Side::kAttacker) {
         auto& container = cells_[i][j].attackers;
         if (DamageFirstInContainer(container, bullet)) return;
       }

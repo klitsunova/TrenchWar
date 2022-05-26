@@ -1,7 +1,7 @@
 #include "bullet.h"
 
 Bullet::Bullet(const QPoint& from, const QPoint& to,
-               Rival type, int damage)
+               Side type, int damage)
     : GameObject(from),
       from_(from),
       to_(to),
@@ -27,7 +27,7 @@ int Bullet::GetDamage() const {
   return damage_;
 }
 
-Rival Bullet::GetSide() const {
+Side Bullet::GetSide() const {
   return side_;
 }
 
