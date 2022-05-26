@@ -10,7 +10,7 @@
 #include "Models/world.h"
 
 class GameController : public QWidget {
- Q_OBJECT
+  Q_OBJECT
 
  public:
   explicit GameController(

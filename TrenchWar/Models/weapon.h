@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "equipment.h"
 #include "Models/GameObjects/bullet.h"
 #include "helpers/rivals.h"
@@ -17,7 +19,7 @@ class Weapon : public Equipment {
   }
 
   Weapon() = delete;
-  Weapon(Weapon::WeaponType, int = 10000);
+  explicit Weapon(Weapon::WeaponType, int = 10000);
 
   int GetDamage() const;
   int GetRange() const;
@@ -28,7 +30,8 @@ class Weapon : public Equipment {
 
   void AddAmmo(int count);
 
-  std::optional<std::shared_ptr<Bullet>> Fire(const QPoint&, const QPoint&, Rival);
+  std::optional<std::shared_ptr<Bullet>> Fire(const QPoint&, const QPoint&,
+                                              Rival);
 
  private:
   void InitializationFromType();
