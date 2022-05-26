@@ -438,10 +438,10 @@ void World::MakeShot(std::shared_ptr<Soldier>& soldier) {
 }
 
 void World::MakeShots() {
-  // for (int i = 0; i < attackers_.size(); ++i) {
-  //   if (attackers_[i]->IsDead()) continue;
-  //   MakeShot(attackers_[i]);
-  // }
+  for (int i = 0; i < attackers_.size(); ++i) {
+    if (attackers_[i]->IsDead()) continue;
+    MakeShot(attackers_[i]);
+  }
   for (int i = 0; i < defenders_.size(); ++i) {
     if (defenders_[i]->IsDead()) continue;
     MakeShot(defenders_[i]);
