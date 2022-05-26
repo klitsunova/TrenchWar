@@ -9,9 +9,8 @@
 #include "Models/weapon.h"
 #include "Models/world.h"
 
-
 class GameController : public QWidget {
-  Q_OBJECT
+ Q_OBJECT
 
  public:
   explicit GameController(
@@ -25,8 +24,5 @@ class GameController : public QWidget {
   void Exit();
 
  private:
-  void InitializationWeapon();
-
-  std::vector<Weapon> weapons_;
   std::shared_ptr<World> world_;
 };

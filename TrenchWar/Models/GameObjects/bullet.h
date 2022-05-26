@@ -5,15 +5,15 @@
 
 #include <memory>
 
+#include "helpers/rivals.h"
 #include "helpers/sizes.h"
 #include "Models/Tools/pixmap_loader.h"
 #include "Models/GameObjects/game_object.h"
-#include "Models/GameObjects/soldier.h"
 
 class Bullet : public GameObject {
  public:
   Bullet() = delete;
-  Bullet(const QPoint&, const QPoint&, Soldier::Type, int = 100);
+  Bullet(const QPoint&, const QPoint&, Rival, int = 100);
 
   ~Bullet() = default;
 
@@ -23,7 +23,7 @@ class Bullet : public GameObject {
 
   int GetDamage() const;
 
-  Soldier::Type GetType() const;
+  Rival GetSide() const;
 
   void Move();
 
@@ -34,7 +34,7 @@ class Bullet : public GameObject {
   int moving_progress_{0};
   QPoint from_;
   QPoint to_;
-  Soldier::Type type_;
+  Rival side_;
   bool is_used_{false};
   int damage_;
 };

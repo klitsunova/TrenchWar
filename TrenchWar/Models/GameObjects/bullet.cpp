@@ -1,11 +1,11 @@
 #include "bullet.h"
 
 Bullet::Bullet(const QPoint& from, const QPoint& to,
-               Soldier::Type type, int damage)
+               Rival type, int damage)
     : GameObject(from),
       from_(from),
       to_(to),
-      type_(type),
+      side_(type),
       damage_(damage) {
   size_ = image_sizes::kBulletImage;
   picture_ = PixmapLoader::GetBullet();
@@ -27,8 +27,8 @@ int Bullet::GetDamage() const {
   return damage_;
 }
 
-Soldier::Type Bullet::GetType() const {
-  return type_;
+Rival Bullet::GetSide() const {
+  return side_;
 }
 
 void Bullet::Move() {

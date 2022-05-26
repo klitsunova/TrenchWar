@@ -12,7 +12,7 @@ EventsController::EventsController(QWidget* parent) {
 }
 
 void EventsController::timerEvent(QTimerEvent*) {
-  world_->MoveSoldiers();
+  // world_->MoveSoldiers();
   world_->MakeShots();
   world_->MoveBullets();
   world_->Update();
@@ -21,7 +21,6 @@ void EventsController::timerEvent(QTimerEvent*) {
 
 void EventsController::StartTimer() {
   if (!timer_->isActive()) {
-    // TODO(AZYAVCHIKOV) temporary code
     timer_->start(kTimerInterval, this);
   }
 }

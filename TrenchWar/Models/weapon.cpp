@@ -1,13 +1,24 @@
 #include "weapon.h"
 
-Weapon::Weapon(WeaponType type, int damage, int range,
-               int reload_time, double hit_chance, int count_ammo) {
+Weapon::Weapon(Weapon::WeaponType type, int count_ammo) {
   weapon_type_ = type;
+  switch (type) {
+    case WeaponType::Knife: {
+      damage_ = weapons::kKnifeDamage;
+      range_ = weapons::kKnifeRange;
+      reload_time_ = weapons::kKnifeReloadTime;
+      hit_chance_ = weapons::kKnifeHitChance;
+      break;
+    }
+    case WeaponType::Rifle: {
+      damage_ = weapons::kRifleDamage;
+      range_ = weapons::kRifleRange;
+      reload_time_ = weapons::kRifleReloadTime;
+      hit_chance_ = weapons::kRifleHitChance;
+      break;
+    }
+  }
   count_ammo_ = count_ammo;
-  damage_ = damage;
-  range_ = range;
-  reload_time_ = reload_time;
-  hit_chance_ = hit_chance;
 }
 
 int Weapon::GetDamage() const {
@@ -36,4 +47,19 @@ int Weapon::GetCountAmmo() const {
 
 void Weapon::AddAmmo(int count) {
   count_ammo_ += count;
+}
+std::optional<std::shared_ptr<Bullet>> Weapon::Fire(const QPoint& from,
+                                                    const QPoint& to,
+                                                    Rival side) {
+  if (reload_lag_ > 0) {
+    --reload_lag_;
+    return std::nullopt;
+  }
+  int dist = (to.x() - from.x()) * (to.x() - from.x())
+      + (to.y() - from.y()) * (to.y() - from.y());
+  if (dist > range_ * range_) {
+    return std::nullopt;
+  }
+  reload_lag_ = reload_time_;
+  return std::make_shared<Bullet>(from, to, side, damage_);
 }
