@@ -391,11 +391,11 @@ void World::MakeShots() {
     if (attackers_[i]->IsDead()) continue;
     auto nearest = FindNearest(defenders_, defenders_[i]->GetPosition());
     if (!nearest.has_value()) continue;
-      auto bullet = attackers_[i]->Fire(attackers_[i]->GetPosition(),
-                                        nearest.value()->GetPosition());
-      if (bullet.has_value()) {
-        AddBullet(bullet.value());
-      }
+    auto bullet = attackers_[i]->Fire(attackers_[i]->GetPosition(),
+                                      nearest.value()->GetPosition());
+    if (bullet.has_value()) {
+      AddBullet(bullet.value());
+    }
   }
   for (int i = 0; i < defenders_.size(); ++i) {
     if (defenders_[i]->IsDead()) continue;
