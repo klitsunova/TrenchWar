@@ -339,8 +339,10 @@ void World::UpdateGroundDistances() {
 
 void World::MoveBullets() {
   // TODO(AZYAVCHIKOV) temporary code
-  int bullet_radius = 3;
-  int repeat = 4;
+  int bullet_radius = 0;
+  // int bullet_radius = 3;
+  // int repeat = 4;
+  int repeat = 1;
 
   for (int i = 0; i < bullets_.size(); ++i) {
     for (int j = 0; j < repeat; ++j) {
@@ -408,6 +410,8 @@ void World::MakeShot(std::shared_ptr<Soldier>& soldier) {
       }
     }
     if (nearest_index == -1) return;
+    to_x = attackers_[nearest_index]->GetPosition().x();
+    to_y = attackers_[nearest_index]->GetPosition().y();
     AddBullet(QPoint(from_x, from_y), QPoint(to_x, to_y),
               Soldier::Type::kAttacker);
   } else if (soldier->GetType() == Soldier::Type::kAttacker) {
@@ -423,16 +427,18 @@ void World::MakeShot(std::shared_ptr<Soldier>& soldier) {
       }
     }
     if (nearest_index == -1) return;
+    to_x = defenders_[nearest_index]->GetPosition().x();
+    to_y = defenders_[nearest_index]->GetPosition().y();
     AddBullet(QPoint(from_x, from_y), QPoint(to_x, to_y),
               Soldier::Type::kDefender);
   }
 }
 
 void World::MakeShots() {
-  for (int i = 0; i < attackers_.size(); ++i) {
-    if (attackers_[i]->IsDead()) continue;
-    MakeShot(attackers_[i]);
-  }
+  // for (int i = 0; i < attackers_.size(); ++i) {
+  //   if (attackers_[i]->IsDead()) continue;
+  //   MakeShot(attackers_[i]);
+  // }
   for (int i = 0; i < defenders_.size(); ++i) {
     if (defenders_[i]->IsDead()) continue;
     MakeShot(defenders_[i]);

@@ -34,19 +34,16 @@ Soldier::Type Bullet::GetType() const {
 void Bullet::Move() {
   assert(!IsUsed());
 
-  int square_dx = (to_.x() - from_.x()) * (to_.x() - from_.x());
-  int square_dy = (to_.y() - from_.y()) * (to_.y() - from_.y());
+  int64_t square_dx = (to_.x() - from_.x()) * (to_.x() - from_.x());
+  int64_t square_dy = (to_.y() - from_.y()) * (to_.y() - from_.y());
 
-  moving_progress_ = abs(moving_progress_) + 1;
-  if ((position_.x() > to_.x()) || (position_.y() > to_.y())) {
-    moving_progress_ *= -1;
-  }
-  int x = from_.x()
-      + moving_progress_
-          * sqrt(square_dx / static_cast<double>(square_dx + square_dy));
-  int y = from_.y()
-      + moving_progress_
-          * sqrt(square_dy / static_cast<double>(square_dx + square_dy));
+  ++moving_progress_;
+
+  int x = from_.x() + moving_progress_ * (to_.x() - from_.x())
+      / sqrt(static_cast<double>(square_dx + square_dy));
+  int y = from_.y() + moving_progress_ * (to_.y() - from_.y())
+      / sqrt(static_cast<double>(square_dx + square_dy));
+
   position_ = QPoint(x, y);
   if (to_ == position_) {
     is_used_ = true;
