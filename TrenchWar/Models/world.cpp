@@ -40,7 +40,6 @@ void World::AddSoldier(const QPoint& position, Soldier::Type type) {
     [new_object->GetPosition().x()].defenders.insert(
         new_object);
   }
-
 }
 
 void World::AddTerrainObject() {
