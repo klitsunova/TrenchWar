@@ -57,7 +57,7 @@ std::optional<std::shared_ptr<Bullet>> Weapon::Fire(const QPoint& from,
   }
   int dist = (to.x() - from.x()) * (to.x() - from.x())
       + (to.y() - from.y()) * (to.y() - from.y());
-  if (dist > range_ * range_) {
+  if (dist > range_) {
     return std::nullopt;
   }
   reload_lag_ = reload_time_;

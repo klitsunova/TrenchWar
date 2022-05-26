@@ -43,7 +43,6 @@ class World {
   void AddSoldier(Rival);
   void AddSoldier(const QPoint&, Rival);
   void AddTerrainObject();
-  // void AddBullet(const QPoint&, const QPoint&, Rival, int = 100);
   void AddBullet(const std::shared_ptr<Bullet>&);
 
   void Update();
@@ -88,5 +87,7 @@ class World {
 
   void DamageArea(int, int, int, int);
 
-  void MakeShot(std::shared_ptr<Soldier>&);
+  std::optional<std::shared_ptr<Soldier>> FindNearest(
+      const std::vector<std::shared_ptr<Soldier>>&,
+      const QPoint&) const;
 };
