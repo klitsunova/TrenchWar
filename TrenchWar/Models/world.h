@@ -42,7 +42,7 @@ class World {
   void AddSoldier(Soldier::Type);
   void AddSoldier(const QPoint&, Soldier::Type);
   void AddTerrainObject();
-  void AddBullet(const QPoint&, const QPoint&, Soldier::Type, int damage = 100);
+  void AddBullet(const QPoint&, const QPoint&, Soldier::Type, int = 100);
 
   void Update();
 
@@ -59,7 +59,7 @@ class World {
   };
 
   struct Cell {
-    std::vector<std::shared_ptr<TerrainObject>> terrain_objects_;
+    std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
     Landscape landscape{Landscape(Qt::white, 0)};
 
     std::set<std::shared_ptr<Soldier>> attackers;

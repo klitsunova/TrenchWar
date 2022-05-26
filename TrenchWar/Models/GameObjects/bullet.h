@@ -13,7 +13,7 @@
 class Bullet : public GameObject {
  public:
   Bullet() = delete;
-  Bullet(const QPoint&, const QPoint&, Soldier::Type, int damage = 100);
+  Bullet(const QPoint&, const QPoint&, Soldier::Type, int = 100);
 
   ~Bullet() = default;
 

@@ -12,16 +12,14 @@ World::World(const QString& path) {
 void World::AddSoldier(Soldier::Type type) {
   auto new_object = std::make_shared<Soldier>(type);
   new_object->SetRandomPosition(size_);
+  auto& cell =
+      cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
   if (type == Soldier::Type::kAttacker) {
     attackers_.push_back(new_object);
-    cells_[new_object->GetPosition().y()]
-    [new_object->GetPosition().x()].attackers.insert(
-        new_object);
+    cell.attackers.insert(new_object);
   } else if (type == Soldier::Type::kDefender) {
     defenders_.push_back(new_object);
-    cells_[new_object->GetPosition().y()]
-    [new_object->GetPosition().x()].defenders.insert(
-        new_object);
+    cell.defenders.insert(new_object);
   }
 }
 
@@ -29,16 +27,14 @@ void World::AddSoldier(const QPoint& position, Soldier::Type type) {
   assert(position.y() >= 0 && position.y() < cells_.size());
   assert(position.x() >= 0 && position.x() < cells_[position.y()].size());
   auto new_object = std::make_shared<Soldier>(position, type);
+  auto& cell =
+      cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
   if (type == Soldier::Type::kAttacker) {
     attackers_.push_back(new_object);
-    cells_[new_object->GetPosition().y()]
-    [new_object->GetPosition().x()].attackers.insert(
-        new_object);
+    cell.attackers.insert(new_object);
   } else if (type == Soldier::Type::kDefender) {
     defenders_.push_back(new_object);
-    cells_[new_object->GetPosition().y()]
-    [new_object->GetPosition().x()].defenders.insert(
-        new_object);
+    cell.defenders.insert(new_object);
   }
 }
 
@@ -46,7 +42,8 @@ void World::AddTerrainObject() {
   auto new_object = std::make_shared<TerrainObject>();
   new_object->SetRandomPosition(size_);
   QPoint pos = new_object->GetPosition();
-  cells_[pos.y()][pos.x()].terrain_objects_.push_back(new_object);
+  auto& cell = cells_[pos.y()][pos.x()];
+  cell.terrain_objects.push_back(new_object);
   terrain_objects_.push_back(new_object);
 }
 
@@ -139,7 +136,6 @@ void World::MoveSoldiers() {
   auto IssueCommand = [&](int soldier_index,
                           int from_x, int from_y,
                           int& current_dist, Command command) {
-    // assert(command_index >= 0 && command_index <= 7);
     switch (command) {
       case Command::MoveLeft: {
         if (from_x == 0) return;
@@ -365,29 +361,32 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
   QPoint bottom(cells_[0].size() - 1, cells_.size() - 1);
   bottom.setX(std::min(bottom.x(), x + radius));
   bottom.setY(std::min(bottom.y(), y + radius));
-  int damage = bullets_[bullet_index]->GetDamage();
+
+  auto& bullet = bullets_[bullet_index];
+
+  auto DamageFirstInContainer =
+      [](std::set<std::shared_ptr<Soldier>>& container,
+         std::shared_ptr<Bullet>& bullet) {
+        if (container.empty()) {
+          return false;
+        }
+
+        (*container.begin())->TakeDamage(bullet->GetDamage());
+        bullet->MakeUsed();
+        if ((*container.begin())->IsDead()) {
+          container.erase(container.begin());
+        }
+        return true;
+      };
 
   for (int i = top.y(); i <= bottom.y(); ++i) {
     for (int j = top.x(); j <= bottom.x(); ++j) {
-      if (bullets_[bullet_index]->GetType() == Soldier::Type::kDefender) {
-        if (cells_[i][j].defenders.empty()) continue;
-
-        (*cells_[i][j].defenders.begin())->TakeDamage(damage);
-        bullets_[bullet_index]->MakeUsed();
-        if ((*cells_[i][j].defenders.begin())->IsDead()) {
-          cells_[i][j].defenders.erase(cells_[i][j].defenders.begin());
-        }
-        return;
-      } else if (bullets_[bullet_index]->GetType()
-          == Soldier::Type::kAttacker) {
-        if (cells_[i][j].attackers.empty()) continue;
-
-        (*cells_[i][j].attackers.begin())->TakeDamage(damage);
-        bullets_[bullet_index]->MakeUsed();
-        if ((*cells_[i][j].attackers.begin())->IsDead()) {
-          cells_[i][j].attackers.erase(cells_[i][j].attackers.begin());
-        }
-        return;
+      if (bullet->GetType() == Soldier::Type::kDefender) {
+        auto& container = cells_[i][j].defenders;
+        if (DamageFirstInContainer(container, bullet)) return;
+      } else if (bullet->GetType() == Soldier::Type::kAttacker) {
+        auto& container = cells_[i][j].attackers;
+        if (DamageFirstInContainer(container, bullet)) return;
       }
     }
   }
