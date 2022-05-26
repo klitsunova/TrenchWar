@@ -64,11 +64,7 @@ void Soldier::AddAmmo(Weapon::WeaponType type, int count_ammo) {
 std::optional<std::shared_ptr<Bullet>> Soldier::Fire(const QPoint& from,
                                                      const QPoint& to) {
   assert(!weapons_.empty());
-  if (side_ == Side::kDefender) {
-    return weapons_[0].Fire(from, to, Side::kAttacker);
-  } else if (side_ == Side::kAttacker) {
-    return weapons_[0].Fire(from, to, Side::kDefender);
-  }
+  return weapons_[0].Fire(from, to, side_);
 }
 
 void Soldier::TakeDamage(int damage) {
