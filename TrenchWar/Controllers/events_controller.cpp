@@ -21,7 +21,6 @@ void EventsController::timerEvent(QTimerEvent*) {
 
 void EventsController::StartTimer() {
   if (!timer_->isActive()) {
-    // TODO(AZYAVCHIKOV) temporary code
     timer_->start(kTimerInterval, this);
   }
 }

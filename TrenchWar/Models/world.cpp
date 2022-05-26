@@ -9,30 +9,30 @@ World::World(const QString& path) {
   AddTerrainObject();
 }
 
-void World::AddSoldier(Soldier::Type type) {
-  auto new_object = std::make_shared<Soldier>(type);
+void World::AddSoldier(Side side) {
+  auto new_object = std::make_shared<Soldier>(side);
   new_object->SetRandomPosition(size_);
   auto& cell =
       cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
-  if (type == Soldier::Type::kAttacker) {
+  if (side == Side::kAttacker) {
     attackers_.push_back(new_object);
     cell.attackers.insert(new_object);
-  } else if (type == Soldier::Type::kDefender) {
+  } else if (side == Side::kDefender) {
     defenders_.push_back(new_object);
     cell.defenders.insert(new_object);
   }
 }
 
-void World::AddSoldier(const QPoint& position, Soldier::Type type) {
+void World::AddSoldier(const QPoint& position, Side side) {
   assert(position.y() >= 0 && position.y() < cells_.size());
   assert(position.x() >= 0 && position.x() < cells_[position.y()].size());
-  auto new_object = std::make_shared<Soldier>(position, type);
+  auto new_object = std::make_shared<Soldier>(position, side);
   auto& cell =
       cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
-  if (type == Soldier::Type::kAttacker) {
+  if (side == Side::kAttacker) {
     attackers_.push_back(new_object);
     cell.attackers.insert(new_object);
-  } else if (type == Soldier::Type::kDefender) {
+  } else if (side == Side::kDefender) {
     defenders_.push_back(new_object);
     cell.defenders.insert(new_object);
   }
@@ -47,15 +47,9 @@ void World::AddTerrainObject() {
   terrain_objects_.push_back(new_object);
 }
 
-void World::AddBullet(const QPoint& from, const QPoint& to,
-                      Soldier::Type type, int damage) {
-  assert(to.y() >= 0 && to.y() < cells_.size());
-  assert(to.x() >= 0 && to.x() < cells_[to.y()].size());
-  assert(from.y() >= 0 && from.y() < cells_.size());
-  assert(from.x() >= 0 && from.x() < cells_[from.y()].size());
-  std::shared_ptr<Bullet> new_bullet =
-      std::make_shared<Bullet>(from, to, type, damage);
-  bullets_.push_back(new_bullet);
+void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
+  assert(bullet.get() != nullptr);
+  bullets_.push_back(bullet);
 }
 
 const std::vector<std::shared_ptr<Soldier>>& World::GetDefenders() const {
@@ -381,10 +375,10 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
 
   for (int i = top.y(); i <= bottom.y(); ++i) {
     for (int j = top.x(); j <= bottom.x(); ++j) {
-      if (bullet->GetType() == Soldier::Type::kDefender) {
+      if (bullet->GetSide() == Side::kDefender) {
         auto& container = cells_[i][j].defenders;
         if (DamageFirstInContainer(container, bullet)) return;
-      } else if (bullet->GetType() == Soldier::Type::kAttacker) {
+      } else if (bullet->GetSide() == Side::kAttacker) {
         auto& container = cells_[i][j].attackers;
         if (DamageFirstInContainer(container, bullet)) return;
       }
@@ -392,60 +386,52 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
   }
 }
 
-void World::MakeShot(std::shared_ptr<Soldier>& soldier) {
-  assert(!soldier->IsDead());
-  int nearest_index = -1;
-  int64_t from_x = soldier->GetPosition().x();
-  int64_t from_y = soldier->GetPosition().y();
-  int64_t dist = INT64_MAX, new_dist;
-  int64_t to_x, to_y;
-
-  if (soldier->GetType() == Soldier::Type::kDefender) {
-    for (int i = 0; i < attackers_.size(); ++i) {
-      if (attackers_[i]->IsDead()) continue;
-      to_x = attackers_[i]->GetPosition().x();
-      to_y = attackers_[i]->GetPosition().y();
-      new_dist =
-          (from_x - to_x) * (from_x - to_x) + (from_y - to_y) * (from_y - to_y);
-      if (new_dist < dist) {
-        dist = new_dist;
-        nearest_index = i;
-      }
-    }
-    if (nearest_index == -1) return;
-    to_x = attackers_[nearest_index]->GetPosition().x();
-    to_y = attackers_[nearest_index]->GetPosition().y();
-    AddBullet(QPoint(from_x, from_y), QPoint(to_x, to_y),
-              Soldier::Type::kAttacker);
-  } else if (soldier->GetType() == Soldier::Type::kAttacker) {
-    for (int i = 0; i < defenders_.size(); ++i) {
-      if (defenders_[i]->IsDead()) continue;
-      to_x = defenders_[i]->GetPosition().x();
-      to_y = defenders_[i]->GetPosition().y();
-      new_dist =
-          (from_x - to_x) * (from_x - to_x) + (from_y - to_y) * (from_y - to_y);
-      if (new_dist < dist) {
-        dist = new_dist;
-        nearest_index = i;
-      }
-    }
-    if (nearest_index == -1) return;
-    to_x = defenders_[nearest_index]->GetPosition().x();
-    to_y = defenders_[nearest_index]->GetPosition().y();
-    AddBullet(QPoint(from_x, from_y), QPoint(to_x, to_y),
-              Soldier::Type::kDefender);
-  }
-}
-
 void World::MakeShots() {
   for (int i = 0; i < attackers_.size(); ++i) {
     if (attackers_[i]->IsDead()) continue;
-    MakeShot(attackers_[i]);
+    auto nearest = FindNearest(defenders_, attackers_[i]->GetPosition());
+    if (!nearest.has_value()) continue;
+    auto bullet = attackers_[i]->Fire(attackers_[i]->GetPosition(),
+                                      nearest.value()->GetPosition());
+    if (bullet.has_value()) {
+      AddBullet(bullet.value());
+    }
   }
   for (int i = 0; i < defenders_.size(); ++i) {
     if (defenders_[i]->IsDead()) continue;
-    MakeShot(defenders_[i]);
+    auto nearest = FindNearest(attackers_, defenders_[i]->GetPosition());
+    if (!nearest.has_value()) continue;
+    auto bullet = defenders_[i]->Fire(defenders_[i]->GetPosition(),
+                                      nearest.value()->GetPosition());
+    if (bullet.has_value()) {
+      AddBullet(bullet.value());
+    }
   }
+}
+
+std::optional<std::shared_ptr<Soldier>> World::FindNearest(
+    const std::vector<std::shared_ptr<Soldier>>& soldiers,
+    const QPoint& point) const {
+  if (soldiers.empty()) return std::nullopt;
+
+  int nearest_index = -1;
+  int64_t dist = INT64_MAX, new_dist;
+  int64_t to_x, to_y;
+
+  for (int i = 0; i < soldiers.size(); ++i) {
+    if (soldiers[i]->IsDead()) continue;
+    to_x = soldiers[i]->GetPosition().x();
+    to_y = soldiers[i]->GetPosition().y();
+    new_dist = (point.x() - to_x) * (point.x() - to_x)
+        + (point.y() - to_y) * (point.y() - to_y);
+    if (new_dist < dist) {
+      dist = new_dist;
+      nearest_index = i;
+    }
+  }
+  if (nearest_index == -1) return std::nullopt;
+
+  return soldiers[nearest_index];
 }
 
 World::Landscape::Landscape(const QColor& q_color, int speed) {

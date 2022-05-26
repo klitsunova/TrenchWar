@@ -16,6 +16,7 @@
 #include "GameObjects/terrain_object.h"
 #include "Models/GameObjects/bullet.h"
 #include "Tools/pixmap_loader.h"
+#include "helpers/sides.h"
 #include "helpers/sizes.h"
 
 class World {
@@ -39,10 +40,10 @@ class World {
 
   const QPixmap& GetPixmap() const;
 
-  void AddSoldier(Soldier::Type);
-  void AddSoldier(const QPoint&, Soldier::Type);
+  void AddSoldier(Side);
+  void AddSoldier(const QPoint&, Side);
   void AddTerrainObject();
-  void AddBullet(const QPoint&, const QPoint&, Soldier::Type, int = 100);
+  void AddBullet(const std::shared_ptr<Bullet>&);
 
   void Update();
 
@@ -86,5 +87,7 @@ class World {
 
   void DamageArea(int, int, int, int);
 
-  void MakeShot(std::shared_ptr<Soldier>&);
+  std::optional<std::shared_ptr<Soldier>> FindNearest(
+      const std::vector<std::shared_ptr<Soldier>>&,
+      const QPoint&) const;
 };

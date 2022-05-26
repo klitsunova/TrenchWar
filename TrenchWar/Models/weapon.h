@@ -1,6 +1,11 @@
 #pragma once
 
+#include <memory>
+
 #include "equipment.h"
+#include "Models/GameObjects/bullet.h"
+#include "helpers/sides.h"
+#include "helpers/weapons.h"
 
 class Weapon : public Equipment {
  public:
@@ -13,17 +18,20 @@ class Weapon : public Equipment {
     return EquipmentType::Weapon;
   }
 
-  Weapon(WeaponType type, int damage, int range,
-                  int reload_time, double hit_chance_, int count_ammo);
+  Weapon() = delete;
+  explicit Weapon(Weapon::WeaponType, int = 10000);
 
   int GetDamage() const;
   int GetRange() const;
   int GetReloadTime() const;
   double GetHitChance() const;
   int GetCountAmmo() const;
+  WeaponType GetWeaponType() const;
+
   void AddAmmo(int count);
 
-  WeaponType GetWeaponType() const;
+  std::optional<std::shared_ptr<Bullet>> Fire(const QPoint&, const QPoint&,
+                                              Side);
 
  private:
   void InitializationFromType();
@@ -34,4 +42,5 @@ class Weapon : public Equipment {
   int range_;
   int reload_time_;
   double hit_chance_;
+  int reload_lag_{0};
 };
