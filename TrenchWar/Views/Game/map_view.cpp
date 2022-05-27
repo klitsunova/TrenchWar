@@ -1,6 +1,5 @@
 #include "map_view.h"
 
-#include <iostream>
 #include <vector>
 
 #include <QPainter>
@@ -86,4 +85,12 @@ void MapView::paintEvent(QPaintEvent*) {
   painter.begin(this);
   painter.drawPixmap(this->rect(), buffer);
   painter.end();
+}
+
+void MapView::mousePressEvent(QMouseEvent* event) {
+  MousePressedHandler(event);
+}
+
+void MapView::mouseReleaseEvent(QMouseEvent* event) {
+  MouseReleasedHandler(event);
 }

@@ -9,7 +9,10 @@
 StoreView::StoreView(QWidget* parent)
     : QWidget(parent),
       layout_(new QHBoxLayout(this)),
-      ready_button_(new QPushButton("Ready", this)) {
+      ready_button_(new QPushButton("Ready", this)),
+      build_trench_(new QPushButton("Build", this)),
+      delete_trench_(new QPushButton("Delete", this)) {
+  HideTrenchButtons();
   AddItems();
   SetStyles();
   ConnectUI();
@@ -31,6 +34,8 @@ void StoreView::AddItems() {
   }
   layout_->addStretch(1);
   layout_->addWidget(ready_button_, 0);
+  layout_->addWidget(build_trench_, 0);
+  layout_->addWidget(delete_trench_, 0);
 }
 
 void StoreView::SetStyles() {
@@ -39,6 +44,10 @@ void StoreView::SetStyles() {
   }
   ready_button_->setStyleSheet(styles::kPushButton);
   ready_button_->setMinimumSize(element_sizes::kDialogButton);
+  build_trench_->setMinimumSize(element_sizes::kTrenchBuild);
+  build_trench_->setStyleSheet(styles::kPushButton);
+  delete_trench_->setMinimumSize(element_sizes::kTrenchBuild);
+  delete_trench_->setStyleSheet(styles::kPushButton);
 }
 
 void StoreView::ConnectUI() {
@@ -46,4 +55,21 @@ void StoreView::ConnectUI() {
           &QPushButton::clicked,
           this,
           &StoreView::Ready);
+  connect(build_trench_,
+          &QPushButton::clicked,
+          this,
+          &StoreView::BuildTrenchButtonPressed);
+  connect(delete_trench_,
+          &QPushButton::clicked,
+          this,
+          &StoreView::DeleteTrenchButtonPressed);
+}
+
+void StoreView::ShowTrenchButtons() const {
+  build_trench_->show();
+  delete_trench_->show();
+}
+void StoreView::HideTrenchButtons() const {
+  build_trench_ ->hide();
+  delete_trench_->hide();
 }

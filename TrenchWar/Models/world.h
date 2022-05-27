@@ -37,14 +37,13 @@ class World {
   const Cell& GetCell(const QPoint&) const;
   Cell& GetCell(const QPoint&);
 
-  const QPixmap& GetPixmap() const;
+  const QPixmap& GetPixmap();
+  void Update();
 
   void AddSoldier(Side);
   void AddSoldier(const QPoint&, Side);
   void AddTerrainObject();
   void AddBullet(const std::shared_ptr<Bullet>&);
-
-  void Update();
 
   void MoveSoldiers();
   void MoveBullets();
@@ -61,7 +60,7 @@ class World {
   struct Cell {
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
     Landscape landscape{Landscape(Qt::white, 0)};
-
+    bool is_trench;
     std::set<std::shared_ptr<Soldier>> soldiers;
     bool used;
     int64_t ground_distance;

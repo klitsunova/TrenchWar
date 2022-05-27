@@ -22,6 +22,9 @@ class GameView : public QWidget {
 
   void closeEvent(QCloseEvent* event) override;
 
+  MapView* GetMap() const;
+  StoreView* GetStore() const;
+
   void UpdateMap();
   void HideReadyButton();
 
@@ -38,6 +41,5 @@ class GameView : public QWidget {
   QVBoxLayout* layout_;
   MapView* map_;
   StoreView* store_;
-
   QShortcut* pause_;
 };

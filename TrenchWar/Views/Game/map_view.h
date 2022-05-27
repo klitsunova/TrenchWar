@@ -8,6 +8,7 @@
 
 class MapView : public QWidget {
   Q_OBJECT
+
  public:
   explicit MapView(QWidget* parent = nullptr,
                    const std::shared_ptr<World>& world = nullptr);
@@ -19,6 +20,15 @@ class MapView : public QWidget {
   void DrawObject(QPainter&, const QPoint&, const QSize&, const QPixmap&);
 
   void paintEvent(QPaintEvent* event) override;
+
+  void mousePressEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent* event) override;
+
+
+
+ signals:
+  void MousePressedHandler(QMouseEvent *event);
+  void MouseReleasedHandler(QMouseEvent *event);
 
  private:
   int scale_;
