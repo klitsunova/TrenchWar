@@ -71,10 +71,6 @@ World::Cell& World::GetCell(const QPoint& point) {
   return cells_[point.y()][point.x()];
 }
 
-void World::Update() {
-  picture_ = DrawWorld();
-}
-
 const QPixmap& World::GetPixmap() {
   return picture_;
 }
@@ -84,6 +80,7 @@ void World::Update() {
     UpdateGroundDistances();
   }
   is_need_update_towers_ = false;
+  picture_ = DrawWorld();
 }
 
 void World::MoveSoldiers() {

@@ -45,8 +45,6 @@ class World {
   void AddTerrainObject();
   void AddBullet(const std::shared_ptr<Bullet>&);
 
-  void Update();
-
   void MoveSoldiers();
   void MoveBullets();
 
