@@ -31,10 +31,10 @@ void MapView::DrawObject(QPainter& painter, const QPoint& pos,
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
   QPoint screen_point;
-  screen_point.setX((window_width * pos.x())
-                    / world_->GetSize().width());
-  screen_point.setY((window_height * pos.y())
-                    / world_->GetSize().height());
+  screen_point.setX((window_width * (2 * pos.x() + 1))
+                        / (2 * world_->GetSize().width()));
+  screen_point.setY((window_height * (2 * pos.y() + 1))
+                        / (2 * world_->GetSize().height()));
 
   QPoint top_point = QPoint(screen_point.x() - size.width() / 2,
                             screen_point.y() - size.height() / 2);
@@ -46,22 +46,45 @@ void MapView::DrawObject(QPainter& painter, const QPoint& pos,
 }
 
 void MapView::paintEvent(QPaintEvent*) {
-  QPainter painter(this);
-  const std::vector<std::shared_ptr<GameObject>>& objects =
-      world_->GetGameObjects();
+  QPixmap buffer(this->size());
+  QPainter painter;
+  painter.begin(&buffer);
   painter.save();
+  const std::vector<std::shared_ptr<TerrainObject>>& terrain_objects =
+      world_->GetTerrainObjects();
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
 
   painter.drawPixmap(QRect(0, 0,
-                           window_width, window_height),
+                           window_width + 1, window_height + 1),
                      world_->GetPixmap());
-
-  for (const auto& object : objects) {
+  for (const auto& object : terrain_objects) {
     DrawObject(painter, object->GetPosition(),
                object->GetSize(), object->GetPixmap());
   }
+
+  const std::vector<std::shared_ptr<Soldier>>& soldiers =
+      world_->GetSoldiers();
+  for (const auto& soldier : soldiers) {
+    if (soldier->IsDead()) continue;
+    DrawObject(painter, soldier->GetPosition(),
+               soldier->GetSize(), soldier->GetPixmap());
+  }
+
+  const std::vector<std::shared_ptr<Bullet>>& bullets =
+      world_->GetBullets();
+  for (const auto& bullet : bullets) {
+    if (bullet->IsUsed()) continue;
+    DrawObject(painter, bullet->GetPosition(),
+               bullet->GetSize(), bullet->GetPixmap());
+  }
+
   painter.restore();
+  painter.end();
+
+  painter.begin(this);
+  painter.drawPixmap(this->rect(), buffer);
+  painter.end();
 }
 
 void MapView::mousePressEvent(QMouseEvent* event) {

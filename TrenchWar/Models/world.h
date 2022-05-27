@@ -7,6 +7,7 @@
 #include <functional>
 #include <memory>
 #include <queue>
+#include <set>
 #include <stack>
 #include <string>
 #include <vector>
@@ -15,6 +16,7 @@
 #include "GameObjects/terrain_object.h"
 #include "Models/GameObjects/bullet.h"
 #include "Tools/pixmap_loader.h"
+#include "helpers/sides.h"
 #include "helpers/sizes.h"
 
 class World {
@@ -26,11 +28,9 @@ class World {
 
   ~World() = default;
 
-  const std::vector<std::shared_ptr<GameObject>>& GetGameObjects() const;
-  std::vector<std::shared_ptr<GameObject>>& GetGameObjects();
-
   const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
-  std::vector<std::shared_ptr<Soldier>>& GetSoldiers();
+  const std::vector<std::shared_ptr<TerrainObject>>& GetTerrainObjects() const;
+  const std::vector<std::shared_ptr<Bullet>>& GetBullets() const;
 
   const QSize& GetSize() const;
 
@@ -40,15 +40,17 @@ class World {
   const QPixmap& GetPixmap();
   void Update();
 
-  void AddSoldier(const QPoint&, Soldier::Type);
+  void AddSoldier(Side);
+  void AddSoldier(const QPoint&, Side);
   void AddTerrainObject();
-  void AddBullet(const QPoint&, const QPoint&, int damage = 1);
+  void AddBullet(const std::shared_ptr<Bullet>&);
 
-  void UpdateDistances();
+  void Update();
 
   void MoveSoldiers();
-
   void MoveBullets();
+
+  void MakeShots();
 
  private:
   struct Landscape {
@@ -61,26 +63,27 @@ class World {
     std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
     Landscape landscape{Landscape(Qt::white, 0)};
     bool is_trench;
+    std::set<std::shared_ptr<Soldier>> soldiers;
     bool used;
-    int ground_distance;
-    int air_distance;
+    int64_t ground_distance;
   };
 
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
   std::vector<std::shared_ptr<Soldier>> soldiers_;
-  std::vector<std::shared_ptr<Soldier>> defenders_;
-  std::vector<std::shared_ptr<Soldier>> attackers_;
   std::vector<std::shared_ptr<Bullet>> bullets_;
-  std::vector<std::shared_ptr<GameObject>> game_objects_;
-  bool is_need_update_defenders_{true};
-  bool is_need_update_attackers_{true};
+  std::vector<std::shared_ptr<TerrainObject>> terrain_objects_;
+  bool is_need_update_towers_{true};
 
   void LoadMap(const QString& path);
 
   QPixmap DrawWorld() const;
 
-  void UpdateAirDistances();
   void UpdateGroundDistances();
+
+  void DamageArea(int, int, int, int);
+
+  std::optional<std::shared_ptr<Soldier>> FindNearest(
+      const std::shared_ptr<Soldier>&) const;
 };

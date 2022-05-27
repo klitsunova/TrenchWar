@@ -2,7 +2,7 @@
 
 EventsController::EventsController(QWidget* parent) {
   setParent(parent);
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
+  world_ = std::make_shared<World>(":Resources/Maps/map_test.txt");
   view_ = std::make_unique<GameView>(this, world_);
   trench_controller_ = std::make_unique<TrenchController>(this,
                                                           world_,
@@ -16,13 +16,14 @@ EventsController::EventsController(QWidget* parent) {
 
 void EventsController::timerEvent(QTimerEvent*) {
   world_->MoveSoldiers();
+  world_->MakeShots();
   world_->MoveBullets();
+  world_->Update();
   view_->UpdateMap();
 }
 
 void EventsController::StartTimer() {
   if (!timer_->isActive()) {
-    // TODO(AZYAVCHIKOV) temporary code
     timer_->start(kTimerInterval, this);
   }
 }
