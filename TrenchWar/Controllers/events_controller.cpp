@@ -2,7 +2,7 @@
 
 EventsController::EventsController(QWidget* parent) {
   setParent(parent);
-  world_ = std::make_shared<World>(":Resources/Maps/map_test.txt");
+  world_ = std::make_shared<World>(":Resources/Maps/map1.txt");
   view_ = std::make_unique<GameView>(this, world_);
   trench_controller_ = std::make_unique<TrenchController>(this,
                                                           world_,
@@ -97,7 +97,7 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
 
   trench_controller_->SetSecondPoint(event->pos());
   trench_controller_->Update();
-  world_->Update();
+  world_->TrenchUpdate();
   view_->UpdateMap();
 
   trench_controller_->SetMouseClicked(true);
@@ -106,7 +106,7 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
 
   if (!trench_controller_->IsTrenchFixed()) {
     trench_controller_->SetSaveCellsState();
-    world_->Update();
+    world_->TrenchUpdate();
     view_->UpdateMap();
     trench_controller_->ClearChangedCells();
     return;
@@ -126,7 +126,7 @@ void EventsController::BuildTrench() {
 
 void EventsController::DeleteTrench() {
   trench_controller_->SetSaveCellsState();
-  world_->Update();
+  world_->TrenchUpdate();
   view_->UpdateMap();
   trench_controller_->ClearChangedCells();
   view_->GetStore()->HideTrenchButtons();
