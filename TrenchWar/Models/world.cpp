@@ -80,7 +80,6 @@ void World::Update() {
     UpdateGroundDistances();
   }
   is_need_update_towers_ = false;
-  picture_ = DrawWorld();
 }
 
 void World::MoveSoldiers() {
@@ -396,6 +395,10 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
   if (nearest_index == -1) return std::nullopt;
 
   return soldiers_[nearest_index];
+}
+
+void World::TrenchUpdate() {
+  picture_ = DrawWorld();
 }
 
 World::Landscape::Landscape(const QColor& q_color, int speed) {

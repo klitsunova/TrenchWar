@@ -39,6 +39,7 @@ class World {
 
   const QPixmap& GetPixmap();
   void Update();
+  void TrenchUpdate();
 
   void AddSoldier(Side);
   void AddSoldier(const QPoint&, Side);
