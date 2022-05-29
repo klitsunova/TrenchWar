@@ -396,6 +396,7 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
 
   return soldiers_[nearest_index];
 }
+
 void World::TrenchUpdate() {
   picture_ = DrawWorld();
 }
