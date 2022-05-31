@@ -1,5 +1,5 @@
 #include "weapon.h"
-#include "iostream"
+
 Weapon::Weapon(Weapon::WeaponType type, int count_ammo) {
   weapon_type_ = type;
   switch (type) {
@@ -61,6 +61,5 @@ std::optional<std::shared_ptr<Bullet>> Weapon::Fire(const QPoint& from,
     return std::nullopt;
   }
   reload_lag_ = reload_time_;
-  std::cout << "123" << std::endl;
   return std::make_shared<Bullet>(from, to, side, damage_);
 }
