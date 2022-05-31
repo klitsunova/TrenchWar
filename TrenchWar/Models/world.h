@@ -81,7 +81,7 @@ class World {
 
   void UpdateGroundDistances();
 
-  void DamageArea(int, int, int, int);
+  void DamageArea(int x, int y, int radius, int bullet_index);
 
   std::optional<std::shared_ptr<Soldier>> FindNearest(
       const std::shared_ptr<Soldier>&) const;

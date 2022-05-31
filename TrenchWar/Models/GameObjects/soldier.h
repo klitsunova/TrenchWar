@@ -20,7 +20,6 @@ class Soldier : public GameObject {
   ~Soldier() override = default;
 
   Health GetHitPoints() const;
-  void MoveSoldier(QSize);
 
   int GetId() const;
   Side GetSide() const;

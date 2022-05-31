@@ -320,7 +320,7 @@ void World::UpdateGroundDistances() {
 
 void World::MoveBullets() {
   // TODO(AZYAVCHIKOV) temporary code
-  int bullet_radius = 0;
+  int bullet_radius = 5;
   // int bullet_radius = 3;
   // int repeat = 4;
   int repeat = 1;
@@ -379,7 +379,6 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
   int nearest_index = -1;
   int64_t dist = INT64_MAX, new_dist;
   QPoint to, from;
-  int64_t to_x, to_y;
 
   for (int i = 0; i < soldiers_.size(); ++i) {
     if (soldiers_[i]->IsDead()) continue;
