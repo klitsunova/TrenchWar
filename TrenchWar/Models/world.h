@@ -41,10 +41,10 @@ class World {
   void Update();
   void TrenchUpdate();
 
-  void AddSoldier(Side);
-  void AddSoldier(const QPoint&, Side);
+  void AddSoldier(Side side);
+  void AddSoldier(const QPoint& position, Side side);
   void AddTerrainObject();
-  void AddBullet(const std::shared_ptr<Bullet>&);
+  void AddBullet(const std::shared_ptr<Bullet>& bullet);
 
   void MoveSoldiers();
   void MoveBullets();
@@ -84,5 +84,5 @@ class World {
   void DamageArea(int x, int y, int radius, int bullet_index);
 
   std::optional<std::shared_ptr<Soldier>> FindNearest(
-      const std::shared_ptr<Soldier>&) const;
+      const std::shared_ptr<Soldier>& soldier) const;
 };
