@@ -42,6 +42,10 @@ const QString kStoreBox =
     "border-radius: 4px;"
     "padding: 2px;"
     "background-color: #BFB790;}";
+
+const QString kStoreMenu =
+    "QWidget {"
+    "background-color: #40826d;}";
 }  // namespace styles
 
 namespace colors {

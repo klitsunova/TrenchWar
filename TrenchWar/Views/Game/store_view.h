@@ -20,6 +20,7 @@ class StoreView : public QWidget {
   void HideReadyButton();
   void HideTrenchButtons() const;
   void ShowTrenchButtons() const;
+  void paintEvent(QPaintEvent *) override;
 
  signals:
   void Ready();

@@ -2,6 +2,8 @@
 
 #include <QLabel>
 #include <QSizePolicy>
+#include <QStyleOption>
+#include <QPainter>
 
 #include "helpers/sizes.h"
 #include "helpers/styles.h"
@@ -48,6 +50,7 @@ void StoreView::SetStyles() {
   build_trench_->setStyleSheet(styles::kPushButton);
   delete_trench_->setMinimumSize(element_sizes::kTrenchBuild);
   delete_trench_->setStyleSheet(styles::kPushButton);
+  setStyleSheet(styles::kStoreMenu);
 }
 
 void StoreView::ConnectUI() {
@@ -72,4 +75,11 @@ void StoreView::ShowTrenchButtons() const {
 void StoreView::HideTrenchButtons() const {
   build_trench_ ->hide();
   delete_trench_->hide();
+}
+
+void StoreView::paintEvent(QPaintEvent*) {
+  QStyleOption opt;
+  opt.initFrom(this);
+  QPainter p(this);
+  style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
