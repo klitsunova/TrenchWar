@@ -5,9 +5,9 @@
 #include <QTcpSocket>
 #include <QVariant>
 
-#include "Network/player_model.h"
-#include "Models/GameObjects/soldier.h"
 #include "Models/GameObjects/bullet.h"
+#include "Models/GameObjects/soldier.h"
+#include "Network/player_model.h"
 
 enum class MessageType {
   kPlayersVector,
@@ -23,7 +23,23 @@ struct NetworkData {
 };
 
 struct PlayerData {
-  std::vector<Soldier> soldiers;
+  int id;
+  bool status;
+  int side;
+};
+
+struct SoldierData {
+  int x;
+  int y;
+  int hit_points;
+};
+
+struct TerrainData {
+
+};
+
+struct GameData {
+  std::vector<SoldierData> soldiers;
   std::vector<Bullet> bullets;
   bool is_updated;
 };
@@ -51,9 +67,10 @@ class Network {
 
 class JsonHelper {
  public:
-  static QString EncodePlayersVector(const std::vector<std::shared_ptr<Player>>& players);
-  static std::vector<std::pair<size_t, bool>> DecodePlayersVectorJson(
-      const QString& json);
-  static QString EncodePlayerData(const PlayerData& data);
-  static PlayerData DecodePlayerData(const QVariant& q_variant);
+  static QString EncodePlayerData(
+      const std::vector<std::shared_ptr<Player>>& players);
+  static std::vector<PlayerData> DecodePlayersData(const QString& json);
+  static QString EncodeGameData(const GameData& data);
+  static GameData DecodeGameData(const QVariant& q_variant);
+
 };

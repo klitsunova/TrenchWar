@@ -28,7 +28,8 @@ class World {
 
   ~World() = default;
 
-  const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
+  const std::vector<std::shared_ptr<Soldier>>& GetDefenders() const;
+  const std::vector<std::shared_ptr<Soldier>>& GetAttackers() const;
   const std::vector<std::shared_ptr<TerrainObject>>& GetTerrainObjects() const;
   const std::vector<std::shared_ptr<Bullet>>& GetBullets() const;
 
@@ -70,7 +71,8 @@ class World {
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
-  std::vector<std::shared_ptr<Soldier>> soldiers_;
+  std::vector<std::shared_ptr<Soldier>> defenders_;
+  std::vector<std::shared_ptr<Soldier>> attackers_;
   std::vector<std::shared_ptr<Bullet>> bullets_;
   std::vector<std::shared_ptr<TerrainObject>> terrain_objects_;
   bool is_need_update_towers_{true};

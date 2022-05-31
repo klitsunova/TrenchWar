@@ -9,31 +9,77 @@ GameController::GameController(
   world_ = world;
 }
 
-void GameController::SetWorldObjects() {
+void GameController::SetWorldObjects(Side side) {
   for (int i = 0; i < 50; ++i) {
-    world_->AddSoldier(Side::kDefender);
-    world_->AddSoldier(Side::kAttacker);
-  }
-  // temporary code
-  // world_->AddSoldier(QPoint(200, 200), Soldier::Type::kDefender);
-  // world_->AddSoldier(QPoint(400, 400), Soldier::Type::kDefender);
-  // world_->AddSoldier(QPoint(600, 600), Soldier::Type::kDefender);
-  world_->AddTerrainObject();
-// =======
-//   // temporary code
-//   world_->AddSoldier(QPoint(5, 7), Side::kAttacker);
-//   world_->AddSoldier(QPoint(3, 3), Side::kDefender);
-// >>>>>>> dev
-}
-
-void GameController::UpdateEnemyObjects(const PlayerData& data) {
-    for (auto& soldier: data.soldiers) {
-      world_->AddSoldier(QPoint(soldier.GetPosition()), Side::kAttacker);
+    if (side == Side::kAttacker) {
+      world_->AddSoldier(Side::kAttacker);
+    } else {
+      world_->AddSoldier(Side::kDefender);
     }
+  }
+  world_->AddTerrainObject();
 }
 
-PlayerData GameController::GetDataToSend() {
-  PlayerData new_data;
-  // new_data.soldiers = *(world_->GetDefendersData());
+void GameController::UpdateAttackers(const GameData& data) {
+  for (size_t i = 0; i < data.soldiers.size(); ++i) {
+    QPoint position = QPoint(data.soldiers[i].x, data.soldiers[i].y);
+    if (i < world_->GetAttackers().size()) {
+      world_->GetAttackers()[i]->SetPosition(position);
+      world_->GetAttackers()[i]->SetHitPoints(data.soldiers[i].hit_points);
+    } else {
+      world_->AddSoldier(position, Side::kAttacker);
+    }
+  }
+  AddBullets(data);
+}
+
+void GameController::UpdateDefenders(const GameData& data) {
+  for (size_t i = 0; i < data.soldiers.size(); ++i) {
+    QPoint position = QPoint(data.soldiers[i].x, data.soldiers[i].y);
+    if (i < world_->GetDefenders().size()) {
+      world_->GetDefenders()[i]->SetPosition(position);
+      world_->GetDefenders()[i]->SetHitPoints(data.soldiers[i].hit_points);
+    } else {
+      world_->AddSoldier(position, Side::kDefender);
+    }
+  }
+  AddBullets(data);
+}
+
+GameData GameController::GetAttackersData() {
+  GameData new_data;
+  for (const auto& soldier: world_->GetAttackers()) {
+    SoldierData data{soldier->GetPosition().x(),
+                     soldier->GetPosition().y(),
+                     soldier->GetHitPoints()};
+    new_data.soldiers.push_back(data);
+  }
+  for (const auto& bullet: world_->GetBullets()) {
+    // if (bullet->GetProgress() == 0 && bullet->GetSide() != Side::kDefender) {
+      new_data.bullets.push_back(*bullet);
+    // }
+  }
   return new_data;
+}
+
+GameData GameController::GetDefendersData() {
+  GameData new_data;
+  for (const auto& soldier: world_->GetDefenders()) {
+    SoldierData data{soldier->GetPosition().x(),
+                     soldier->GetPosition().y(),
+                     soldier->GetHitPoints()};
+    new_data.soldiers.push_back(data);
+  }
+  for (const auto& bullet: world_->GetBullets()) {
+    if (bullet->GetProgress() == 0 && bullet->GetSide() != Side::kAttacker) {
+      new_data.bullets.push_back(*bullet);
+    }
+  }
+  return new_data;
+}
+
+void GameController::AddBullets(const GameData& data) {
+  for (auto& bullet: data.bullets) {
+    world_->AddBullet(std::make_shared<Bullet>(bullet));
+  }
 }

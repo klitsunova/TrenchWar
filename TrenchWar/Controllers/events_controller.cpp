@@ -19,13 +19,19 @@ EventsController::EventsController(QWidget* parent) {
 }
 
 void EventsController::timerEvent(QTimerEvent*) {
-  world_->MoveSoldiers();
   world_->MakeShots();
   world_->MoveBullets();
   world_->Update();
-  network_controller_->SetOwnData(game_controller_->GetDataToSend());
+  if (network_view_->GetPlayerSide() == Side::kAttacker) {
+    world_->MoveSoldiers();
+    game_controller_->UpdateDefenders(network_controller_->GetDefendersData());
+    world_->AddBullet(std::make_shared<Bullet>(Bullet(QPoint(0, 0), QPoint(500, 500), Side::kAttacker, 100)));
+    network_controller_->SetAttackersData(game_controller_->GetAttackersData());
+  } else {
+    game_controller_->UpdateAttackers(network_controller_->GetAttackersData());
+    network_controller_->SetDefendersData(game_controller_->GetDefendersData());
+  }
   network_controller_->SendData();
-  game_controller_->UpdateEnemyObjects(network_controller_->GetEnemyData());
   view_->UpdateMap();
 }
 
@@ -91,7 +97,7 @@ void EventsController::StartPreparationStage() {
                                                           view_->GetMap());
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
-  game_controller_->SetWorldObjects();
+  game_controller_->SetWorldObjects(network_view_->GetPlayerSide());
   ConnectUI();
   view_->show();
 }

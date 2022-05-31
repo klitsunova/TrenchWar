@@ -57,3 +57,7 @@ bool Bullet::IsUsed() const {
 void Bullet::MakeUsed() {
   is_used_ = true;
 }
+
+int Bullet::GetProgress() const {
+  return moving_progress_;
+}

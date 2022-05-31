@@ -111,7 +111,7 @@ void NetworkView::SetUpAndStartGame() {
 
 void NetworkView::UpdatePlayersVector() {
   QString json = network_controller_->GetData().toString();
-  auto data_vector = JsonHelper::DecodePlayersVectorJson(json);
+  auto data_vector = JsonHelper::DecodePlayersData(json);
 
   QLayoutItem* item;
   while ((item = players_layout_->takeAt(0)) != nullptr) {
@@ -125,8 +125,12 @@ void NetworkView::UpdatePlayersVector() {
   players_.clear();
   for (const auto& data: data_vector) {
     auto* player = new Player(nullptr);
-    player->SetId(data.first);
-    player->SetReady(data.second);
+    player->SetId(data.id);
+    player->SetSide(static_cast<Side>(data.side));
+    player->SetReady(data.status);
+    if (data.id == network_player_->GetId()) {
+      network_player_->SetSide(static_cast<Side>(data.side));
+    }
     players_.emplace_back(new PlayerView(this, player));
     players_layout_->addWidget(players_.back());
   }
@@ -167,9 +171,6 @@ void NetworkView::SetEndPreparationStatus() {
   network_controller_->SendEndPreparationStatus();
 }
 
-void NetworkView::DecodeGameData() {
-}
-
 void NetworkView::Disconnect() {
   if (network_player_->Socket()->state() != QAbstractSocket::ConnectedState) {
     connection_status_->setText("You are not connected to disconnect!");
@@ -197,4 +198,8 @@ void NetworkView::Disconnect() {
 
 std::shared_ptr<NetworkController> NetworkView::GetNetworkController() const {
   return network_controller_;
+}
+
+Side NetworkView::GetPlayerSide() const {
+  return network_player_->GetSide();
 }

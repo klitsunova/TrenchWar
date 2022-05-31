@@ -50,7 +50,7 @@ class EventsController : public QWidget {
   void ReturnToMainMenu();
 
  private:
-  static constexpr int kTimerInterval{500};
+  static constexpr int kTimerInterval{20};
 
   void ConnectUI();
 

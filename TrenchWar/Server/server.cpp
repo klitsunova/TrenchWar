@@ -4,6 +4,7 @@
 
 #include <QNetworkInterface>
 #include <QTcpSocket>
+#include <QFile>
 
 Server::Server() : ip_(this),
                    server_(this) {
@@ -30,9 +31,9 @@ void Server::ConnectClient() {
   players_.emplace_back(std::make_shared<Player>(server_.nextPendingConnection()));
   players_.back()->SetId(players_.size() - 1);
   if (players_.back()->GetId() == 0) {
-    players_.back()->SetType(Player::Type::kDefender);
+    players_.back()->SetSide(Side::kAttacker);
   } else {
-    players_.back()->SetType(Player::Type::kAttacker);
+    players_.back()->SetSide(Side::kDefender);
   }
   connect(players_.back()->Socket(),
           &QTcpSocket::readyRead,
@@ -101,7 +102,7 @@ void Server::ReceiveClientData() {
           break;
         }
         case MessageType::kPlayersData: {
-          if (player->GetType() == Player::Type::kDefender) {
+          if (player->GetSide() == Side::kDefender) {
             defender_data_ = data.data.toString();
           } else {
             attacker_data_ = data.data.toString();
@@ -118,7 +119,7 @@ void Server::ReceiveClientData() {
 
 void Server::UpdateClientsInfo() {
   Network::WriteDataForAll(players_,
-                           QVariant::fromValue(JsonHelper::EncodePlayersVector(players_)),
+                           QVariant::fromValue(JsonHelper::EncodePlayerData(players_)),
                            MessageType::kPlayersVector);
 }
 
@@ -141,7 +142,7 @@ void Server::SendActiveStageSignal(const QVariant& q_variant) {
 
 void Server::SendGameStateToAllPlayers() {
   for (auto& player: players_) {
-    if (player->GetType() == Player::Type::kDefender) {
+    if (player->GetSide() == Side::kDefender) {
       Network::WriteData(player->Socket(),
                          QVariant::fromValue(attacker_data_),
                          MessageType::kPlayersData);

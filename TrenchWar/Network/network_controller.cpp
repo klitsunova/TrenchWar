@@ -52,7 +52,11 @@ void NetworkController::ParseData() {
       break;
     }
     case MessageType::kPlayersData: {
-      enemy_data_ = JsonHelper::DecodePlayerData(data.data);
+      if (player_->GetSide() == Side::kAttacker) {
+        defenders_data_ = JsonHelper::DecodeGameData(data.data);
+      } else {
+        attackers_data_ = JsonHelper::DecodeGameData(data.data);
+      }
       break;
     }
     default: {
@@ -71,19 +75,16 @@ void NetworkController::SendStartSignal() {
                      MessageType::kSignalToStart);
 }
 
-// bool NetworkController::DataUpdated(size_t id) {
-//   if (player_->IsDataUpdated()) {
-//     player_->SetDataUpdated(false);
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
-
 void NetworkController::SendData() {
-  Network::WriteData(player_->Socket(),
-                     QVariant::fromValue(JsonHelper::EncodePlayerData(own_data_)),
-                     MessageType::kPlayersData);
+  if (player_->GetSide() == Side::kAttacker) {
+    Network::WriteData(player_->Socket(),
+                       QVariant::fromValue(JsonHelper::EncodeGameData(attackers_data_)),
+                       MessageType::kPlayersData);
+  } else {
+    Network::WriteData(player_->Socket(),
+                       QVariant::fromValue(JsonHelper::EncodeGameData(defenders_data_)),
+                       MessageType::kPlayersData);
+  }
 }
 
 size_t NetworkController::GetId() {
@@ -98,10 +99,18 @@ void NetworkController::SetStarted(bool is_started) {
   is_started_ = is_started;
 }
 
-PlayerData& NetworkController::GetEnemyData() {
-  return enemy_data_;
+void NetworkController::SetAttackersData(GameData data) {
+  attackers_data_ = std::move(data);
 }
 
-void NetworkController::SetOwnData(PlayerData data) {
-  own_data_ = std::move(data);
+void NetworkController::SetDefendersData(GameData data) {
+  defenders_data_ = std::move(data);
+}
+
+GameData NetworkController::GetAttackersData() const {
+  return attackers_data_;
+}
+
+GameData NetworkController::GetDefendersData() const {
+  return defenders_data_;
 }

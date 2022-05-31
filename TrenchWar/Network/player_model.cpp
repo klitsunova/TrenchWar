@@ -31,10 +31,10 @@ void Player::SetPrepared(bool is_prepared) {
   is_prepared_ = is_prepared;
 }
 
-Player::Type Player::GetType() const {
-  return type_;
+Side Player::GetSide() const {
+  return side_;
 }
 
-void Player::SetType(Type type) {
-  type_ = type;
+void Player::SetSide(Side side) {
+  side_ = side;
 }

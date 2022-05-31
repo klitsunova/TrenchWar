@@ -28,10 +28,6 @@ void Soldier::MoveSoldier(QSize size) {
   }
 }
 
-int Soldier::GetId() const {
-  return id_;
-}
-
 Side Soldier::GetSide() const {
   return side_;
 }
@@ -74,10 +70,10 @@ void Soldier::TakeDamage(int damage) {
   }
 }
 
-void Soldier::SetId(int id) {
-  id_ = id;
-}
-
 bool Soldier::IsDead() const {
   return hit_points_ <= 0;
+}
+
+void Soldier::SetHitPoints(int hit_points) {
+  hit_points_ =  hit_points;
 }

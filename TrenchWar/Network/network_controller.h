@@ -19,8 +19,15 @@ class NetworkController : public QObject {
 
   QVariant GetData();
   void SendData();
-  PlayerData& GetEnemyData();
-  void SetOwnData(PlayerData data);
+
+  void SetAttackersData(GameData data);
+  void SetDefendersData(GameData data);
+
+  GameData GetAttackersData() const;
+  GameData GetDefendersData() const;
+
+  GameData& GetEnemyData();
+  void SetOwnData(GameData data);
 
   size_t GetId();
   bool IsStarted() const;
@@ -37,8 +44,7 @@ class NetworkController : public QObject {
 
   std::shared_ptr<Player> player_;
   QVariant q_variant_;
-  // std::vector<PlayerData> players_data_;
   bool is_started_ = false;
-  PlayerData own_data_;
-  PlayerData enemy_data_;
+  GameData defenders_data_;
+  GameData attackers_data_;
 };

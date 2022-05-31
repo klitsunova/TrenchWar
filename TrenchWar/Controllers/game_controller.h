@@ -19,9 +19,12 @@ class GameController : public QWidget {
       const std::shared_ptr<World>& = nullptr);
   ~GameController() override = default;
 
-  void SetWorldObjects();
-  void UpdateEnemyObjects(const PlayerData& data);
-  PlayerData GetDataToSend();
+  void SetWorldObjects(Side side);
+  void UpdateDefenders(const GameData& data);
+  void UpdateAttackers(const GameData& data);
+  void AddBullets(const GameData& data);
+  GameData GetAttackersData();
+  GameData GetDefendersData();
 
  signals:
   void Exit();

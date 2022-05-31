@@ -28,6 +28,7 @@ class NetworkView : public QWidget {
   void SetEndPreparationStatus();
 
   std::shared_ptr<NetworkController> GetNetworkController() const;
+  Side GetPlayerSide() const;
 
  signals:
   void StartGame();
@@ -49,7 +50,6 @@ class NetworkView : public QWidget {
   void ConnectButtons() const;
   void AddStartButton();
 
-  void DecodeGameData();
   QPushButton* back_to_main_menu_;
   QPushButton* try_connect_;
   QPushButton* ready_;
