@@ -20,7 +20,6 @@ class Soldier : public GameObject {
   ~Soldier() override = default;
 
   Health GetHitPoints() const;
-  void MoveSoldier(QSize);
 
   int GetId() const;
   Side GetSide() const;
@@ -32,7 +31,8 @@ class Soldier : public GameObject {
   void ConditionMonitoring() const;
   void ChooseWeapon() const;
   void Fire(int id, Weapon::WeaponType weapon_type);
-  std::optional<std::shared_ptr<Bullet>> Fire(const QPoint&, const QPoint&);
+  std::optional<std::shared_ptr<Bullet>> Fire(const QPoint& from,
+                                              const QPoint& to);
 
   void TakeDamage(int damage);
 
