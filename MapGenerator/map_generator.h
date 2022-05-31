@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QApplication>
+#include <QComboBox>
 #include <QPainter>
 #include <QPushButton>
 #include <QImage>
@@ -44,6 +45,17 @@ class MapGenerator : public QWidget {
     int speed_characteristic{0};
   };
 
+  struct Object{
+    enum class Type{
+      kDefender,
+      kAttacker,
+      kTerrainObject
+    };
+    Object(const QPoint&, Type);
+    Type type;
+    QPoint pos;
+  };
+
   class ImageSHell : public QWidget {
    public:
     explicit ImageSHell(QWidget* parent = nullptr);
@@ -63,9 +75,11 @@ class MapGenerator : public QWidget {
   void CreateConnections();
 
   void SetAdditionalColorVisible(bool);
+  void SetSoldiersMenuVisible(bool);
 
   void DrawChangedPicture();
   void DrawUsingColors();
+  void DrawObjects();
 
   void ConvertImageToArray(const QSize&);
 
@@ -73,8 +87,12 @@ class MapGenerator : public QWidget {
 
   void DrawButtonClicked();
   void AddColorButtonClicked();
+  void CancelColorButtonClicked();
+  void AddSoldierButtonClicked();
+  void CancelSoldierButtonClicked();
   void ChangeButtonClicked();
   void RestoreButtonClicked();
+  void DeleteObjectsButtonClicked();
   void SaveButtonClicked();
   void LoadButtonClicked();
 
@@ -83,6 +101,7 @@ class MapGenerator : public QWidget {
   std::vector<std::vector<ChangingColor>> map_;
   bool using_original_colors;
   std::vector<Landscape> using_colors_;
+  std::vector<Object> game_objects_;
   QImage buffer_picture_;
   ImageSHell* original_picture_shell_;
   ImageSHell* changed_picture_shell_;
@@ -92,11 +111,20 @@ class MapGenerator : public QWidget {
   QPushButton* draw_button_;
   QPushButton* change_button_;
   QPushButton* restore_button_;
+  QPushButton* delete_objects_button_;
   QPushButton* save_button_;
   QPushButton* load_button_;
   QPushButton* add_color_button_;
+  QPushButton* cancel_color_button_;
+  QPushButton* add_soldier_button_;
+  QPushButton* cancel_soldier_button_;
   QLineEdit* width_;
   QLineEdit* height_;
   QLineEdit* speed_characteristic_;
   QLabel* speed_characteristic_label_;
+  QPoint new_object_pos_;
+  QComboBox* object_variants_;
+  QPixmap attacker_;
+  QPixmap defender_;
+  QPixmap tower_;
 };
