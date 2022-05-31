@@ -45,7 +45,7 @@ void MapView::DrawObject(QPainter* painter, const QPoint& pos,
   painter->restore();
 }
 
-void MapView::paintEvent(QPaintEvent* event) {
+void MapView::paintEvent(QPaintEvent*) {
   QPixmap buffer(this->size());
   QPainter painter;
   painter.begin(&buffer);
