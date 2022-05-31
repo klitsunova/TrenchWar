@@ -308,16 +308,14 @@ void MapGenerator::ChangeMap() {
 void MapGenerator::mouseDoubleClickEvent(QMouseEvent* event) {
   int x = event->pos().x();
   int y = event->pos().y();
-  if (x >= original_picture_shell_->x() &&
-      y >= original_picture_shell_->y() &&
-      x <= (original_picture_shell_->x() +
+  if (x >= original_picture_shell_->geometry().x() &&
+      y >= original_picture_shell_->geometry().y() &&
+      x <= (original_picture_shell_->geometry().x() +
           original_picture_shell_->width()) &&
-      y <= (original_picture_shell_->y() +
+      y <= (original_picture_shell_->geometry().y() +
           original_picture_shell_->height())) {
-    x -= original_picture_shell_->x();
-    y -= original_picture_shell_->y();
-
-    SetAdditionalColorVisible(true);
+    x -= original_picture_shell_->geometry().x();
+    y -= original_picture_shell_->geometry().y();
 
     QPainter painter(&color_shell_->picture_);
     painter.save();
@@ -332,31 +330,34 @@ void MapGenerator::mouseDoubleClickEvent(QMouseEvent* event) {
                            0,
                            painter.window().width(),
                            painter.window().height()));
+
+    SetAdditionalColorVisible(true);
+
     color_shell_->update();
     painter.restore();
-  } else if (x >= using_colors_shell_->x() &&
-      y >= using_colors_shell_->y() &&
-      x <= (using_colors_shell_->x() +
+  } else if (x >= using_colors_shell_->geometry().x() &&
+      y >= using_colors_shell_->geometry().y() &&
+      x <= (using_colors_shell_->geometry().x() +
           using_colors_shell_->width()) &&
-      y <= (using_colors_shell_->y() +
+      y <= (using_colors_shell_->geometry().y() +
           using_colors_shell_->height())) {
     if (using_colors_.size() == 1) {
       using_colors_[0].color = Qt::white;
       using_colors_[0].speed_characteristic = 0;
       return;
     }
-    x -= using_colors_shell_->x();
+    x -= using_colors_shell_->geometry().x();
     int i = (using_colors_.size() * x) / (using_colors_shell_->width());
     using_colors_.erase(using_colors_.begin() + i);
     DrawUsingColors();
-  } else if (x >= changed_picture_shell_->x() &&
-      y >= changed_picture_shell_->y() &&
-      x <= (changed_picture_shell_->x() +
+  } else if (x >= changed_picture_shell_->geometry().x() &&
+      y >= changed_picture_shell_->geometry().y() &&
+      x <= (changed_picture_shell_->geometry().x() +
           changed_picture_shell_->width()) &&
-      y <= (changed_picture_shell_->y() +
+      y <= (changed_picture_shell_->geometry().y() +
           changed_picture_shell_->height())) {
-    x -= changed_picture_shell_->x();
-    y -= changed_picture_shell_->y();
+    x -= changed_picture_shell_->geometry().x();
+    y -= changed_picture_shell_->geometry().y();
     new_object_pos_.setX((x * map_[0].size()) /
         changed_picture_shell_->width());
     new_object_pos_.setY((y * map_.size()) /
@@ -467,6 +468,18 @@ void MapGenerator::SaveButtonClicked() {
     }
     fout << "\n";
   }
+  fout << "\n" << game_objects_.size() << "\n";
+  for (int i = 0; i < game_objects_.size(); ++i) {
+    auto& object = game_objects_[i];
+    fout << object.pos.x() << " " << object.pos.y() << " ";
+    if (object.type == Object::Type::kAttacker) {
+      fout << "kAttacker\n";
+    } else if (object.type == Object::Type::kDefender) {
+      fout << "kDefender\n";
+    } else if (object.type == Object::Type::kTerrainObject) {
+      fout << "kTerrainObject\n";
+    }
+  }
 }
 
 void MapGenerator::LoadButtonClicked() {
@@ -486,6 +499,7 @@ void MapGenerator::LoadButtonClicked() {
 void MapGenerator::LoadImageFromFile(const QString& filename) {
   original_picture_shell_->SetPixmap(filename);
   buffer_picture_.load(filename);
+  assert(!buffer_picture_.isNull());
 
   using_original_colors = true;
 
@@ -493,6 +507,8 @@ void MapGenerator::LoadImageFromFile(const QString& filename) {
   save_button_->setVisible(false);
 
   map_.clear();
+  ConvertImageToArray(QSize(width_->text().toInt(),
+                            height_->text().toInt()));
   using_colors_.clear();
   using_colors_.emplace_back(Landscape(QColor(255, 255, 255), 0));
 
