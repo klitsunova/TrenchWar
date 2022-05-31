@@ -1,15 +1,17 @@
 #include "soldier.h"
 
-Soldier::Soldier(Type type)
+Soldier::Soldier(Side side)
     : GameObject() {
   picture_ = PixmapLoader::GetSoldier();
-  type_ = type;
+  side_ = side;
+  weapons_.emplace_back(Weapon(Weapon::WeaponType::Rifle));
 }
 
-Soldier::Soldier(const QPoint& point, Type type)
+Soldier::Soldier(const QPoint& point, Side side)
     : GameObject(point) {
   picture_ = PixmapLoader::GetSoldier();
-  type_ = type;
+  side_ = side;
+  weapons_.emplace_back(Weapon(Weapon::WeaponType::Rifle));
 }
 
 Soldier::Health Soldier::GetHitPoints() const {
@@ -30,8 +32,8 @@ int Soldier::GetId() const {
   return id_;
 }
 
-Soldier::Type Soldier::GetType() const {
-  return type_;
+Side Soldier::GetSide() const {
+  return side_;
 }
 
 int Soldier::GetVisibilityRange() const {
@@ -59,6 +61,12 @@ void Soldier::AddAmmo(Weapon::WeaponType type, int count_ammo) {
   }
 }
 
+std::optional<std::shared_ptr<Bullet>> Soldier::Fire(const QPoint& from,
+                                                     const QPoint& to) {
+  assert(!weapons_.empty());
+  return weapons_[0].Fire(from, to, side_);
+}
+
 void Soldier::TakeDamage(int damage) {
   hit_points_ -= damage;
   if (hit_points_ <= 0) {
@@ -68,4 +76,8 @@ void Soldier::TakeDamage(int damage) {
 
 void Soldier::SetId(int id) {
   id_ = id;
+}
+
+bool Soldier::IsDead() const {
+  return hit_points_ <= 0;
 }

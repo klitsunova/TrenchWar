@@ -44,6 +44,7 @@ set(CONTROLLERS
         Controllers/main_controller.cpp
         Controllers/menu_controller.cpp
         Controllers/events_controller.cpp
+        Controllers/trench_controller.cpp
         )
 
 set(NETWORK

@@ -27,8 +27,5 @@ class GameController : public QWidget {
   void Exit();
 
  private:
-  void InitializationWeapon();
-
-  std::vector<Weapon> weapons_;
   std::shared_ptr<World> world_;
 };

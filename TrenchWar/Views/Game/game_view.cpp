@@ -3,6 +3,7 @@
 #include <QLabel>
 #include <QPainter>
 #include <QStyle>
+#include <utility>
 
 #include "helpers/sizes.h"
 
@@ -55,4 +56,12 @@ void GameView::SetStyle() {
       Qt::AlignCenter,
       window_sizes::kMenu,
       QApplication::primaryScreen()->availableGeometry()));
+}
+
+MapView* GameView::GetMap() const {
+  return map_;
+}
+
+StoreView* GameView::GetStore() const {
+  return store_;
 }

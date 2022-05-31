@@ -96,7 +96,7 @@ PlayerData JsonHelper::DecodePlayerData(const QVariant& q_variant) {
   QJsonArray soldiers_data = json_object["soldiers"].toArray();
   for (const auto& record : soldiers_data) {
     QJsonObject soldier_obj = record.toObject();
-    Soldier soldier(Soldier::Type::kAttacker);
+    Soldier soldier(Side::kAttacker);
     soldier.SetId(soldier_obj["id"].toInt());
     soldier.SetPosition(QPoint(soldier_obj["x"].toInt(), soldier_obj["y"].toInt()));
     new_data.soldiers.push_back(soldier);

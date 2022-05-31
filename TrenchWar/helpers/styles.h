@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QString>
+#include <QWidget>
 
 namespace styles {
 const QString kPushButton =
@@ -42,3 +43,7 @@ const QString kStoreBox =
     "padding: 2px;"
     "background-color: #BFB790;}";
 }  // namespace styles
+
+namespace colors {
+constexpr QColor kTrenchColor{92, 64, 51};
+}
