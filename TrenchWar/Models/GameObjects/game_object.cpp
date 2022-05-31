@@ -32,22 +32,6 @@ void GameObject::SetRandomPosition(const QSize& size) {
                      std::rand() % size.height());
 }
 
-void GameObject::MoveLeft() {
-  position_ -= QPoint(kStep, 0);
-}
-
-void GameObject::MoveRight() {
-  position_ += QPoint(kStep, 0);
-}
-
-void GameObject::MoveUp() {
-  position_ -= QPoint(0, kStep);
-}
-
-void GameObject::MoveDown() {
-  position_ += QPoint(0, kStep);
-}
-
 const QPixmap& GameObject::GetPixmap() const {
   return *picture_;
 }

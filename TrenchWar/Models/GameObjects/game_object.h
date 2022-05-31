@@ -24,11 +24,6 @@ class GameObject {
   void SetPosition(const QPoint&);
   void SetRandomPosition(const QSize&);
 
-  void MoveLeft();
-  void MoveRight();
-  void MoveUp();
-  void MoveDown();
-
   const QPixmap& GetPixmap() const;
 
   QSize GetSize() const;
