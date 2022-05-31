@@ -511,6 +511,7 @@ void MapGenerator::LoadImageFromFile(const QString& filename) {
                             height_->text().toInt()));
   using_colors_.clear();
   using_colors_.emplace_back(Landscape(QColor(255, 255, 255), 0));
+  game_objects_.clear();
 
   DrawButtonClicked();
   DrawUsingColors();
