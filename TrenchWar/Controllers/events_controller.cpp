@@ -22,16 +22,7 @@ void EventsController::timerEvent(QTimerEvent*) {
   world_->MakeShots();
   world_->MoveBullets();
   world_->Update();
-  if (network_view_->GetPlayerSide() == Side::kAttacker) {
-    world_->MoveSoldiers();
-    game_controller_->UpdateDefenders(network_controller_->GetDefendersData());
-    world_->AddBullet(std::make_shared<Bullet>(Bullet(QPoint(0, 0), QPoint(500, 500), Side::kAttacker, 100)));
-    network_controller_->SetAttackersData(game_controller_->GetAttackersData());
-  } else {
-    game_controller_->UpdateAttackers(network_controller_->GetAttackersData());
-    network_controller_->SetDefendersData(game_controller_->GetDefendersData());
-  }
-  network_controller_->SendData();
+  world_->MoveSoldiers();
   view_->UpdateMap();
 }
 
@@ -92,7 +83,7 @@ void EventsController::StartPreparationStage() {
   network_controller_ = network_view_->GetNetworkController();
   world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
   view_ = std::make_unique<GameView>(this, world_);
-  trench_controller_ = std::make_unique<TrenchController>(this,
+  trench_controller_ = std::make_shared<TrenchController>(this,
                                                           world_,
                                                           view_->GetMap());
   timer_ = std::make_unique<QBasicTimer>();
@@ -103,10 +94,20 @@ void EventsController::StartPreparationStage() {
 }
 
 void EventsController::SetPreparedStatus() {
-  network_view_->SetEndPreparationStatus();
+  if (network_view_->GetPlayerSide() == Side::kAttacker) {
+    network_controller_->SetAttackersData(game_controller_->GetAttackersData());
+  } else {
+    network_controller_->SetDefendersData(game_controller_->GetDefendersData());
+  }
+  network_controller_->SendData();
 }
 
 void EventsController::StartActiveStage() {
+  if (network_view_->GetPlayerSide() == Side::kAttacker) {
+    game_controller_->UpdateDefenders(network_controller_->GetDefendersData());
+  } else {
+    game_controller_->UpdateAttackers(network_controller_->GetAttackersData());
+  }
   DeleteTrench();
   view_->HideReadyButton();
   game_stage = Stage::kActive;
@@ -157,7 +158,7 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
 }
 
 void EventsController::BuildTrench() {
-  for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
+  for (const auto& changed_cell: trench_controller_->GetChangedCells()) {
     world_->GetCell(changed_cell.first).is_trench = true;
   }
   trench_controller_->ClearChangedCells();

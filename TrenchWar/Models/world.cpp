@@ -6,7 +6,6 @@
 World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
-  AddTerrainObject();
 }
 
 void World::AddSoldier(Side side) {
@@ -35,6 +34,15 @@ void World::AddSoldier(const QPoint& position, Side side) {
 void World::AddTerrainObject() {
   auto new_object = std::make_shared<TerrainObject>();
   new_object->SetRandomPosition(size_);
+  QPoint pos = new_object->GetPosition();
+  auto& cell = cells_[pos.y()][pos.x()];
+  cell.terrain_objects.push_back(new_object);
+  terrain_objects_.push_back(new_object);
+}
+
+void World::AddTerrainObject(QPoint position) {
+  auto new_object = std::make_shared<TerrainObject>();
+  new_object->SetPosition(position);
   QPoint pos = new_object->GetPosition();
   auto& cell = cells_[pos.y()][pos.x()];
   cell.terrain_objects.push_back(new_object);
@@ -369,12 +377,22 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
 }
 
 void World::MakeShots() {
-  for (int i = 0; i < defenders_.size(); ++i) {
-    if (defenders_[i]->IsDead()) continue;
-    auto nearest = FindNearest(defenders_[i]);
+  for (auto & defender : defenders_) {
+    if (defender->IsDead()) continue;
+    auto nearest = FindNearest(defender, attackers_);
     if (!nearest.has_value()) continue;
-    auto bullet = defenders_[i]->Fire(defenders_[i]->GetPosition(),
+    auto bullet = defender->Fire(defender->GetPosition(),
                                      nearest.value()->GetPosition());
+    if (bullet.has_value()) {
+      AddBullet(bullet.value());
+    }
+  }
+  for (auto & attacker : attackers_) {
+    if (attacker->IsDead()) continue;
+    auto nearest = FindNearest(attacker, defenders_);
+    if (!nearest.has_value()) continue;
+    auto bullet = attacker->Fire(attacker->GetPosition(),
+                                      nearest.value()->GetPosition());
     if (bullet.has_value()) {
       AddBullet(bullet.value());
     }
@@ -382,14 +400,15 @@ void World::MakeShots() {
 }
 
 std::optional<std::shared_ptr<Soldier>> World::FindNearest(
-    const std::shared_ptr<Soldier>& soldier) const {
+    const std::shared_ptr<Soldier>& soldier,
+    const std::vector<std::shared_ptr<Soldier>>& enemies) const {
   int nearest_index = -1;
   int64_t dist = INT64_MAX, new_dist;
   QPoint to, from;
 
-  for (int i = 0; i < attackers_.size(); ++i) {
-    if (attackers_[i]->IsDead()) continue;
-    to = attackers_[i]->GetPosition();
+  for (int i = 0; i < enemies.size(); ++i) {
+    if (enemies[i]->IsDead()) continue;
+    to = enemies[i]->GetPosition();
     new_dist = (from.x() - to.x()) * (from.x() - to.x()) + (from.y() - to.y()) * (from.y() - to.y());
     if (new_dist < dist) {
       dist = new_dist;
@@ -398,7 +417,7 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
   }
   if (nearest_index == -1) return std::nullopt;
 
-  return attackers_[nearest_index];
+  return enemies[nearest_index];
 }
 
 void World::TrenchUpdate() {

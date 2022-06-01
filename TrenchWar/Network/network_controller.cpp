@@ -9,7 +9,8 @@
 #include <QMessageBox>
 #include <utility>
 
-NetworkController::NetworkController(std::shared_ptr<Player> player) : player_(std::move(player)) {
+NetworkController::NetworkController(std::shared_ptr<Player> player)
+    : player_(std::move(player)) {
   connect(player_->Socket(),
           &QTcpSocket::readyRead,
           this,
@@ -46,17 +47,19 @@ void NetworkController::ParseData() {
       break;
     }
     case MessageType::kEndPreparationStatus: {
-      q_variant_ = data.data;
+      // q_variant_ = data.data;
+      if (player_->GetSide() == Side::kAttacker) {
+        defenders_data_ = JsonHelper::DecodeGameData(data.data);
+
+      } else {
+        attackers_data_ = JsonHelper::DecodeGameData(data.data);
+      }
       is_started_ = true;
       emit GotSignalForActiveStage();
       break;
     }
     case MessageType::kPlayersData: {
-      if (player_->GetSide() == Side::kAttacker) {
-        defenders_data_ = JsonHelper::DecodeGameData(data.data);
-      } else {
-        attackers_data_ = JsonHelper::DecodeGameData(data.data);
-      }
+
       break;
     }
     default: {
@@ -77,13 +80,15 @@ void NetworkController::SendStartSignal() {
 
 void NetworkController::SendData() {
   if (player_->GetSide() == Side::kAttacker) {
-    Network::WriteData(player_->Socket(),
-                       QVariant::fromValue(JsonHelper::EncodeGameData(attackers_data_)),
-                       MessageType::kPlayersData);
+    Network::WriteData(
+        player_->Socket(),
+        QVariant::fromValue(JsonHelper::EncodeGameData(attackers_data_)),
+        MessageType::kPlayersData);
   } else {
-    Network::WriteData(player_->Socket(),
-                       QVariant::fromValue(JsonHelper::EncodeGameData(defenders_data_)),
-                       MessageType::kPlayersData);
+    Network::WriteData(
+        player_->Socket(),
+        QVariant::fromValue(JsonHelper::EncodeGameData(defenders_data_)),
+        MessageType::kPlayersData);
   }
 }
 

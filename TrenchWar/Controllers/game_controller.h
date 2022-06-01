@@ -9,6 +9,7 @@
 #include "Models/weapon.h"
 #include "Models/world.h"
 #include "Network/helpers.h"
+#include "trench_controller.h"
 
 class GameController : public QWidget {
   Q_OBJECT
@@ -22,7 +23,6 @@ class GameController : public QWidget {
   void SetWorldObjects(Side side);
   void UpdateDefenders(const GameData& data);
   void UpdateAttackers(const GameData& data);
-  void AddBullets(const GameData& data);
   GameData GetAttackersData();
   GameData GetDefendersData();
 

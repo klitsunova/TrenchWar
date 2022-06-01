@@ -34,14 +34,10 @@ struct SoldierData {
   int hit_points;
 };
 
-struct TerrainData {
-
-};
-
 struct GameData {
   std::vector<SoldierData> soldiers;
-  std::vector<Bullet> bullets;
-  bool is_updated;
+  std::vector<std::pair<int, int>> trenches;
+  std::vector<std::pair<int, int>> terrain_objects;
 };
 
 class Network {
@@ -70,7 +66,6 @@ class JsonHelper {
   static QString EncodePlayerData(
       const std::vector<std::shared_ptr<Player>>& players);
   static std::vector<PlayerData> DecodePlayersData(const QString& json);
-  static QString EncodeGameData(const GameData& data);
+  static QVariant EncodeGameData(const GameData& data);
   static GameData DecodeGameData(const QVariant& q_variant);
-
 };

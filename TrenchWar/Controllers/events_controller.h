@@ -11,8 +11,8 @@
 
 #include "Controllers/game_controller.h"
 #include "Controllers/trench_controller.h"
-#include "Views/Game/game_view.h"
 #include "Network/network_view.h"
+#include "Views/Game/game_view.h"
 #include "helpers/styles.h"
 
 class EventsController : public QWidget {
@@ -55,7 +55,7 @@ class EventsController : public QWidget {
   void ConnectUI();
 
   std::shared_ptr<World> world_;
-  std::unique_ptr<TrenchController> trench_controller_;
+  std::shared_ptr<TrenchController> trench_controller_;
   std::unique_ptr<GameView> view_;
   std::unique_ptr<QBasicTimer> timer_;
   std::unique_ptr<GameController> game_controller_;
