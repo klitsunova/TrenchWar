@@ -17,7 +17,6 @@ constexpr QSize kBulletImage(7, 7);
 namespace element_sizes {
 constexpr QSize kMenuButton(300, 75);
 constexpr QSize kDialogButton(150, 50);
-constexpr QSize kStore(1000, 150);
 constexpr QSize kStoreBox(70, 70);
 constexpr QSize kTrenchBuild(70, 70);
 }  // namespace element_sizes

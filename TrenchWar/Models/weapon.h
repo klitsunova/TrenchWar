@@ -4,7 +4,7 @@
 
 #include "equipment.h"
 #include "Models/GameObjects/bullet.h"
-#include "helpers/sides.h"
+#include "helpers/modes.h"
 #include "helpers/weapons.h"
 
 class Weapon : public Equipment {

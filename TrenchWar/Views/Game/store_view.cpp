@@ -1,9 +1,13 @@
 #include "store_view.h"
 
+#include <QButtonGroup>
 #include <QLabel>
 #include <QSizePolicy>
 #include <QStyleOption>
 #include <QPainter>
+#include <QRadioButton>
+#include <QVBoxLayout>
+#include <QPixmap>
 
 #include "helpers/sizes.h"
 #include "helpers/styles.h"
@@ -13,7 +17,8 @@ StoreView::StoreView(QWidget* parent)
       layout_(new QHBoxLayout(this)),
       ready_button_(new QPushButton("Ready", this)),
       build_trench_(new QPushButton("Build", this)),
-      delete_trench_(new QPushButton("Delete", this)) {
+      delete_trench_(new QPushButton("Delete", this)),
+      modes_(new QButtonGroup(this)) {
   HideTrenchButtons();
   AddItems();
   SetStyles();
@@ -25,6 +30,7 @@ void StoreView::HideReadyButton() {
 }
 
 void StoreView::AddItems() {
+  setLayout(layout_);
   layout_->addStretch(1);
   // temporary code
   for (int i = 0; i < 5; ++i) {
@@ -34,7 +40,16 @@ void StoreView::AddItems() {
     items_.push_back(soldier);
     layout_->addWidget(soldier, 0);
   }
+  modes_->addButton(new QRadioButton(this), static_cast<int>(BuyMode::kTrench));
+  modes_->addButton(new QRadioButton(this), static_cast<int>(BuyMode::kUnits));
+
   layout_->addStretch(1);
+
+  QVBoxLayout* mode_layout_ = new QVBoxLayout(reinterpret_cast<QWidget*>(layout_));
+  mode_layout_->addWidget(modes_->button(static_cast<int>(BuyMode::kTrench)), 0);
+  mode_layout_->addWidget(modes_->button(static_cast<int>(BuyMode::kUnits)), 0);
+  layout_->addLayout(mode_layout_, 0);
+
   layout_->addWidget(ready_button_, 0);
   layout_->addWidget(build_trench_, 0);
   layout_->addWidget(delete_trench_, 0);
@@ -50,6 +65,10 @@ void StoreView::SetStyles() {
   build_trench_->setStyleSheet(styles::kPushButton);
   delete_trench_->setMinimumSize(element_sizes::kTrenchBuild);
   delete_trench_->setStyleSheet(styles::kPushButton);
+  modes_->button(
+      static_cast<int>(BuyMode::kTrench))->setStyleSheet(styles::kRadioButton);
+  modes_->button(
+      static_cast<int>(BuyMode::kUnits))->setStyleSheet(styles::kRadioButton);
   setStyleSheet(styles::kStoreMenu);
 }
 
@@ -82,4 +101,7 @@ void StoreView::paintEvent(QPaintEvent*) {
   opt.initFrom(this);
   QPainter p(this);
   style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
+  modes_->button(
+      static_cast<int>(BuyMode::kTrench))->setWindowIcon(QPixmap(":/Resources/Images/UncheckedCommon.png").scaled(10, 10));
 }

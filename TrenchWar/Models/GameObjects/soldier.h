@@ -6,7 +6,7 @@
 #include <utility>
 #include <vector>
 
-#include "helpers/sides.h"
+#include "helpers/modes.h"
 #include "Models/weapon.h"
 #include "game_object.h"
 

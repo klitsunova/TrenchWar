@@ -46,6 +46,52 @@ const QString kStoreBox =
 const QString kStoreMenu =
     "QWidget {"
     "background-color: #40826d;}";
+
+const QString kRadioButton =
+    "QRadioButton::indicator {"
+    "width: 30px;"
+    "height: 30px;}"
+
+    "QRadioButton::indicator::unchecked {"
+    "image: url(:/Resources/Images/UncheckedCommon.png);}"
+
+    "QRadioButton::indicator::checked {"
+    "image: url(:/Resources/Images/CheckedCommon.png);}"
+
+    "QRadioButton::indicator::unchecked:hover {"
+    "image: url(:/Resources/Images/UncheckedHovered.png);}"
+
+    "QRadioButton::indicator::checked:hover {"
+    "image: url(:/Resources/Images/CheckedHovered.png);}"
+
+    "QRadioButton::indicator::unchecked:pressed {"
+    "image: url(:/Resources/Images/UncheckedPressed.png);}"
+
+    "QRadioButton::indicator::checked:pressed {"
+    "image: url(:/Resources/Images/CheckedPressed.png);}";
+
+const QString kCheckButton =
+    "CheckButton::indicator {"
+    "width: 30px;"
+    "height: 30px;}"
+
+    "CheckButton::indicator::unchecked {"
+    "image: url(:/Resources/Images/UncheckedCommon.png);}"
+
+    "CheckButton::indicator::checked {"
+    "image: url(:/Resources/Images/CheckedCommon.png);}"
+
+    "CheckButton::indicator::unchecked:hover {"
+    "image: url(:/Resources/Images/UncheckedHovered.png);}"
+
+    "CheckButton::indicator::checked:hover {"
+    "image: url(:/Resources/Images/CheckedHovered.png);}"
+
+    "CheckButton::indicator::unchecked:pressed {"
+    "image: url(:/Resources/Images/UncheckedPressed.png);}"
+
+    "CheckButton::indicator::checked:pressed {"
+    "image: url(:/Resources/Images/CheckedPressed.png);}";
 }  // namespace styles
 
 namespace colors {

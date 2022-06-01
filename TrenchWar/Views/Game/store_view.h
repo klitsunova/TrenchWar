@@ -7,8 +7,9 @@
 #include <QPushButton>
 #include <QLabel>
 
+#include "helpers/modes.h"
 #include "Models/Tools/pixmap_loader.h"
-
+#include "Models/world.h"
 
 class StoreView : public QWidget {
   Q_OBJECT
@@ -20,7 +21,7 @@ class StoreView : public QWidget {
   void HideReadyButton();
   void HideTrenchButtons() const;
   void ShowTrenchButtons() const;
-  void paintEvent(QPaintEvent *) override;
+  void paintEvent(QPaintEvent*) override;
 
  signals:
   void Ready();
@@ -37,4 +38,5 @@ class StoreView : public QWidget {
   QPushButton* build_trench_;
   QPushButton* delete_trench_;
   std::vector<QLabel*> items_;
+  QButtonGroup* modes_;
 };

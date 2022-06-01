@@ -16,7 +16,7 @@
 #include "GameObjects/terrain_object.h"
 #include "Models/GameObjects/bullet.h"
 #include "Tools/pixmap_loader.h"
-#include "helpers/sides.h"
+#include "helpers/modes.h"
 #include "helpers/sizes.h"
 
 class World {

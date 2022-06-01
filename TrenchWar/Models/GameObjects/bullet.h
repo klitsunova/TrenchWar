@@ -5,7 +5,7 @@
 
 #include <memory>
 
-#include "helpers/sides.h"
+#include "helpers/modes.h"
 #include "helpers/sizes.h"
 #include "Models/Tools/pixmap_loader.h"
 #include "Models/GameObjects/game_object.h"
