@@ -26,6 +26,8 @@ class Soldier : public GameObject {
   Side GetSide() const;
   int GetVisibilityRange() const;
 
+  int GetTowerDamage() const;
+
   void AddWeapon(const Weapon& weapon);
   void AddAmmo(Weapon::WeaponType type, int count_ammo);
 

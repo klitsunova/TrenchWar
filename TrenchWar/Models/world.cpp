@@ -405,7 +405,9 @@ void World::FireTower() {
   for (const auto& tower : towers_) {
     Cell& current_cell = cells_[tower->GetPosition().y()]
                                [tower->GetPosition().x()];
-    current_cell.tower->TakeDamage(current_cell.soldiers.size());
+    for (const auto& soldier : current_cell.soldiers) {
+      current_cell.tower->TakeDamage(soldier->GetTowerDamage());
+    }
     if (current_cell.tower->IsDestroyed()) {
       current_cell.tower = nullptr;
       auto it = std::find_if(towers_.begin(), towers_.end(),

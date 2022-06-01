@@ -67,3 +67,7 @@ void Soldier::TakeDamage(int damage) {
 bool Soldier::IsDead() const {
   return hit_points_ <= 0;
 }
+
+int Soldier::GetTowerDamage() const {
+  return weapons::kTowerDamage;
+}
