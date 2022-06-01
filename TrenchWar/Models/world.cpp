@@ -1,4 +1,3 @@
-#include <iostream>
 #include <random>
 #include <utility>
 
@@ -405,12 +404,19 @@ void World::TrenchUpdate() {
 }
 
 void World::FireTower() {
-  std::cout << "Fire";
+  std::shared_ptr<Tower> temp = nullptr;
   for (const auto& soldier : soldiers_) {
+    temp = soldier->GetTowerTarget();
     soldier->FireTower();
-    if (soldier->GetTowerTarget() == nullptr) {
-      cells_[soldier->GetPosition().y()]
-            [soldier->GetPosition().x()].tower = nullptr;
+    if (temp != nullptr && soldier->GetTowerTarget() == nullptr) {
+      Cell& current_cell =  cells_[soldier->GetPosition().y()]
+                                           [soldier->GetPosition().x()];
+      auto it = std::find_if(towers_.begin(), towers_.end(),
+                             [&](const std::shared_ptr<Tower>& tower) {
+        return tower == current_cell.tower;
+      });
+      towers_.erase(it);
+      current_cell.tower = nullptr;
     }
   }
 }

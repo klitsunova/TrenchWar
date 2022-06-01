@@ -1,5 +1,5 @@
-#include "helpers/weapons.h"
 #include "tower.h"
+#include "helpers/weapons.h"
 
 Tower::Tower()
     : GameObject() {

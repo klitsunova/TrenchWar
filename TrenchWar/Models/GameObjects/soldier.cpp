@@ -77,9 +77,10 @@ std::shared_ptr<Tower> Soldier::GetTowerTarget() const {
 }
 
 void Soldier::FireTower() {
-  if (tower_target_ != nullptr) {
-    tower_target_->TakeDamage();
+  if (tower_target_ == nullptr) {
+    return;
   }
+  tower_target_->TakeDamage();
   if (tower_target_->IsDestroyed()) {
     tower_target_ = nullptr;
   }
