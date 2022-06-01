@@ -15,4 +15,5 @@ const int kRifleRange = 3600;  // 75*75
 const int kRifleReloadTime = 15;
 const double kRifleHitChance = 0.6;
 
+const int kTowerDamage = 2;
 }  // namespace weapons
