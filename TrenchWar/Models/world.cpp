@@ -318,14 +318,15 @@ void World::UpdateGroundDistances() {
 void World::MoveBullets() {
   // TODO(AZYAVCHIKOV) temporary code
   int bullet_radius = 5;
-  // int bullet_radius = 3;
-  // int repeat = 4;
   int repeat = 1;
 
   for (int i = 0; i < bullets_.size(); ++i) {
     for (int j = 0; j < repeat; ++j) {
       if (bullets_[i]->IsUsed()) continue;
       bullets_[i]->Move();
+      // DamageArea(bullets_[i]->GetPosition().x(),
+      // bullets_[i]->GetPosition().y(),
+      //            weapons::kBulletRadius, i);
       DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
                  bullet_radius, i);
     }
@@ -375,7 +376,8 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
     const std::shared_ptr<Soldier>& soldier) const {
   int nearest_index = -1;
   int64_t dist = INT64_MAX, new_dist;
-  QPoint to, from;
+  QPoint to;
+  QPoint from = soldier->GetPosition();
 
   for (int i = 0; i < soldiers_.size(); ++i) {
     if (soldiers_[i]->IsDead()) continue;
@@ -401,7 +403,7 @@ void World::FireTower() {
   std::shared_ptr<Tower> temp = nullptr;
   for (const auto& tower : towers_) {
     Cell& current_cell = cells_[tower->GetPosition().y()]
-                               [tower->GetPosition().x()];
+    [tower->GetPosition().x()];
     for (const auto& soldier : current_cell.soldiers) {
       tower->TakeDamage(soldier->GetTowerDamage());
     }

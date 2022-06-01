@@ -11,6 +11,15 @@ GameController::GameController(
 
 void GameController::SetWorldObjects() {
   // temporary code
-  world_->AddSoldier(QPoint(250, 250), Side::kAttacker);
-  world_->AddSoldier(QPoint(300, 300), Side::kDefender);
+  for (int i = 0; i < 500; ++i) {
+    world_->AddSoldier(Side::kAttacker);
+    world_->AddSoldier(Side::kAttacker);
+    world_->AddSoldier(Side::kDefender);
+  }
+}
+void GameController::SetWeaponsParameters() {
+  int k = std::min(world_->GetSize().width(), world_->GetSize().height());
+  // weapons::kBulletRadius = (k * 5) / 800;
+  //
+  // weapons::kRifleRange = (k * 3600) / 800;
 }

@@ -3,6 +3,8 @@
 #include <QString>
 
 namespace weapons {
+const int kBulletRadius = 0;
+
 const int kKnifeDamage = 100;
 const int kKnifeRange = 1;  // 1*1
 const int kKnifeReloadTime = 2;

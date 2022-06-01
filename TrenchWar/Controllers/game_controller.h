@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <memory>
 #include <vector>
 
@@ -19,6 +20,8 @@ class GameController : public QWidget {
   ~GameController() override = default;
 
   void SetWorldObjects();
+
+  void SetWeaponsParameters();
 
  signals:
   void Exit();
