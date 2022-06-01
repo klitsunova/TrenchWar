@@ -26,11 +26,6 @@ class Soldier : public GameObject {
   Side GetSide() const;
   int GetVisibilityRange() const;
 
-  void FireTower();
-
-  void SetTowerTarget(const std::shared_ptr<Tower>& tower);
-  std::shared_ptr<Tower> GetTowerTarget() const;
-
   void AddWeapon(const Weapon& weapon);
   void AddAmmo(Weapon::WeaponType type, int count_ammo);
 

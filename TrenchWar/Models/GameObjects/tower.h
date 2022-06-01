@@ -9,7 +9,7 @@ class Tower : public GameObject {
   Tower();
   explicit Tower(const QPoint& point);
 
-  void TakeDamage();
+  void TakeDamage(int multiply);
 
   bool IsDestroyed() const;
 

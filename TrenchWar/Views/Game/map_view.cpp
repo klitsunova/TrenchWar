@@ -50,7 +50,7 @@ void MapView::paintEvent(QPaintEvent*) {
   QPainter painter;
   painter.begin(&buffer);
   painter.save();
-  const std::vector<std::shared_ptr<Tower>>& terrain_objects =
+  const std::vector<std::shared_ptr<Tower>>& towers =
       world_->GetTowers();
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
@@ -58,7 +58,7 @@ void MapView::paintEvent(QPaintEvent*) {
   painter.drawPixmap(QRect(0, 0,
                            window_width + 1, window_height + 1),
                      world_->GetPixmap());
-  for (const auto& object : terrain_objects) {
+  for (const auto& object : towers) {
     DrawObject(&painter, object->GetPosition(),
                object->GetSize(), object->GetPixmap());
   }

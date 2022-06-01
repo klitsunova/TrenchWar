@@ -198,9 +198,6 @@ void World::MoveSoldiers() {
     }
     x = soldiers_[i]->GetPosition().x();
     y = soldiers_[i]->GetPosition().y();
-    if (soldiers_[i]->GetTowerTarget() == nullptr) {
-      soldiers_[i]->SetTowerTarget(cells_[y][x].tower);
-    }
     cells_[y][x].soldiers.insert(soldiers_[i]);
   }
 }
@@ -405,18 +402,17 @@ void World::TrenchUpdate() {
 
 void World::FireTower() {
   std::shared_ptr<Tower> temp = nullptr;
-  for (const auto& soldier : soldiers_) {
-    temp = soldier->GetTowerTarget();
-    soldier->FireTower();
-    if (temp != nullptr && soldier->GetTowerTarget() == nullptr) {
-      Cell& current_cell =  cells_[soldier->GetPosition().y()]
-                                           [soldier->GetPosition().x()];
+  for (const auto& tower: towers_) {
+    Cell& current_cell = cells_[tower->GetPosition().y()]
+                               [tower->GetPosition().x()];
+    current_cell.tower->TakeDamage(current_cell.soldiers.size());
+    if (current_cell.tower->IsDestroyed()) {
+      current_cell.tower = nullptr;
       auto it = std::find_if(towers_.begin(), towers_.end(),
                              [&](const std::shared_ptr<Tower>& tower) {
-        return tower == current_cell.tower;
-      });
+                               return tower == current_cell.tower;
+                             });
       towers_.erase(it);
-      current_cell.tower = nullptr;
     }
   }
 }
