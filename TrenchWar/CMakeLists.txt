@@ -21,7 +21,7 @@ set(MODELS
         Models/world.cpp
         Models/GameObjects/game_object.cpp
         Models/GameObjects/soldier.cpp
-        Models/GameObjects/terrain_object.cpp
+        Models/GameObjects/tower.cpp
         Models/Tools/pixmap_loader.cpp
         Models/Tools/settings.cpp
         Models/weapon.cpp

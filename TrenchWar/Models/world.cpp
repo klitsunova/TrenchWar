@@ -6,7 +6,7 @@
 World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
-  AddTerrainObject();
+  AddTower();
 }
 
 void World::AddSoldier(Side side) {
@@ -28,13 +28,10 @@ void World::AddSoldier(const QPoint& position, Side side) {
   cell.soldiers.insert(new_object);
 }
 
-void World::AddTerrainObject() {
-  auto new_object = std::make_shared<TerrainObject>();
+void World::AddTower() {
+  auto new_object = std::make_shared<Tower>();
   new_object->SetRandomPosition(size_);
-  QPoint pos = new_object->GetPosition();
-  auto& cell = cells_[pos.y()][pos.x()];
-  cell.terrain_objects.push_back(new_object);
-  terrain_objects_.push_back(new_object);
+  towers_.push_back(new_object);
 }
 
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
@@ -46,9 +43,9 @@ const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
   return soldiers_;
 }
 
-const std::vector<std::shared_ptr<TerrainObject>>&
-World::GetTerrainObjects() const {
-  return terrain_objects_;
+const std::vector<std::shared_ptr<Tower>>&
+World::GetTowers() const {
+  return towers_;
 }
 
 const std::vector<std::shared_ptr<Bullet>>& World::GetBullets() const {
@@ -280,7 +277,7 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& object : terrain_objects_) {
+  for (auto& object : towers_) {
     int x = object->GetPosition().x();
     int y = object->GetPosition().y();
     cells_[y][x].ground_distance = 0;
@@ -398,6 +395,24 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
 
 void World::TrenchUpdate() {
   picture_ = DrawWorld();
+}
+
+void World::FireTower() {
+  std::shared_ptr<Tower> temp = nullptr;
+  for (const auto& tower : towers_) {
+    Cell& current_cell = cells_[tower->GetPosition().y()]
+                               [tower->GetPosition().x()];
+    for (const auto& soldier : current_cell.soldiers) {
+      tower->TakeDamage(soldier->GetTowerDamage());
+    }
+    if (tower->IsDestroyed()) {
+      auto it = std::find_if(towers_.begin(), towers_.end(),
+                             [&](const std::shared_ptr<Tower>& tower_t) {
+                               return tower_t == tower;
+                             });
+      towers_.erase(it);
+    }
+  }
 }
 
 World::Landscape::Landscape(const QColor& q_color, int speed) {

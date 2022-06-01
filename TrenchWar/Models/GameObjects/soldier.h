@@ -6,9 +6,10 @@
 #include <utility>
 #include <vector>
 
+#include "game_object.h"
 #include "helpers/sides.h"
 #include "Models/weapon.h"
-#include "game_object.h"
+#include "tower.h"
 
 class Soldier : public GameObject {
   using Health = int;
@@ -24,6 +25,8 @@ class Soldier : public GameObject {
   int GetId() const;
   Side GetSide() const;
   int GetVisibilityRange() const;
+
+  int GetTowerDamage() const;
 
   void AddWeapon(const Weapon& weapon);
   void AddAmmo(Weapon::WeaponType type, int count_ammo);
