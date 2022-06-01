@@ -43,7 +43,6 @@ class Soldier : public GameObject {
 
  private:
   std::vector<Weapon> weapons_;
-  std::shared_ptr<Tower> tower_target_;
   int id_;
   int visibility_range_;
   Health hit_points_ = 100;
