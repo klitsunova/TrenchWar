@@ -30,8 +30,9 @@ class Weapon : public Equipment {
 
   void AddAmmo(int count);
 
-  std::optional<std::shared_ptr<Bullet>> Fire(const QPoint&, const QPoint&,
-                                              Side);
+  std::optional<std::shared_ptr<Bullet>> Fire(const QPoint& from,
+                                              const QPoint& to,
+                                              Side side);
 
  private:
   void InitializationFromType();

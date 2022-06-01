@@ -2,7 +2,7 @@
 
 EventsController::EventsController(QWidget* parent) {
   setParent(parent);
-  world_ = std::make_shared<World>(":Resources/Maps/map1.txt");
+  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
   view_ = std::make_unique<GameView>(this, world_);
   trench_controller_ = std::make_unique<TrenchController>(this,
                                                           world_,

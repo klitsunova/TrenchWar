@@ -17,7 +17,8 @@ class MapView : public QWidget {
   int GetScale() const;
   void SetScale(int scale);
 
-  void DrawObject(QPainter&, const QPoint&, const QSize&, const QPixmap&);
+  void DrawObject(QPainter* painter, const QPoint& pos,
+                  const QSize& size, const QPixmap& picture);
 
   void paintEvent(QPaintEvent* event) override;
 

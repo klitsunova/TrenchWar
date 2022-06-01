@@ -9,8 +9,8 @@ const int kKnifeReloadTime = 2;
 const double kKnifeHitChance = 0.5;
 
 const int kRifleDamage = 40;
-const int kRifleRange = 25;  // 5*5
-const int kRifleReloadTime = 3;
+const int kRifleRange = 3600;  // 75*75
+const int kRifleReloadTime = 15;
 const double kRifleHitChance = 0.6;
 
 }  // namespace weapons

@@ -25,11 +25,11 @@ void MapView::SetScale(int scale) {
   scale_ = scale;
 }
 
-void MapView::DrawObject(QPainter& painter, const QPoint& pos,
+void MapView::DrawObject(QPainter* painter, const QPoint& pos,
                          const QSize& size, const QPixmap& picture) {
-  painter.save();
-  int window_width = painter.window().width() - 1;
-  int window_height = painter.window().height() - 1;
+  painter->save();
+  int window_width = painter->window().width() - 1;
+  int window_height = painter->window().height() - 1;
   QPoint screen_point;
   screen_point.setX((window_width * (2 * pos.x() + 1))
                         / (2 * world_->GetSize().width()));
@@ -40,9 +40,9 @@ void MapView::DrawObject(QPainter& painter, const QPoint& pos,
                             screen_point.y() - size.height() / 2);
   QPoint bottom_point = QPoint(screen_point.x() + size.width() / 2,
                                screen_point.y() + size.height() / 2);
-  painter.drawPixmap(QRect(top_point, bottom_point),
+  painter->drawPixmap(QRect(top_point, bottom_point),
                      picture);
-  painter.restore();
+  painter->restore();
 }
 
 void MapView::paintEvent(QPaintEvent*) {
@@ -59,7 +59,7 @@ void MapView::paintEvent(QPaintEvent*) {
                            window_width + 1, window_height + 1),
                      world_->GetPixmap());
   for (const auto& object : terrain_objects) {
-    DrawObject(painter, object->GetPosition(),
+    DrawObject(&painter, object->GetPosition(),
                object->GetSize(), object->GetPixmap());
   }
 
@@ -67,7 +67,7 @@ void MapView::paintEvent(QPaintEvent*) {
       world_->GetSoldiers();
   for (const auto& soldier : soldiers) {
     if (soldier->IsDead()) continue;
-    DrawObject(painter, soldier->GetPosition(),
+    DrawObject(&painter, soldier->GetPosition(),
                soldier->GetSize(), soldier->GetPixmap());
   }
 
@@ -75,7 +75,7 @@ void MapView::paintEvent(QPaintEvent*) {
       world_->GetBullets();
   for (const auto& bullet : bullets) {
     if (bullet->IsUsed()) continue;
-    DrawObject(painter, bullet->GetPosition(),
+    DrawObject(&painter, bullet->GetPosition(),
                bullet->GetSize(), bullet->GetPixmap());
   }
 
