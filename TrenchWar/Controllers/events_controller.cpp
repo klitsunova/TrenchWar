@@ -10,6 +10,7 @@ EventsController::EventsController(QWidget* parent) {
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
   game_controller_->SetWorldObjects();
+  game_controller_->SetWeaponsParameters();
   ConnectUI();
   view_->show();
 }

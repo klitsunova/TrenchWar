@@ -6,7 +6,7 @@
 World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
-  // AddTerrainObject();
+  AddTerrainObject();
 }
 
 void World::AddSoldier(Side side) {
@@ -320,16 +320,15 @@ void World::UpdateGroundDistances() {
 
 void World::MoveBullets() {
   // TODO(AZYAVCHIKOV) temporary code
-  // int bullet_radius = 5;
-  int bullet_radius = 0;
-  // int bullet_radius = 3;
-  // int repeat = 4;
+  int bullet_radius = 5;
   int repeat = 1;
 
   for (int i = 0; i < bullets_.size(); ++i) {
     for (int j = 0; j < repeat; ++j) {
       if (bullets_[i]->IsUsed()) continue;
       bullets_[i]->Move();
+      // DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
+      //            weapons::kBulletRadius, i);
       DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
                  bullet_radius, i);
     }

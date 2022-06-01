@@ -65,25 +65,10 @@ void MapView::paintEvent(QPaintEvent*) {
 
   const std::vector<std::shared_ptr<Soldier>>& soldiers =
       world_->GetSoldiers();
-  QPixmap soldier1(QSize(200, 200));
-  QPainter qp1(&soldier1);
-  qp1.setBrush(Qt::red);
-  qp1.drawEllipse(soldier1.rect());
-  QPixmap soldier2(QSize(200, 200));
-  QPainter qp2(&soldier2);
-  qp2.setBrush(Qt::blue);
-  qp2.drawEllipse(soldier2.rect());
   for (const auto& soldier : soldiers) {
     if (soldier->IsDead()) continue;
-    if(soldier->GetSide()==Side::kAttacker){
-      DrawObject(&painter, soldier->GetPosition(),
-                 soldier->GetSize(), soldier1);
-    } else {
-      DrawObject(&painter, soldier->GetPosition(),
-                 soldier->GetSize(), soldier2);
-    }
-    // DrawObject(&painter, soldier->GetPosition(),
-    //            soldier->GetSize(), soldier->GetPixmap());
+    DrawObject(&painter, soldier->GetPosition(),
+               soldier->GetSize(), soldier->GetPixmap());
   }
 
   const std::vector<std::shared_ptr<Bullet>>& bullets =

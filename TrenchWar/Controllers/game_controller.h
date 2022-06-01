@@ -20,6 +20,8 @@ class GameController : public QWidget {
 
   void SetWorldObjects();
 
+  void SetWeaponsParameters();
+
  signals:
   void Exit();
 
