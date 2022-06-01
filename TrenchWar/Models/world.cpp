@@ -379,7 +379,7 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
     const std::shared_ptr<Soldier>& soldier) const {
   int nearest_index = -1;
   int64_t dist = INT64_MAX, new_dist;
-  QPoint to, from;
+  QPoint to, from = soldier->GetPosition();
 
   for (int i = 0; i < soldiers_.size(); ++i) {
     if (soldiers_[i]->IsDead()) continue;
