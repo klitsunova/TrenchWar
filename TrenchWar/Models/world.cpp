@@ -401,18 +401,15 @@ void World::TrenchUpdate() {
 
 void World::FireTower() {
   std::shared_ptr<Tower> temp = nullptr;
-  for (const auto& tower : towers_) {
-    Cell& current_cell = cells_[tower->GetPosition().y()]
-    [tower->GetPosition().x()];
-    for (const auto& soldier : current_cell.soldiers) {
+  for (int i = 0; i < towers_.size(); ++i) {
+    auto& tower = towers_[i];
+    Cell& cell = cells_[tower->GetPosition().y()][tower->GetPosition().x()];
+    for (const auto& soldier : cell.soldiers) {
       tower->TakeDamage(soldier->GetTowerDamage());
     }
     if (tower->IsDestroyed()) {
-      auto it = std::find_if(towers_.begin(), towers_.end(),
-                             [&](const std::shared_ptr<Tower>& tower_t) {
-                               return tower_t == tower;
-                             });
-      towers_.erase(it);
+      towers_.erase(towers_.begin() + i);
+      is_need_update_towers_ = true;
     }
   }
 }
