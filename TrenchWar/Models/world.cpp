@@ -327,7 +327,8 @@ void World::MoveBullets() {
     for (int j = 0; j < repeat; ++j) {
       if (bullets_[i]->IsUsed()) continue;
       bullets_[i]->Move();
-      // DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
+      // DamageArea(bullets_[i]->GetPosition().x(),
+      // bullets_[i]->GetPosition().y(),
       //            weapons::kBulletRadius, i);
       DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
                  bullet_radius, i);

@@ -49,7 +49,7 @@ void Bullet::Move() {
   } else {
     x = from_.x() - rx;
   }
-  if(to_.y() > from_.y()){
+  if (to_.y() > from_.y()) {
     y = from_.y() + ry;
   } else {
     y = from_.y() - ry;
