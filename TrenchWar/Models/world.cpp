@@ -376,7 +376,8 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
     const std::shared_ptr<Soldier>& soldier) const {
   int nearest_index = -1;
   int64_t dist = INT64_MAX, new_dist;
-  QPoint to, from = soldier->GetPosition();
+  QPoint to;
+  QPoint from = soldier->GetPosition();
 
   for (int i = 0; i < soldiers_.size(); ++i) {
     if (soldiers_[i]->IsDead()) continue;
@@ -402,7 +403,7 @@ void World::FireTower() {
   std::shared_ptr<Tower> temp = nullptr;
   for (const auto& tower : towers_) {
     Cell& current_cell = cells_[tower->GetPosition().y()]
-                               [tower->GetPosition().x()];
+    [tower->GetPosition().x()];
     for (const auto& soldier : current_cell.soldiers) {
       tower->TakeDamage(soldier->GetTowerDamage());
     }
