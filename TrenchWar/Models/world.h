@@ -61,7 +61,6 @@ class World {
   };
 
   struct Cell {
-    std::shared_ptr<Tower> tower;
     Landscape landscape{Landscape(Qt::white, 0)};
     bool is_trench;
     std::set<std::shared_ptr<Soldier>> soldiers;

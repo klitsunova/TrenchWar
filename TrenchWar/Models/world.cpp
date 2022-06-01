@@ -31,9 +31,6 @@ void World::AddSoldier(const QPoint& position, Side side) {
 void World::AddTower() {
   auto new_object = std::make_shared<Tower>();
   new_object->SetRandomPosition(size_);
-  QPoint pos = new_object->GetPosition();
-  auto& cell = cells_[pos.y()][pos.x()];
-  cell.tower = new_object;
   towers_.push_back(new_object);
 }
 
@@ -406,13 +403,12 @@ void World::FireTower() {
     Cell& current_cell = cells_[tower->GetPosition().y()]
                                [tower->GetPosition().x()];
     for (const auto& soldier : current_cell.soldiers) {
-      current_cell.tower->TakeDamage(soldier->GetTowerDamage());
+      tower->TakeDamage(soldier->GetTowerDamage());
     }
-    if (current_cell.tower->IsDestroyed()) {
-      current_cell.tower = nullptr;
+    if (tower->IsDestroyed()) {
       auto it = std::find_if(towers_.begin(), towers_.end(),
-                             [&](const std::shared_ptr<Tower>& tower) {
-                               return tower == current_cell.tower;
+                             [&](const std::shared_ptr<Tower>& tower_t) {
+                               return tower_t == tower;
                              });
       towers_.erase(it);
     }
