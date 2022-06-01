@@ -50,8 +50,8 @@ void MapView::paintEvent(QPaintEvent*) {
   QPainter painter;
   painter.begin(&buffer);
   painter.save();
-  const std::vector<std::shared_ptr<TerrainObject>>& terrain_objects =
-      world_->GetTerrainObjects();
+  const std::vector<std::shared_ptr<Tower>>& terrain_objects =
+      world_->GetTowers();
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
 

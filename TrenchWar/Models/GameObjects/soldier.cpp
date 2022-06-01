@@ -67,3 +67,20 @@ void Soldier::TakeDamage(int damage) {
 bool Soldier::IsDead() const {
   return hit_points_ <= 0;
 }
+
+void Soldier::SetTowerTarget(const std::shared_ptr<Tower>& tower) {
+    tower_target_ = tower;
+}
+
+std::shared_ptr<Tower> Soldier::GetTowerTarget() const {
+  return tower_target_;
+}
+
+void Soldier::FireTower() {
+  if (tower_target_ != nullptr) {
+    tower_target_->TakeDamage();
+  }
+  if (tower_target_->IsDestroyed()) {
+    tower_target_ = nullptr;
+  }
+}

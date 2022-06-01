@@ -6,9 +6,10 @@
 #include <utility>
 #include <vector>
 
-#include "helpers/sides.h"
 #include "Models/weapon.h"
 #include "game_object.h"
+#include "helpers/sides.h"
+#include "tower.h"
 
 class Soldier : public GameObject {
   using Health = int;
@@ -25,6 +26,11 @@ class Soldier : public GameObject {
   Side GetSide() const;
   int GetVisibilityRange() const;
 
+  void FireTower();
+
+  void SetTowerTarget(const std::shared_ptr<Tower>& tower);
+  std::shared_ptr<Tower> GetTowerTarget() const;
+
   void AddWeapon(const Weapon& weapon);
   void AddAmmo(Weapon::WeaponType type, int count_ammo);
 
@@ -40,6 +46,7 @@ class Soldier : public GameObject {
 
  private:
   std::vector<Weapon> weapons_;
+  std::shared_ptr<Tower> tower_target_;
   int id_;
   int visibility_range_;
   Health hit_points_ = 100;

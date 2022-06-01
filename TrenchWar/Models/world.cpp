@@ -1,3 +1,4 @@
+#include <iostream>
 #include <random>
 #include <utility>
 
@@ -6,7 +7,7 @@
 World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
-  AddTerrainObject();
+  AddTower();
 }
 
 void World::AddSoldier(Side side) {
@@ -28,13 +29,13 @@ void World::AddSoldier(const QPoint& position, Side side) {
   cell.soldiers.insert(new_object);
 }
 
-void World::AddTerrainObject() {
-  auto new_object = std::make_shared<TerrainObject>();
+void World::AddTower() {
+  auto new_object = std::make_shared<Tower>();
   new_object->SetRandomPosition(size_);
   QPoint pos = new_object->GetPosition();
   auto& cell = cells_[pos.y()][pos.x()];
-  cell.terrain_objects.push_back(new_object);
-  terrain_objects_.push_back(new_object);
+  cell.tower = new_object;
+  towers_.push_back(new_object);
 }
 
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
@@ -46,9 +47,9 @@ const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
   return soldiers_;
 }
 
-const std::vector<std::shared_ptr<TerrainObject>>&
-World::GetTerrainObjects() const {
-  return terrain_objects_;
+const std::vector<std::shared_ptr<Tower>>&
+World::GetTowers() const {
+  return towers_;
 }
 
 const std::vector<std::shared_ptr<Bullet>>& World::GetBullets() const {
@@ -198,6 +199,9 @@ void World::MoveSoldiers() {
     }
     x = soldiers_[i]->GetPosition().x();
     y = soldiers_[i]->GetPosition().y();
+    if (soldiers_[i]->GetTowerTarget() == nullptr) {
+      soldiers_[i]->SetTowerTarget(cells_[y][x].tower);
+    }
     cells_[y][x].soldiers.insert(soldiers_[i]);
   }
 }
@@ -280,7 +284,7 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& object : terrain_objects_) {
+  for (auto& object : towers_) {
     int x = object->GetPosition().x();
     int y = object->GetPosition().y();
     cells_[y][x].ground_distance = 0;
@@ -398,6 +402,17 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
 
 void World::TrenchUpdate() {
   picture_ = DrawWorld();
+}
+
+void World::FireTower() {
+  std::cout << "Fire";
+  for (const auto& soldier : soldiers_) {
+    soldier->FireTower();
+    if (soldier->GetTowerTarget() == nullptr) {
+      cells_[soldier->GetPosition().y()]
+            [soldier->GetPosition().x()].tower = nullptr;
+    }
+  }
 }
 
 World::Landscape::Landscape(const QColor& q_color, int speed) {
