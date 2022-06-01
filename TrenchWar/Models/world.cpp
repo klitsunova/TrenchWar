@@ -402,7 +402,7 @@ void World::TrenchUpdate() {
 
 void World::FireTower() {
   std::shared_ptr<Tower> temp = nullptr;
-  for (const auto& tower: towers_) {
+  for (const auto& tower : towers_) {
     Cell& current_cell = cells_[tower->GetPosition().y()]
                                [tower->GetPosition().x()];
     current_cell.tower->TakeDamage(current_cell.soldiers.size());
