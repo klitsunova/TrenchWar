@@ -1,19 +1,15 @@
 #include "player_view.h"
 
+#include "helpers/styles.h"
+#include "helpers/fonts.h"
 
 PlayerView::PlayerView(QWidget* parent, const Player* player) : QWidget(parent),
                                                                 player_(player),
                                                                 nickname_(new QLabel(QString::number(player->GetId()), this)),
                                                                 is_ready_(new QLabel(this)),
                                                                 layout_(new QHBoxLayout(this)) {
-  setAutoFillBackground(true);
-  setPalette(QPalette(QColor(200, 200, 255)));
-  // nickname_->setFont(fonts::);
-  nickname_->setStyleSheet("QLabel {"
-                           "font: bold 18px; }");
-  // is_ready_->setFont(fonts::);
-  is_ready_->setStyleSheet("QLabel {"
-                           "font: bold 18px; }");
+  nickname_->setFont(fonts::kDialogLabel);
+  is_ready_->setFont(fonts::kDialogLabel);
   if (player->IsReady()) {
     is_ready_->setText("Ready");
   } else {
@@ -24,8 +20,8 @@ PlayerView::PlayerView(QWidget* parent, const Player* player) : QWidget(parent),
 }
 
 void PlayerView::Highlight() {
-  setAutoFillBackground(true);
-  setPalette(QPalette(QColor(255, 200, 200)));
+  nickname_->setFont(fonts::kDialogLabelBold);
+  is_ready_->setFont(fonts::kDialogLabelBold);
 }
 
 const Player* PlayerView::GetPlayer() const {

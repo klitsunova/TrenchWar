@@ -335,7 +335,7 @@ void World::UpdateGroundDistances() {
 
 void World::MoveBullets() {
   // TODO(AZYAVCHIKOV) temporary code
-  int bullet_radius = 0;
+  int bullet_radius = 5;
   // int bullet_radius = 3;
   // int repeat = 4;
   int repeat = 1;
@@ -409,7 +409,8 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
   for (int i = 0; i < enemies.size(); ++i) {
     if (enemies[i]->IsDead()) continue;
     to = enemies[i]->GetPosition();
-    new_dist = (from.x() - to.x()) * (from.x() - to.x()) + (from.y() - to.y()) * (from.y() - to.y());
+    new_dist = (from.x() - to.x()) * (from.x() - to.x()) +
+        (from.y() - to.y()) * (from.y() - to.y());
     if (new_dist < dist) {
       dist = new_dist;
       nearest_index = i;

@@ -1,6 +1,7 @@
 #include "server.h"
 
 #include <string>
+#include <random>
 
 #include <QFile>
 #include <QNetworkInterface>
@@ -32,6 +33,8 @@ void Server::ConnectClient() {
       std::make_shared<Player>(server_.nextPendingConnection()));
   players_.back()->SetId(players_.size() - 1);
   if (players_.back()->GetId() == 0) {
+    players_.back()->SetSide(static_cast<Side>(std::rand() % 2));
+  } else if (players_.front()->GetSide() == Side::kDefender)  {
     players_.back()->SetSide(Side::kAttacker);
   } else {
     players_.back()->SetSide(Side::kDefender);

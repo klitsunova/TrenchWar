@@ -1,7 +1,8 @@
 #include "game_controller.h"
 
-#include "helpers/styles.h"
 #include <memory>
+
+#include "helpers/styles.h"
 
 GameController::GameController(
     QWidget* parent,

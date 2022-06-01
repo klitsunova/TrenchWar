@@ -50,12 +50,12 @@ class EventsController : public QWidget {
   void ReturnToMainMenu();
 
  private:
-  static constexpr int kTimerInterval{20};
+  static constexpr int kTimerInterval{30};
 
   void ConnectUI();
 
   std::shared_ptr<World> world_;
-  std::shared_ptr<TrenchController> trench_controller_;
+  std::unique_ptr<TrenchController> trench_controller_;
   std::unique_ptr<GameView> view_;
   std::unique_ptr<QBasicTimer> timer_;
   std::unique_ptr<GameController> game_controller_;

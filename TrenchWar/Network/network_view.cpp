@@ -1,7 +1,11 @@
 
 #include "network_view.h"
 
-NetworkView::NetworkView(QWidget* parent) : back_to_main_menu_(new QPushButton("Back to main", this)),
+#include "helpers/styles.h"
+#include "helpers/sizes.h"
+#include "helpers/fonts.h"
+
+NetworkView::NetworkView(QWidget* parent) : back_to_main_menu_(new QPushButton("Back", this)),
                                             try_connect_(new QPushButton("Connect", this)),
                                             ready_(new QPushButton("Ready", this)),
                                             disconnect_(new QPushButton("Disconnect", this)),
@@ -51,20 +55,20 @@ void NetworkView::SetUpLayouts() {
 }
 
 void NetworkView::SetStyles() {
+  setStyleSheet(styles::kWidget);
   for (auto& widget: children()) {
     auto* label_ptr = qobject_cast<QLabel*>(widget);
     auto* button_ptr = qobject_cast<QPushButton*>(widget);
     if (label_ptr) {
-      // label_ptr->setFont(fonts::);
-      label_ptr->setStyleSheet("QLabel {"
-                               "font: bold 18px; }");
+      label_ptr->setFont(fonts::kDialogLabel);
+      // label_ptr->setStyleSheet(styles::);
     } else if (button_ptr) {
-      // button_ptr->setFont(fonts::);
-      // button_ptr->setMinimumSize(button_sizes::);
-      // button_ptr->setStyleSheet(styles::);
+      button_ptr->setFont(fonts::kDialogButton);
+      button_ptr->setMinimumSize(element_sizes::kDialogButton);
+      button_ptr->setStyleSheet(styles::kPushButton);
     }
   }
-  // ip_->setStyleSheet(styles::kStandardLineEditStyle);
+  ip_->setStyleSheet(styles::kLineEdit);
 }
 
 void NetworkView::Connect() {
@@ -145,10 +149,10 @@ void NetworkView::UpdatePlayersVector() {
 }
 
 void NetworkView::AddStartButton() {
-  start_button_ = new QPushButton("Start Game", this);
-  // start_button_->setFont(fonts::);
-  // start_button_->setMinimumSize(button_sizes::);
-  // start_button_->setStyleSheet(styles::);
+  start_button_ = new QPushButton("Start", this);
+  start_button_->setFont(fonts::kDialogButton);
+  start_button_->setMinimumSize(element_sizes::kDialogButton);
+  start_button_->setStyleSheet(styles::kPushButton);
   buttons_layout_->addWidget(start_button_);
   connect(start_button_,
           &QPushButton::clicked,

@@ -83,7 +83,7 @@ void EventsController::StartPreparationStage() {
   network_controller_ = network_view_->GetNetworkController();
   world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
   view_ = std::make_unique<GameView>(this, world_);
-  trench_controller_ = std::make_shared<TrenchController>(this,
+  trench_controller_ = std::make_unique<TrenchController>(this,
                                                           world_,
                                                           view_->GetMap());
   timer_ = std::make_unique<QBasicTimer>();
@@ -123,7 +123,8 @@ void EventsController::SetFullScreen(bool is_fullscreen) {
 }
 
 void EventsController::MapPressHandler(QMouseEvent* event) {
-  if (!trench_controller_->IsTrenchFixed()
+  if (network_view_->GetPlayerSide() == Side::kDefender
+      && !trench_controller_->IsTrenchFixed()
       && game_stage == Stage::kPreparation) {
     trench_controller_->SetMouseClicked(true);
     trench_controller_->SetFirstPoint(event->pos());
@@ -132,7 +133,8 @@ void EventsController::MapPressHandler(QMouseEvent* event) {
 }
 
 void EventsController::MapReleaseHandler(QMouseEvent* event) {
-  if (trench_controller_->IsTrenchFixed()
+  if (network_view_->GetPlayerSide() == Side::kAttacker
+      || trench_controller_->IsTrenchFixed()
       || game_stage != Stage::kPreparation) {
     return;
   }
