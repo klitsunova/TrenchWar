@@ -388,14 +388,14 @@ void MapGenerator::AddSoldierButtonClicked() {
   assert(new_object_pos_.y() >= 0 && new_object_pos_.y() < map_.size());
   assert(new_object_pos_.x() >= 0 && new_object_pos_.x() < map_[0].size());
   if (object_variants_->currentText() == "Defender") {
-    game_objects_.emplace_back(Object(new_object_pos_,
-                                      Object::Type::kDefender));
+    game_objects_.emplace_back(new_object_pos_,
+                               Object::Type::kDefender);
   } else if (object_variants_->currentText() == "Attacker") {
-    game_objects_.emplace_back(Object(new_object_pos_,
-                                      Object::Type::kAttacker));
+    game_objects_.emplace_back(new_object_pos_,
+                               Object::Type::kAttacker);
   } else if (object_variants_->currentText() == "Tower") {
-    game_objects_.emplace_back(Object(new_object_pos_,
-                                      Object::Type::kTerrainObject));
+    game_objects_.emplace_back(new_object_pos_,
+                               Object::Type::kTerrainObject);
   }
   DrawChangedPicture();
   SetSoldiersMenuVisible(false);
@@ -510,7 +510,7 @@ void MapGenerator::LoadImageFromFile(const QString& filename) {
   ConvertImageToArray(QSize(width_->text().toInt(),
                             height_->text().toInt()));
   using_colors_.clear();
-  using_colors_.emplace_back(Landscape(QColor(255, 255, 255), 0));
+  using_colors_.emplace_back(QColor(255, 255, 255), 0);
   game_objects_.clear();
 
   DrawButtonClicked();
@@ -524,10 +524,8 @@ MapGenerator::Landscape::Landscape(const QColor& color,
 }
 
 MapGenerator::Object::Object(const QPoint& pos,
-                             MapGenerator::Object::Type type) {
-  this->type = type;
-  this->pos = pos;
-}
+                             MapGenerator::Object::Type type)
+    : type(type), pos(pos) {}
 
 MapGenerator::ImageSHell::ImageSHell(QWidget* parent)
     : QWidget(parent) {
