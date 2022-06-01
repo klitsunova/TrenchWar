@@ -6,7 +6,7 @@
 World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
-  AddTerrainObject();
+  // AddTerrainObject();
 }
 
 void World::AddSoldier(Side side) {
@@ -320,7 +320,8 @@ void World::UpdateGroundDistances() {
 
 void World::MoveBullets() {
   // TODO(AZYAVCHIKOV) temporary code
-  int bullet_radius = 5;
+  // int bullet_radius = 5;
+  int bullet_radius = 0;
   // int bullet_radius = 3;
   // int repeat = 4;
   int repeat = 1;

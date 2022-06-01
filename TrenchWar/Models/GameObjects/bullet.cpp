@@ -39,10 +39,21 @@ void Bullet::Move() {
 
   ++moving_progress_;
 
-  double len = sqrt(static_cast<double>(square_dx + square_dy));
-
-  int x = from_.x() + moving_progress_ * (to_.x() - from_.x()) / len;
-  int y = from_.y() + moving_progress_ * (to_.y() - from_.y()) / len;
+  int x, y;
+  int rx = moving_progress_ *
+      sqrt(square_dx / static_cast<double>(square_dx + square_dy));
+  int ry = moving_progress_ *
+      sqrt(square_dy / static_cast<double>(square_dx + square_dy));
+  if (to_.x() > from_.x()) {
+    x = from_.x() + rx;
+  } else {
+    x = from_.x() - rx;
+  }
+  if(to_.y() > from_.y()){
+    y = from_.y() + ry;
+  } else {
+    y = from_.y() - ry;
+  }
 
   position_ = QPoint(x, y);
   if (to_ == position_) {
