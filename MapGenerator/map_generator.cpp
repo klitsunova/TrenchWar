@@ -7,21 +7,28 @@ MapGenerator::MapGenerator(QWidget* parent)
       using_colors_shell_(new ImageSHell(this)),
       color_shell_(new ImageSHell(this)),
       draw_button_(new QPushButton("Draw", this)),
-      change_button_(new QPushButton("Change colors", this)),
+      change_button_(new QPushButton("Draw color changes", this)),
       restore_button_(new QPushButton("Restore color changes", this)),
-      save_button_(new QPushButton("Save color changes", this)),
+      delete_objects_button_(new QPushButton("Delete soldiers", this)),
+      save_button_(new QPushButton("Save changes", this)),
       load_button_(new QPushButton("Load new image", this)),
       add_color_button_(new QPushButton("<--", this)),
+      cancel_color_button_(new QPushButton("Cancel", this)),
+      add_soldier_button_(new QPushButton("Add", this)),
+      cancel_soldier_button_(new QPushButton("Cancel", this)),
       width_(new QLineEdit("500", this)),
       height_(new QLineEdit("500", this)),
       speed_characteristic_(new QLineEdit("0", this)),
       speed_characteristic_label_(new QLabel("Speed characteristic",
-                                             this)) {
+                                             this)),
+      object_variants_(new QComboBox(this)) {
   ManageLayout();
 
   CreateConnections();
 
   LoadImageFromFile("../map1.png");
+
+  SetSoldiersMenuVisible(false);
 }
 
 void MapGenerator::ManageLayout() {
@@ -37,43 +44,57 @@ void MapGenerator::ManageLayout() {
 
   auto layout3 = new QHBoxLayout();
   layout3->addWidget(using_colors_shell_, 5);
-  layout3->addWidget(add_color_button_);
-  layout3->addWidget(color_shell_, 2);
-
   auto layout4 = new QVBoxLayout();
   layout4->addStretch(1);
-  layout4->addWidget(speed_characteristic_label_);
-  layout4->addWidget(speed_characteristic_);
+  layout4->addWidget(add_color_button_);
+  layout4->addWidget(cancel_color_button_);
   layout4->addStretch(1);
-
   layout3->addLayout(layout4);
+  layout3->addWidget(color_shell_, 2);
+
+  auto layout5 = new QVBoxLayout();
+  layout5->addStretch(1);
+  layout5->addWidget(speed_characteristic_label_);
+  layout5->addWidget(speed_characteristic_);
+  layout5->addStretch(1);
+  layout3->addLayout(layout5);
+
+  auto layout6 = new QVBoxLayout();
+  QStringList variants = {"Attacker", "Defender", "Tower"};
+  object_variants_->addItems(variants);
+  layout6->addWidget(object_variants_);
+  layout6->addWidget(add_soldier_button_);
+  layout6->addWidget(cancel_soldier_button_);
+  layout3->addStretch(1);
+  layout3->addLayout(layout6);
 
   layout2->addLayout(layout3, 3);
   layout2->addStretch(1);
 
-  auto layout5 = new QVBoxLayout();
-  layout5->addStretch(1);
-  layout5->addWidget(load_button_);
-  layout5->addStretch(1);
+  auto layout7 = new QVBoxLayout();
+  layout7->addStretch(1);
+  layout7->addWidget(load_button_);
+  layout7->addStretch(1);
   auto label1 = new QLabel("Width", this);
-  layout5->addWidget(label1, 0);
-  layout5->addWidget(width_, 0);
+  layout7->addWidget(label1, 0);
+  layout7->addWidget(width_, 0);
   auto label2 = new QLabel("Height", this);
-  layout5->addWidget(label2, 0);
-  layout5->addWidget(height_, 0);
-  layout5->addStretch(1);
-  layout5->addWidget(draw_button_, 0);
-  layout5->addWidget(change_button_, 0);
-  layout5->addWidget(restore_button_, 0);
-  layout5->addWidget(save_button_, 0);
-  layout5->addStretch(1);
+  layout7->addWidget(label2, 0);
+  layout7->addWidget(height_, 0);
+  layout7->addStretch(1);
+  layout7->addWidget(draw_button_, 0);
+  layout7->addWidget(change_button_, 0);
+  layout7->addWidget(restore_button_, 0);
+  layout7->addWidget(delete_objects_button_, 0);
+  layout7->addWidget(save_button_, 0);
+  layout7->addStretch(1);
 
-  auto layout6 = new QHBoxLayout(this);
-  layout6->addStretch(1);
-  layout6->addLayout(layout2, 30);
-  layout6->addStretch(1);
-  layout6->addLayout(layout5, 0);
-  layout6->addStretch(1);
+  auto layout8 = new QHBoxLayout(this);
+  layout8->addStretch(1);
+  layout8->addLayout(layout2, 30);
+  layout8->addStretch(1);
+  layout8->addLayout(layout7, 0);
+  layout8->addStretch(1);
 }
 
 void MapGenerator::CreateConnections() {
@@ -85,6 +106,18 @@ void MapGenerator::CreateConnections() {
           &QPushButton::clicked,
           this,
           &MapGenerator::AddColorButtonClicked);
+  connect(cancel_color_button_,
+          &QPushButton::clicked,
+          this,
+          &MapGenerator::CancelColorButtonClicked);
+  connect(add_soldier_button_,
+          &QPushButton::clicked,
+          this,
+          &MapGenerator::AddSoldierButtonClicked);
+  connect(cancel_soldier_button_,
+          &QPushButton::clicked,
+          this,
+          &MapGenerator::CancelSoldierButtonClicked);
   connect(change_button_,
           &QPushButton::clicked,
           this,
@@ -93,6 +126,10 @@ void MapGenerator::CreateConnections() {
           &QPushButton::clicked,
           this,
           &MapGenerator::RestoreButtonClicked);
+  connect(delete_objects_button_,
+          &QPushButton::clicked,
+          this,
+          &MapGenerator::DeleteObjectsButtonClicked);
   connect(save_button_,
           &QPushButton::clicked,
           this,
@@ -150,7 +187,8 @@ void MapGenerator::ConvertImageToArray(const QSize& size) {
 
 void MapGenerator::DrawChangedPicture() {
   assert(!map_.empty());
-  QPainter painter(&changed_picture_shell_->picture_);
+  QPainter painter;
+  painter.begin(&changed_picture_shell_->picture_);
   int map_width, map_height;
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
@@ -178,6 +216,8 @@ void MapGenerator::DrawChangedPicture() {
       painter.drawRect(QRect(top, bottom));
     }
   }
+  painter.end();
+  DrawObjects();
   changed_picture_shell_->update();
 }
 
@@ -199,6 +239,41 @@ void MapGenerator::DrawUsingColors() {
     painter.drawRect(QRect(top, bottom));
   }
   using_colors_shell_->update();
+}
+
+void MapGenerator::DrawObjects() {
+  assert(!map_.empty());
+  QPainter painter(&changed_picture_shell_->picture_);
+  assert(painter.isActive());
+  int map_width, map_height;
+  int window_width = painter.window().width() - 1;
+  int window_height = painter.window().height() - 1;
+  map_height = map_.size();
+  map_width = map_[0].size();
+  for (int i = 0; i < game_objects_.size(); ++i) {
+    auto& pos = game_objects_[i].pos;
+    int w = map_height * 0.01;
+    int h = map_width * 0.01;
+    QPoint top = QPoint(((pos.x() - w) * window_width) / map_width,
+                        ((pos.y() - h) * window_height) / map_height);
+    QPoint
+        bottom = QPoint(((pos.x() + w) * window_width) / map_width,
+                        ((pos.y() + h) * window_height) / map_height);
+    if (game_objects_[i].type == Object::Type::kAttacker) {
+      painter.setBrush(Qt::red);
+      painter.setPen(QPen(Qt::red, 0));
+      painter.drawEllipse(QRect(top, bottom));
+    } else if (game_objects_[i].type == Object::Type::kDefender) {
+      painter.setBrush(Qt::blue);
+      painter.setPen(QPen(Qt::blue, 0));
+      painter.drawEllipse(QRect(top, bottom));
+    } else if (game_objects_[i].type == Object::Type::kTerrainObject) {
+      painter.setBrush(Qt::yellow);
+      painter.setPen(QPen(Qt::yellow, 0));
+      painter.drawRect(QRect(top, bottom));
+    }
+  }
+  changed_picture_shell_->update();
 }
 
 void MapGenerator::ChangeMap() {
@@ -233,16 +308,14 @@ void MapGenerator::ChangeMap() {
 void MapGenerator::mouseDoubleClickEvent(QMouseEvent* event) {
   int x = event->pos().x();
   int y = event->pos().y();
-  if (x >= original_picture_shell_->x() &&
-      y >= original_picture_shell_->y() &&
-      x <= (original_picture_shell_->x() +
+  if (x >= original_picture_shell_->geometry().x() &&
+      y >= original_picture_shell_->geometry().y() &&
+      x <= (original_picture_shell_->geometry().x() +
           original_picture_shell_->width()) &&
-      y <= (original_picture_shell_->y() +
+      y <= (original_picture_shell_->geometry().y() +
           original_picture_shell_->height())) {
-    x -= original_picture_shell_->x();
-    y -= original_picture_shell_->y();
-
-    SetAdditionalColorVisible(true);
+    x -= original_picture_shell_->geometry().x();
+    y -= original_picture_shell_->geometry().y();
 
     QPainter painter(&color_shell_->picture_);
     painter.save();
@@ -257,23 +330,39 @@ void MapGenerator::mouseDoubleClickEvent(QMouseEvent* event) {
                            0,
                            painter.window().width(),
                            painter.window().height()));
+
+    SetAdditionalColorVisible(true);
+
     color_shell_->update();
     painter.restore();
-  } else if (x >= using_colors_shell_->x() &&
-      y >= using_colors_shell_->y() &&
-      x <= (using_colors_shell_->x() +
+  } else if (x >= using_colors_shell_->geometry().x() &&
+      y >= using_colors_shell_->geometry().y() &&
+      x <= (using_colors_shell_->geometry().x() +
           using_colors_shell_->width()) &&
-      y <= (using_colors_shell_->y() +
+      y <= (using_colors_shell_->geometry().y() +
           using_colors_shell_->height())) {
     if (using_colors_.size() == 1) {
       using_colors_[0].color = Qt::white;
       using_colors_[0].speed_characteristic = 0;
       return;
     }
-    x -= using_colors_shell_->x();
+    x -= using_colors_shell_->geometry().x();
     int i = (using_colors_.size() * x) / (using_colors_shell_->width());
     using_colors_.erase(using_colors_.begin() + i);
     DrawUsingColors();
+  } else if (x >= changed_picture_shell_->geometry().x() &&
+      y >= changed_picture_shell_->geometry().y() &&
+      x <= (changed_picture_shell_->geometry().x() +
+          changed_picture_shell_->width()) &&
+      y <= (changed_picture_shell_->geometry().y() +
+          changed_picture_shell_->height())) {
+    x -= changed_picture_shell_->geometry().x();
+    y -= changed_picture_shell_->geometry().y();
+    new_object_pos_.setX((x * map_[0].size()) /
+        changed_picture_shell_->width());
+    new_object_pos_.setY((y * map_.size()) /
+        changed_picture_shell_->height());
+    SetSoldiersMenuVisible(true);
   }
 }
 
@@ -291,6 +380,31 @@ void MapGenerator::AddColorButtonClicked() {
   SetAdditionalColorVisible(false);
 }
 
+void MapGenerator::CancelColorButtonClicked() {
+  SetAdditionalColorVisible(false);
+}
+
+void MapGenerator::AddSoldierButtonClicked() {
+  assert(new_object_pos_.y() >= 0 && new_object_pos_.y() < map_.size());
+  assert(new_object_pos_.x() >= 0 && new_object_pos_.x() < map_[0].size());
+  if (object_variants_->currentText() == "Defender") {
+    game_objects_.emplace_back(new_object_pos_,
+                               Object::Type::kDefender);
+  } else if (object_variants_->currentText() == "Attacker") {
+    game_objects_.emplace_back(new_object_pos_,
+                               Object::Type::kAttacker);
+  } else if (object_variants_->currentText() == "Tower") {
+    game_objects_.emplace_back(new_object_pos_,
+                               Object::Type::kTerrainObject);
+  }
+  DrawChangedPicture();
+  SetSoldiersMenuVisible(false);
+}
+
+void MapGenerator::CancelSoldierButtonClicked() {
+  SetSoldiersMenuVisible(false);
+}
+
 void MapGenerator::ChangeButtonClicked() {
   ConvertImageToArray(QSize(width_->text().toInt(),
                             height_->text().toInt()));
@@ -306,11 +420,23 @@ void MapGenerator::RestoreButtonClicked() {
   save_button_->setVisible(false);
 }
 
+void MapGenerator::DeleteObjectsButtonClicked() {
+  game_objects_.clear();
+  DrawChangedPicture();
+}
+
 void MapGenerator::SetAdditionalColorVisible(bool visible) {
   color_shell_->setVisible(visible);
   add_color_button_->setVisible(visible);
+  cancel_color_button_->setVisible(visible);
   speed_characteristic_->setVisible(visible);
   speed_characteristic_label_->setVisible(visible);
+}
+
+void MapGenerator::SetSoldiersMenuVisible(bool visible) {
+  add_soldier_button_->setVisible(visible);
+  cancel_soldier_button_->setVisible(visible);
+  object_variants_->setVisible(visible);
 }
 
 void MapGenerator::SaveButtonClicked() {
@@ -342,6 +468,18 @@ void MapGenerator::SaveButtonClicked() {
     }
     fout << "\n";
   }
+  fout << "\n" << game_objects_.size() << "\n";
+  for (int i = 0; i < game_objects_.size(); ++i) {
+    auto& object = game_objects_[i];
+    fout << object.pos.x() << " " << object.pos.y() << " ";
+    if (object.type == Object::Type::kAttacker) {
+      fout << "kAttacker\n";
+    } else if (object.type == Object::Type::kDefender) {
+      fout << "kDefender\n";
+    } else if (object.type == Object::Type::kTerrainObject) {
+      fout << "kTerrainObject\n";
+    }
+  }
 }
 
 void MapGenerator::LoadButtonClicked() {
@@ -361,6 +499,7 @@ void MapGenerator::LoadButtonClicked() {
 void MapGenerator::LoadImageFromFile(const QString& filename) {
   original_picture_shell_->SetPixmap(filename);
   buffer_picture_.load(filename);
+  assert(!buffer_picture_.isNull());
 
   using_original_colors = true;
 
@@ -368,8 +507,11 @@ void MapGenerator::LoadImageFromFile(const QString& filename) {
   save_button_->setVisible(false);
 
   map_.clear();
+  ConvertImageToArray(QSize(width_->text().toInt(),
+                            height_->text().toInt()));
   using_colors_.clear();
-  using_colors_.emplace_back(Landscape(QColor(255, 255, 255), 0));
+  using_colors_.emplace_back(QColor(255, 255, 255), 0);
+  game_objects_.clear();
 
   DrawButtonClicked();
   DrawUsingColors();
@@ -380,6 +522,10 @@ MapGenerator::Landscape::Landscape(const QColor& color,
   this->color = color;
   this->speed_characteristic = speed_characteristic;
 }
+
+MapGenerator::Object::Object(const QPoint& pos,
+                             MapGenerator::Object::Type type)
+    : type(type), pos(pos) {}
 
 MapGenerator::ImageSHell::ImageSHell(QWidget* parent)
     : QWidget(parent) {
