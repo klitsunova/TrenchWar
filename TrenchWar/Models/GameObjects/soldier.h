@@ -6,9 +6,9 @@
 #include <utility>
 #include <vector>
 
-#include "Models/weapon.h"
 #include "game_object.h"
 #include "helpers/sides.h"
+#include "Models/weapon.h"
 #include "tower.h"
 
 class Soldier : public GameObject {
