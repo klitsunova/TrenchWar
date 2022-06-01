@@ -77,6 +77,24 @@ void World::Update() {
     UpdateGroundDistances();
   }
   is_need_update_towers_ = false;
+  if (used_soldiers_ * 2 > soldiers_.size()) {
+    std::sort(soldiers_.begin(), soldiers_.end(),
+              [&](std::shared_ptr<Soldier> soldier1,
+                  std::shared_ptr<Soldier> soldier2) {
+                return soldier1->GetHitPoints() > soldier2->GetHitPoints();
+              });
+    soldiers_.resize(soldiers_.size() - used_soldiers_);
+    used_soldiers_ = 0;
+  }
+  if (used_bullets_ * 4 > soldiers_.size()) {
+    std::sort(bullets_.begin(), bullets_.end(),
+              [&](std::shared_ptr<Bullet> bullet1,
+                  std::shared_ptr<Bullet> bullet2) {
+                return bullet1->IsUsed() < bullet2->IsUsed();
+              });
+    bullets_.resize(bullets_.size() - used_bullets_);
+    used_bullets_ = 0;
+  }
 }
 
 void World::MoveSoldiers() {
@@ -329,6 +347,9 @@ void World::MoveBullets() {
       //            weapons::kBulletRadius, i);
       DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
                  bullet_radius, i);
+      if (bullets_[i]->IsUsed()) {
+        ++used_bullets_;
+      }
     }
   }
 }
@@ -352,6 +373,7 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
         bullet->MakeUsed();
         if ((*k)->IsDead()) {
           cells_[i][j].soldiers.erase(k);
+          ++used_soldiers_;
         }
         return;
       }
