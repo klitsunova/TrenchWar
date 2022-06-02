@@ -11,7 +11,7 @@ GameController::GameController(
 
 void GameController::SetWorldObjects() {
   // temporary code
-  for (int i = 0; i < 500; ++i) {
+  for (int i = 0; i < 400; ++i) {
     world_->AddSoldier(Side::kAttacker);
     world_->AddSoldier(Side::kAttacker);
     world_->AddSoldier(Side::kDefender);
