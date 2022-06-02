@@ -37,11 +37,18 @@ const QString kWidget =
     "background-color: #BFB790;}";
 
 const QString kStoreBox =
-    "QLabel {"
+    "QWidget {"
     "border: 2px solid green;"
     "border-radius: 4px;"
     "padding: 2px;"
     "background-color: #BFB790;}";
+
+// const QString kStoreBox =
+//     "QLabel {"
+//     "border: 2px solid green;"
+//     "border-radius: 4px;"
+//     "padding: 2px;"
+//     "background-color: #BFB790;}";
 
 const QString kStoreMenu =
     "QWidget {"
@@ -70,27 +77,30 @@ const QString kRadioButton =
     "QRadioButton::indicator::checked:pressed {"
     "image: url(:/Resources/Images/CheckedPressed.png);}";
 
-const QString kCheckButton =
-    "CheckButton::indicator {"
+const QString kCheckBox =
+    "QCheckBox {"
+    "spacing: 5px;}"
+
+    "QCheckBox::indicator {"
     "width: 30px;"
     "height: 30px;}"
 
-    "CheckButton::indicator::unchecked {"
+    "QCheckBox::indicator::unchecked {"
     "image: url(:/Resources/Images/UncheckedCommon.png);}"
 
-    "CheckButton::indicator::checked {"
+    "QCheckBox::indicator::checked {"
     "image: url(:/Resources/Images/CheckedCommon.png);}"
 
-    "CheckButton::indicator::unchecked:hover {"
+    "QCheckBox::indicator::unchecked:hover {"
     "image: url(:/Resources/Images/UncheckedHovered.png);}"
 
-    "CheckButton::indicator::checked:hover {"
+    "QCheckBox::indicator::checked:hover {"
     "image: url(:/Resources/Images/CheckedHovered.png);}"
 
-    "CheckButton::indicator::unchecked:pressed {"
+    "QCheckBox::indicator::unchecked:pressed {"
     "image: url(:/Resources/Images/UncheckedPressed.png);}"
 
-    "CheckButton::indicator::checked:pressed {"
+    "QCheckBox::indicator::checked:pressed {"
     "image: url(:/Resources/Images/CheckedPressed.png);}";
 }  // namespace styles
 

@@ -44,11 +44,11 @@ void EventsController::ConnectUI() {
           this,
           &EventsController::Start);
   connect(view_->GetStore(),
-          &StoreView::BuildTrenchButtonPressed,
+          &StoreView::ConfirmButtonPressed,
           this,
           &EventsController::BuildTrench);
   connect(view_->GetStore(),
-          &StoreView::DeleteTrenchButtonPressed,
+          &StoreView::CancelButtonPressed,
           this,
           &EventsController::DeleteTrench);
   connect(view_->GetMap(),

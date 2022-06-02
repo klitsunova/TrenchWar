@@ -16,11 +16,15 @@ StoreView::StoreView(QWidget* parent)
     : QWidget(parent),
       layout_(new QHBoxLayout(this)),
       ready_button_(new QPushButton("Ready", this)),
-      build_trench_(new QPushButton("Build", this)),
-      delete_trench_(new QPushButton("Delete", this)),
-      modes_(new QButtonGroup(this)) {
-  HideTrenchButtons();
+      confirm_button_(new QPushButton("Confirm", this)),
+      cancel_button_(new QPushButton("Cancel", this)),
+      modes_(new QButtonGroup(this)),
+      money_widget_(new QWidget(this)),
+      money_label_(new QLabel),
+      money_layout_(new QHBoxLayout()) {
+  HideTrenchButtons(); // TODO
   AddItems();
+  SetLayout();
   SetStyles();
   ConnectUI();
 }
@@ -30,29 +34,10 @@ void StoreView::HideReadyButton() {
 }
 
 void StoreView::AddItems() {
-  setLayout(layout_);
-  layout_->addStretch(1);
-  // temporary code
-  for (int i = 0; i < 5; ++i) {
-    auto* soldier = new QLabel(this);
-    soldier->setPixmap(
-        PixmapLoader::GetSoldier()->scaled(element_sizes::kStoreBox));
-    items_.push_back(soldier);
-    layout_->addWidget(soldier, 0);
-  }
+  SetMoneyWidget();
   modes_->addButton(new QRadioButton(this), static_cast<int>(BuyMode::kTrench));
   modes_->addButton(new QRadioButton(this), static_cast<int>(BuyMode::kUnits));
-
-  layout_->addStretch(1);
-
-  QVBoxLayout* mode_layout_ = new QVBoxLayout(reinterpret_cast<QWidget*>(layout_));
-  mode_layout_->addWidget(modes_->button(static_cast<int>(BuyMode::kTrench)), 0);
-  mode_layout_->addWidget(modes_->button(static_cast<int>(BuyMode::kUnits)), 0);
-  layout_->addLayout(mode_layout_, 0);
-
-  layout_->addWidget(ready_button_, 0);
-  layout_->addWidget(build_trench_, 0);
-  layout_->addWidget(delete_trench_, 0);
+  SetNames();
 }
 
 void StoreView::SetStyles() {
@@ -61,15 +46,19 @@ void StoreView::SetStyles() {
   }
   ready_button_->setStyleSheet(styles::kPushButton);
   ready_button_->setMinimumSize(element_sizes::kDialogButton);
-  build_trench_->setMinimumSize(element_sizes::kTrenchBuild);
-  build_trench_->setStyleSheet(styles::kPushButton);
-  delete_trench_->setMinimumSize(element_sizes::kTrenchBuild);
-  delete_trench_->setStyleSheet(styles::kPushButton);
+  confirm_button_->setMinimumSize(element_sizes::kTrenchBuild);
+  confirm_button_->setStyleSheet(styles::kPushButton);
+  cancel_button_->setMinimumSize(element_sizes::kTrenchBuild);
+  cancel_button_->setStyleSheet(styles::kPushButton);
+
   modes_->button(
       static_cast<int>(BuyMode::kTrench))->setStyleSheet(styles::kRadioButton);
   modes_->button(
       static_cast<int>(BuyMode::kUnits))->setStyleSheet(styles::kRadioButton);
+
   setStyleSheet(styles::kStoreMenu);
+
+  money_widget_->setStyleSheet(styles::kStoreBox);
 }
 
 void StoreView::ConnectUI() {
@@ -77,23 +66,24 @@ void StoreView::ConnectUI() {
           &QPushButton::clicked,
           this,
           &StoreView::Ready);
-  connect(build_trench_,
+  connect(confirm_button_,
           &QPushButton::clicked,
           this,
-          &StoreView::BuildTrenchButtonPressed);
-  connect(delete_trench_,
+          &StoreView::ConfirmButtonPressed);
+  connect(cancel_button_,
           &QPushButton::clicked,
           this,
-          &StoreView::DeleteTrenchButtonPressed);
+          &StoreView::CancelButtonPressed);
 }
 
 void StoreView::ShowTrenchButtons() const {
-  build_trench_->show();
-  delete_trench_->show();
+  confirm_button_->show();
+  cancel_button_->show();
 }
+
 void StoreView::HideTrenchButtons() const {
-  build_trench_ ->hide();
-  delete_trench_->hide();
+  confirm_button_ ->hide();
+  cancel_button_->hide();
 }
 
 void StoreView::paintEvent(QPaintEvent*) {
@@ -101,7 +91,57 @@ void StoreView::paintEvent(QPaintEvent*) {
   opt.initFrom(this);
   QPainter p(this);
   style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
 
-  modes_->button(
-      static_cast<int>(BuyMode::kTrench))->setWindowIcon(QPixmap(":/Resources/Images/UncheckedCommon.png").scaled(10, 10));
+void StoreView::SetNames() {
+  modes_->button(static_cast<int>(BuyMode::kTrench))->setText("Trench mode");
+  modes_->button(static_cast<int>(BuyMode::kUnits))->setText("Units mode");
+  // money_widget_->setPixmap(PixmapLoader::GetDollar()->scaled(element_sizes::kStoreBox));
+  // money_widget_->widget()->setWindowIconText() ->setText(QString::number(count_money_));
+}
+
+void StoreView::SetLayout() {
+  setLayout(layout_);
+  // QLabel* label = new QLabel;
+  // QString str= "<img src=\":/Resources/Images/Dollar.png\">";
+  // label->setTextFormat(Qt::RichText);
+  // label->setText(str);
+  // layout_->addWidget(label);
+
+  layout_->addWidget(money_widget_, 0);
+  layout_->addStretch(1);
+
+  // temporary code
+  for (int i = 0; i < 5; ++i) {
+    auto* soldier = new QLabel(this);
+    soldier->setPixmap(
+        PixmapLoader::GetSoldier()->scaled(element_sizes::kStoreBox));
+    items_.push_back(soldier);
+    layout_->addWidget(soldier, 0);
+  }
+
+  layout_->addStretch(1);
+
+  QVBoxLayout* mode_layout_ = new QVBoxLayout();
+  mode_layout_->addWidget(modes_->button(static_cast<int>(BuyMode::kTrench)), 0);
+  mode_layout_->addWidget(modes_->button(static_cast<int>(BuyMode::kUnits)), 0);
+  layout_->addLayout(mode_layout_, 0);
+
+  layout_->addWidget(ready_button_, 0);
+  layout_->addWidget(confirm_button_, 0);
+  layout_->addWidget(cancel_button_, 0);
+}
+
+void StoreView::SetMoneyWidget() {
+  money_widget_->setLayout(money_layout_);
+  QLabel* dollar = new QLabel();
+  dollar->setPixmap(PixmapLoader::GetDollar()->scaled(element_sizes::kStoreBox));
+  dollar->setStyleSheet(styles::kStoreMenu);
+  money_layout_->addWidget(dollar);
+
+  money_label_->setText(QString::number(count_money_));
+  money_label_->setStyleSheet(styles::kStoreMenu);
+  money_layout_->addWidget(money_label_);
+
+  // QLabel* label = new QLabel;
 }

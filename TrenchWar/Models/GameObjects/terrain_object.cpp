@@ -2,10 +2,10 @@
 
 TerrainObject::TerrainObject()
     : GameObject() {
-  picture_ = PixmapLoader::GetTerrainObject();
+  picture_ = PixmapLoader::GetTower();
 }
 
 TerrainObject::TerrainObject(const QPoint& point)
     : GameObject(point) {
-  picture_ = PixmapLoader::GetTerrainObject();
+  picture_ = PixmapLoader::GetTower();
 }

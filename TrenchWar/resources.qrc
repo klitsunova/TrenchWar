@@ -19,5 +19,6 @@
         <file>Resources/Images/UncheckedHovered.png</file>
         <file>Resources/Images/CheckedPressed.png</file>
         <file>Resources/Images/UncheckedPressed.png</file>
+        <file>Resources/Images/Dollar.png</file>
     </qresource>
 </RCC>

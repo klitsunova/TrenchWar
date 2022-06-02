@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QLabel>
+#include <QWidget>
 
 #include "helpers/modes.h"
 #include "Models/Tools/pixmap_loader.h"
@@ -25,18 +26,25 @@ class StoreView : public QWidget {
 
  signals:
   void Ready();
-  void BuildTrenchButtonPressed();
-  void DeleteTrenchButtonPressed();
+  void ConfirmButtonPressed();
+  void CancelButtonPressed();
 
  private:
   void AddItems();
+  void SetMoneyWidget();
   void SetStyles();
   void ConnectUI();
+  void SetNames();
+  void SetLayout();
 
   QHBoxLayout* layout_;
   QPushButton* ready_button_;
-  QPushButton* build_trench_;
-  QPushButton* delete_trench_;
+  QPushButton* confirm_button_;
+  QPushButton* cancel_button_;
   std::vector<QLabel*> items_;
   QButtonGroup* modes_;
+  QWidget* money_widget_;
+  QLabel* money_label_;
+  QHBoxLayout* money_layout_;
+  int count_money_{1000};
 };
