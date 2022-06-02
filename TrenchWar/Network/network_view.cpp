@@ -1,7 +1,5 @@
 #include "network_view.h"
 
-#include <memory>
-
 #include "helpers/fonts.h"
 #include "helpers/sizes.h"
 #include "helpers/styles.h"

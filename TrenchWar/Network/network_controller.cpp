@@ -1,7 +1,5 @@
 #include "network_controller.h"
 
-#include <memory>
-
 #include <QDataStream>
 #include <QJsonArray>
 #include <QJsonDocument>

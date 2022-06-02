@@ -1,6 +1,5 @@
 #include "server.h"
 
-#include <memory>
 #include <string>
 
 #include <QFile>
