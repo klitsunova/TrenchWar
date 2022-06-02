@@ -32,6 +32,7 @@ void World::AddTower() {
   auto new_object = std::make_shared<Tower>();
   new_object->SetRandomPosition(size_);
   towers_.push_back(new_object);
+  GenerateNewDistances(new_object->GetPosition());
 }
 
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
@@ -73,10 +74,6 @@ const QPixmap& World::GetPixmap() {
 }
 
 void World::Update() {
-  if (is_need_update_towers_) {
-    UpdateGroundDistances();
-  }
-  is_need_update_towers_ = false;
   if (dead_soldiers_ * 2 > soldiers_.size()) {
     std::sort(soldiers_.begin(), soldiers_.end(),
               [&](std::shared_ptr<Soldier> soldier1,
@@ -89,20 +86,25 @@ void World::Update() {
 }
 
 void World::MoveSoldiers() {
-  Update();
+  if (towers_.empty()) return;
 
   auto Lag = [&](int x, int y) {
     return cells_[y][x].landscape.move_lag;
   };
 
   auto Distance = [&](int x, int y) {
-    return cells_[y][x].ground_distance;
+    int result = INT32_MAX;
+    for (int i = 0; i < distances_.size(); ++i) {
+      result = std::min(result, distances_[i][y][x]);
+    }
+    return result;
   };
 
   auto MoveIf = [&](int soldier_index, int& current_dist,
                     int to_x, int to_y, int lag = 0) {
-    if (current_dist > Distance(to_x, to_y) + lag) {
-      current_dist = Distance(to_x, to_y) + lag;
+    int new_dist = Distance(to_x, to_y) + lag;
+    if (current_dist > new_dist) {
+      current_dist = new_dist;
       soldiers_[soldier_index]->SetPosition(QPoint(to_x, to_y));
       soldiers_[soldier_index]->SetTimeLag(Lag(to_x, to_y) + lag);
     }
@@ -184,9 +186,6 @@ void World::MoveSoldiers() {
                                  Command::MoveRightUp, Command::MoveRightDown,
                                  Command::MoveLeft, Command::MoveRight,
                                  Command::MoveUp, Command::MoveDown});
-  // // TODO(AZYAVCHIKOV) - maybe not best solution
-  // std::shuffle(commands.begin(), commands.end(),
-  //              std::mt19937(std::random_device()()));
   for (int i = 0; i < soldiers_.size(); ++i) {
     if (soldiers_[i]->GetSide() == Side::kDefender) continue;
     if (soldiers_[i]->IsDead()) continue;
@@ -197,8 +196,6 @@ void World::MoveSoldiers() {
     int distance = Distance(x, y);
     if (distance == 0) continue;
     cells_[y][x].soldiers.erase(soldiers_[i]);
-    // std::shuffle(commands.begin() + 4, commands.end(),
-    //              std::mt19937(std::random_device()()));
     for (int j = 0; j < commands.size(); ++j) {
       IssueCommand(i, x, y, distance, commands[j]);
     }
@@ -268,39 +265,35 @@ QPixmap World::DrawWorld() const {
   return picture;
 }
 
-void World::UpdateGroundDistances() {
+void World::GenerateNewDistances(const QPoint& pos) {
+  distances_.emplace_back(cells_.size(),
+                          std::vector<int>(cells_[0].size(), INT32_MAX));
   for (int i = 0; i < cells_.size(); ++i) {
     for (int j = 0; j < cells_[i].size(); ++j) {
       cells_[i][j].used = false;
-      cells_[i][j].ground_distance = INT32_MAX;
     }
   }
+  auto& container = distances_[distances_.size() - 1];
 
   auto cmp =
       [&](std::pair<int, int> left, std::pair<int, int> right) {
-        return cells_[left.second][left.first].ground_distance
-            > cells_[right.second][right.first].ground_distance;
+        return container[left.second][left.first]
+            > container[right.second][right.first];
       };
   std::priority_queue<std::pair<int, int>,
                       std::vector<std::pair<int, int>>,
                       decltype(cmp)>
       latest_at_ground(cmp);
-
-  for (auto& object : towers_) {
-    int x = object->GetPosition().x();
-    int y = object->GetPosition().y();
-    cells_[y][x].ground_distance = 0;
-    latest_at_ground.push(std::make_pair(x, y));
-  }
+  container[pos.y()][pos.x()] = 0;
+  latest_at_ground.push(std::make_pair(pos.x(), pos.y()));
 
   auto push_if =
       [&](int x, int y, int dist, bool condition = true) {
         if (!condition || cells_[y][x].used) {
           return;
         }
-        if (cells_[y][x].ground_distance > dist
-            + cells_[y][x].landscape.move_lag) {
-          cells_[y][x].ground_distance = dist + cells_[y][x].landscape.move_lag;
+        if (container[y][x] > dist + cells_[y][x].landscape.move_lag) {
+          container[y][x] = dist + cells_[y][x].landscape.move_lag;
           latest_at_ground.push(std::make_pair(x, y));
         }
       };
@@ -308,7 +301,7 @@ void World::UpdateGroundDistances() {
   while (!latest_at_ground.empty()) {
     int x = latest_at_ground.top().first;
     int y = latest_at_ground.top().second;
-    int current_dist = cells_[y][x].ground_distance;
+    int current_dist = container[y][x];
 
     // left neighbor
     push_if(x - 1, y, current_dist, (x != 0));
@@ -432,6 +425,8 @@ void World::FireTower() {
       int last = towers_.size() - 1;
       std::swap(towers_[i], towers_[last]);
       towers_.erase(towers_.begin() + last);
+      distances_[i] = std::move(distances_[last]);
+      distances_.erase(distances_.begin() + last);
       --i;
       is_need_update_towers_ = true;
     }

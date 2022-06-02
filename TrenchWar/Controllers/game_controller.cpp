@@ -16,6 +16,9 @@ void GameController::SetWorldObjects() {
     world_->AddSoldier(Side::kAttacker);
     world_->AddSoldier(Side::kDefender);
   }
+  for (int i = 0; i < 40; ++i) {
+    world_->AddTower();
+  }
 }
 void GameController::SetWeaponsParameters() {
   int k = std::min(world_->GetSize().width(), world_->GetSize().height());

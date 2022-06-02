@@ -65,12 +65,14 @@ class World {
     bool is_trench;
     std::set<std::shared_ptr<Soldier>> soldiers;
     bool used;
-    int64_t ground_distance;
+    // int64_t ground_distance;
   };
+
 
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
+  std::vector<std::vector<std::vector<int>>> distances_;
   std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<Bullet>> bullets_;
   std::vector<std::shared_ptr<Tower>> towers_;
@@ -81,7 +83,7 @@ class World {
 
   QPixmap DrawWorld() const;
 
-  void UpdateGroundDistances();
+  void GenerateNewDistances(const QPoint& pos);
 
   void DamageArea(int x, int y, int radius, int bullet_index);
 
