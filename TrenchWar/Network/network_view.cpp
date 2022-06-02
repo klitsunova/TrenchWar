@@ -1,21 +1,23 @@
-
 #include "network_view.h"
 
-#include "helpers/styles.h"
-#include "helpers/sizes.h"
-#include "helpers/fonts.h"
+#include <memory>
 
-NetworkView::NetworkView(QWidget* parent) : back_to_main_menu_(new QPushButton("Back", this)),
-                                            try_connect_(new QPushButton("Connect", this)),
-                                            ready_(new QPushButton("Ready", this)),
-                                            disconnect_(new QPushButton("Disconnect", this)),
-                                            ip_(new QLineEdit("127.0.0.1", this)),
-                                            connection_status_(new QLabel("Not connected", this)),
-                                            main_layout_(new QVBoxLayout(this)),
-                                            connection_layout_(new QVBoxLayout()),
-                                            buttons_layout_(new QHBoxLayout()),
-                                            players_layout_(new QVBoxLayout()),
-                                            network_player_(new Player(new QTcpSocket())) {
+#include "helpers/fonts.h"
+#include "helpers/sizes.h"
+#include "helpers/styles.h"
+
+NetworkView::NetworkView(QWidget* parent)
+    : back_to_main_menu_(new QPushButton("Back", this)),
+      try_connect_(new QPushButton("Connect", this)),
+      ready_(new QPushButton("Ready", this)),
+      disconnect_(new QPushButton("Disconnect", this)),
+      ip_(new QLineEdit("127.0.0.1", this)),
+      connection_status_(new QLabel("Not connected", this)),
+      main_layout_(new QVBoxLayout(this)),
+      connection_layout_(new QVBoxLayout()),
+      buttons_layout_(new QHBoxLayout()),
+      players_layout_(new QVBoxLayout()),
+      network_player_(new Player(new QTcpSocket())) {
   SetStyles();
   SetUpLayouts();
   ConnectButtons();
@@ -56,12 +58,11 @@ void NetworkView::SetUpLayouts() {
 
 void NetworkView::SetStyles() {
   setStyleSheet(styles::kWidget);
-  for (auto& widget: children()) {
+  for (auto& widget : children()) {
     auto* label_ptr = qobject_cast<QLabel*>(widget);
     auto* button_ptr = qobject_cast<QPushButton*>(widget);
     if (label_ptr) {
       label_ptr->setFont(fonts::kDialogLabel);
-      // label_ptr->setStyleSheet(styles::);
     } else if (button_ptr) {
       button_ptr->setFont(fonts::kDialogButton);
       button_ptr->setMinimumSize(element_sizes::kDialogButton);
@@ -127,7 +128,7 @@ void NetworkView::UpdatePlayersVector() {
     return;
   }
   players_.clear();
-  for (const auto& data: data_vector) {
+  for (const auto& data : data_vector) {
     auto* player = new Player(nullptr);
     player->SetId(data.id);
     player->SetSide(static_cast<Side>(data.side));
@@ -161,7 +162,7 @@ void NetworkView::AddStartButton() {
 }
 
 void NetworkView::PrepareForStart() {
-  for (const auto& player: players_) {
+  for (const auto& player : players_) {
     if (!player->GetPlayer()->IsReady()) {
       connection_status_->setText("Error! Not everybody is ready");
       return;

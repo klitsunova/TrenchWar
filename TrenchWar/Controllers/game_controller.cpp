@@ -12,7 +12,7 @@ GameController::GameController(
 }
 
 void GameController::SetWorldObjects(Side side) {
-  for (int i = 0; i < 500; ++i) {
+  for (int i = 0; i < 50; ++i) {
     if (side == Side::kAttacker) {
       world_->AddSoldier(Side::kAttacker);
     } else {
@@ -36,10 +36,10 @@ void GameController::UpdateDefenders(const GameData& data) {
     QPoint position = QPoint(data.soldiers[i].x, data.soldiers[i].y);
       world_->AddSoldier(position, Side::kDefender);
   }
-  for (const auto& object: data.terrain_objects) {
+  for (const auto& object : data.terrain_objects) {
     world_->AddTower(QPoint(object.first, object.second));
   }
-  for (const auto& trench: data.trenches) {
+  for (const auto& trench : data.trenches) {
     world_->GetCell(QPoint(trench.first, trench.second)).is_trench = true;
     world_->GetCell(QPoint(trench.first, trench.second)).landscape.color =
         colors::kTrenchColor;
@@ -48,7 +48,7 @@ void GameController::UpdateDefenders(const GameData& data) {
 
 GameData GameController::GetAttackersData() {
   GameData new_data;
-  for (const auto& soldier: world_->GetSoldiers()) {
+  for (const auto& soldier : world_->GetSoldiers()) {
     SoldierData data{soldier->GetPosition().x(),
                      soldier->GetPosition().y(),
                      soldier->GetHitPoints()};
@@ -59,14 +59,14 @@ GameData GameController::GetAttackersData() {
 
 GameData GameController::GetDefendersData() {
   GameData new_data;
-  for (const auto& soldier: world_->GetSoldiers()) {
+  for (const auto& soldier : world_->GetSoldiers()) {
     SoldierData data{soldier->GetPosition().x(),
                      soldier->GetPosition().y(),
                      soldier->GetHitPoints()};
     new_data.soldiers.push_back(data);
   }
 
-  for (const auto& object: world_->GetTowers()) {
+  for (const auto& object : world_->GetTowers()) {
     new_data.terrain_objects.emplace_back(
         object->GetPosition().x(), object->GetPosition().y());
   }

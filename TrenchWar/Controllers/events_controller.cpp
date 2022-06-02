@@ -161,7 +161,7 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
 }
 
 void EventsController::BuildTrench() {
-  for (const auto& changed_cell: trench_controller_->GetChangedCells()) {
+  for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
     world_->GetCell(changed_cell.first).is_trench = true;
   }
   trench_controller_->ClearChangedCells();

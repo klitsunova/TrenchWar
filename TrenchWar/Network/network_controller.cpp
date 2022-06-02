@@ -1,5 +1,7 @@
 #include "network_controller.h"
 
+#include <memory>
+
 #include <QDataStream>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -59,7 +61,6 @@ void NetworkController::ParseData() {
       break;
     }
     case MessageType::kPlayersData: {
-
       break;
     }
     default: {
