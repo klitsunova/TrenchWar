@@ -45,6 +45,7 @@ jobs:
       uses: jurplel/install-qt-action@v2
       with: 
         version: "6.3.0"
+        modules: 'qtmultimedia'
 
     - name: Create Makefile
       working-directory: ${{runner.workspace}}/${{github.event.repository.name}}/TrenchWar
