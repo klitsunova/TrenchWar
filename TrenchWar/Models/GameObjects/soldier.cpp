@@ -18,9 +18,6 @@ Soldier::Health Soldier::GetHitPoints() const {
   return hit_points_;
 }
 
-int Soldier::GetId() const {
-  return id_;
-}
 
 Side Soldier::GetSide() const {
   return side_;
@@ -66,6 +63,11 @@ void Soldier::TakeDamage(int damage) {
 
 bool Soldier::IsDead() const {
   return hit_points_ <= 0;
+}
+
+
+void Soldier::SetHitPoints(int hit_points) {
+  hit_points_ = hit_points;
 }
 
 int Soldier::GetTowerDamage() const {

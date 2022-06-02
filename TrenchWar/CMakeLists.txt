@@ -16,6 +16,7 @@ find_package(Qt6 COMPONENTS
         Gui
         Widgets
         Multimedia
+        Network
         REQUIRED)
 
 set(MODELS
@@ -47,19 +48,40 @@ set(CONTROLLERS
         Controllers/trench_controller.cpp
         )
 
+set(NETWORK
+        Network/player_model.cpp
+        Network/helpers.cpp
+        Network/network_controller.cpp
+        Network/network_view.cpp
+        Network/player_view.cpp
+        )
+
+set(SERVER
+        Server/main.cpp
+        Server/server.cpp
+        )
+
 set(SOURCES
         main.cpp
         ${MODELS}
         ${VIEWS}
-        ${CONTROLLERS})
+        ${CONTROLLERS}
+        ${NETWORK}
+        )
 
-qt6_add_big_resources(RESOURCES resources.qrc)
-
-add_executable(TrenchWar ${SOURCES} ${RESOURCES})
-
-target_link_libraries(TrenchWar
+set(LIBRARIES
         Qt::Core
         Qt::Gui
         Qt::Widgets
         Qt::Multimedia
+        Qt6::Network
         )
+
+
+qt6_add_big_resources(RESOURCES resources.qrc)
+
+add_executable(TrenchWar ${SOURCES} ${RESOURCES})
+add_executable(TrenchWarServer ${SERVER} ${NETWORK} ${MODELS})
+
+target_link_libraries(TrenchWar ${LIBRARIES})
+target_link_libraries(TrenchWarServer ${LIBRARIES})
