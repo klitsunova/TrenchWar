@@ -63,17 +63,9 @@ void MapView::paintEvent(QPaintEvent*) {
                object->GetSize(), object->GetPixmap());
   }
 
-  const std::vector<std::shared_ptr<Soldier>>& defenders =
-      world_->GetDefenders();
-  for (const auto& soldier : defenders) {
-    if (soldier->IsDead()) continue;
-    DrawObject(&painter, soldier->GetPosition(),
-               soldier->GetSize(), soldier->GetPixmap());
-  }
-
-  const std::vector<std::shared_ptr<Soldier>>& attackers =
-      world_->GetAttackers();
-  for (const auto& soldier : attackers) {
+  const std::vector<std::shared_ptr<Soldier>>& soldiers =
+      world_->GetSoldiers();
+  for (const auto& soldier : soldiers) {
     if (soldier->IsDead()) continue;
     DrawObject(&painter, soldier->GetPosition(),
                soldier->GetSize(), soldier->GetPixmap());

@@ -19,7 +19,7 @@
 #include "helpers/sides.h"
 #include "helpers/sizes.h"
 
-class World {
+    class World {
  private:
   struct Cell;
 
@@ -28,8 +28,7 @@ class World {
 
   ~World() = default;
 
-  const std::vector<std::shared_ptr<Soldier>>& GetDefenders() const;
-  const std::vector<std::shared_ptr<Soldier>>& GetAttackers() const;
+  const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
   const std::vector<std::shared_ptr<TerrainObject>>& GetTerrainObjects() const;
   const std::vector<std::shared_ptr<Bullet>>& GetBullets() const;
 
@@ -45,7 +44,7 @@ class World {
   void AddSoldier(Side side);
   void AddSoldier(const QPoint& position, Side side);
   void AddTerrainObject();
-  void AddTerrainObject(QPoint position);
+  void AddTerrainObject(const QPoint& position);
   void AddBullet(const std::shared_ptr<Bullet>& bullet);
 
   void MoveSoldiers();
@@ -72,8 +71,7 @@ class World {
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
-  std::vector<std::shared_ptr<Soldier>> defenders_;
-  std::vector<std::shared_ptr<Soldier>> attackers_;
+  std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<Bullet>> bullets_;
   std::vector<std::shared_ptr<TerrainObject>> terrain_objects_;
   bool is_need_update_towers_{true};
@@ -87,6 +85,5 @@ class World {
   void DamageArea(int x, int y, int radius, int bullet_index);
 
   std::optional<std::shared_ptr<Soldier>> FindNearest(
-      const std::shared_ptr<Soldier>&,
-      const std::vector<std::shared_ptr<Soldier>>&) const;
+      const std::shared_ptr<Soldier>& soldier) const;
 };

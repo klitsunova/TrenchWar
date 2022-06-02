@@ -27,24 +27,14 @@ void GameController::SetWorldObjects(Side side) {
 void GameController::UpdateAttackers(const GameData& data) {
   for (size_t i = 0; i < data.soldiers.size(); ++i) {
     QPoint position = QPoint(data.soldiers[i].x, data.soldiers[i].y);
-    if (i < world_->GetAttackers().size()) {
-      world_->GetAttackers()[i]->SetPosition(position);
-      world_->GetAttackers()[i]->SetHitPoints(data.soldiers[i].hit_points);
-    } else {
       world_->AddSoldier(position, Side::kAttacker);
-    }
   }
 }
 
 void GameController::UpdateDefenders(const GameData& data) {
   for (size_t i = 0; i < data.soldiers.size(); ++i) {
     QPoint position = QPoint(data.soldiers[i].x, data.soldiers[i].y);
-    if (i < world_->GetDefenders().size()) {
-      world_->GetDefenders()[i]->SetPosition(position);
-      world_->GetDefenders()[i]->SetHitPoints(data.soldiers[i].hit_points);
-    } else {
       world_->AddSoldier(position, Side::kDefender);
-    }
   }
   for (const auto& object: data.terrain_objects) {
     world_->AddTerrainObject(QPoint(object.first, object.second));
@@ -58,7 +48,7 @@ void GameController::UpdateDefenders(const GameData& data) {
 
 GameData GameController::GetAttackersData() {
   GameData new_data;
-  for (const auto& soldier: world_->GetAttackers()) {
+  for (const auto& soldier: world_->GetSoldiers()) {
     SoldierData data{soldier->GetPosition().x(),
                      soldier->GetPosition().y(),
                      soldier->GetHitPoints()};
@@ -69,7 +59,7 @@ GameData GameController::GetAttackersData() {
 
 GameData GameController::GetDefendersData() {
   GameData new_data;
-  for (const auto& soldier: world_->GetDefenders()) {
+  for (const auto& soldier: world_->GetSoldiers()) {
     SoldierData data{soldier->GetPosition().x(),
                      soldier->GetPosition().y(),
                      soldier->GetHitPoints()};
