@@ -6,7 +6,9 @@
 World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
-  AddTower();
+  for (int i = 0; i < 100; ++i) {
+    AddTower();
+  }
 }
 
 void World::AddSoldier(Side side) {
@@ -85,15 +87,6 @@ void World::Update() {
               });
     soldiers_.resize(soldiers_.size() - used_soldiers_);
     used_soldiers_ = 0;
-  }
-  if (used_bullets_ * 4 > soldiers_.size()) {
-    std::sort(bullets_.begin(), bullets_.end(),
-              [&](std::shared_ptr<Bullet> bullet1,
-                  std::shared_ptr<Bullet> bullet2) {
-                return bullet1->IsUsed() < bullet2->IsUsed();
-              });
-    bullets_.resize(bullets_.size() - used_bullets_);
-    used_bullets_ = 0;
   }
 }
 
@@ -340,7 +333,7 @@ void World::MoveBullets() {
 
   for (int i = 0; i < bullets_.size(); ++i) {
     for (int j = 0; j < repeat; ++j) {
-      if (bullets_[i]->IsUsed()) continue;
+      assert(!bullets_[i]->IsUsed());
       bullets_[i]->Move();
       // DamageArea(bullets_[i]->GetPosition().x(),
       // bullets_[i]->GetPosition().y(),
@@ -348,7 +341,11 @@ void World::MoveBullets() {
       DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
                  bullet_radius, i);
       if (bullets_[i]->IsUsed()) {
-        ++used_bullets_;
+        int last = bullets_.size() - 1;
+        std::swap(bullets_[i], bullets_[last]);
+        bullets_.erase(bullets_.begin() + last);
+        --i;
+        break;
       }
     }
   }
@@ -430,7 +427,10 @@ void World::FireTower() {
       tower->TakeDamage(soldier->GetTowerDamage());
     }
     if (tower->IsDestroyed()) {
-      towers_.erase(towers_.begin() + i);
+      int last = towers_.size() - 1;
+      std::swap(towers_[i], towers_[last]);
+      towers_.erase(towers_.begin() + last);
+      --i;
       is_need_update_towers_ = true;
     }
   }
