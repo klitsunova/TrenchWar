@@ -77,23 +77,14 @@ void World::Update() {
     UpdateGroundDistances();
   }
   is_need_update_towers_ = false;
-  if (used_soldiers_ * 2 > soldiers_.size()) {
+  if (dead_soldiers_ * 2 > soldiers_.size()) {
     std::sort(soldiers_.begin(), soldiers_.end(),
               [&](std::shared_ptr<Soldier> soldier1,
                   std::shared_ptr<Soldier> soldier2) {
                 return soldier1->GetHitPoints() > soldier2->GetHitPoints();
               });
-    soldiers_.resize(soldiers_.size() - used_soldiers_);
-    used_soldiers_ = 0;
-  }
-  if (used_bullets_ * 4 > soldiers_.size()) {
-    std::sort(bullets_.begin(), bullets_.end(),
-              [&](std::shared_ptr<Bullet> bullet1,
-                  std::shared_ptr<Bullet> bullet2) {
-                return bullet1->IsUsed() < bullet2->IsUsed();
-              });
-    bullets_.resize(bullets_.size() - used_bullets_);
-    used_bullets_ = 0;
+    soldiers_.resize(soldiers_.size() - dead_soldiers_);
+    dead_soldiers_ = 0;
   }
 }
 
@@ -340,7 +331,7 @@ void World::MoveBullets() {
 
   for (int i = 0; i < bullets_.size(); ++i) {
     for (int j = 0; j < repeat; ++j) {
-      if (bullets_[i]->IsUsed()) continue;
+      assert(!bullets_[i]->IsUsed());
       bullets_[i]->Move();
       // DamageArea(bullets_[i]->GetPosition().x(),
       // bullets_[i]->GetPosition().y(),
@@ -348,7 +339,11 @@ void World::MoveBullets() {
       DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
                  bullet_radius, i);
       if (bullets_[i]->IsUsed()) {
-        ++used_bullets_;
+        int last = bullets_.size() - 1;
+        std::swap(bullets_[i], bullets_[last]);
+        bullets_.erase(bullets_.begin() + last);
+        --i;
+        break;
       }
     }
   }
@@ -369,11 +364,15 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
       auto& container = cells_[i][j].soldiers;
       for (auto k = container.begin(); k != container.end(); k++) {
         if ((*k)->GetSide() == bullet->GetSide()) continue;
-        (*k)->TakeDamage(bullet->GetDamage());
+        int damage = bullet->GetDamage();
+        if (cells_[i][j].is_trench) {
+          damage = static_cast<int>(damage * weapons::kTrenchEffect);
+        }
+        (*k)->TakeDamage(damage);
         bullet->MakeUsed();
         if ((*k)->IsDead()) {
           cells_[i][j].soldiers.erase(k);
-          ++used_soldiers_;
+          ++dead_soldiers_;
         }
         return;
       }
@@ -430,7 +429,10 @@ void World::FireTower() {
       tower->TakeDamage(soldier->GetTowerDamage());
     }
     if (tower->IsDestroyed()) {
-      towers_.erase(towers_.begin() + i);
+      int last = towers_.size() - 1;
+      std::swap(towers_[i], towers_[last]);
+      towers_.erase(towers_.begin() + last);
+      --i;
       is_need_update_towers_ = true;
     }
   }

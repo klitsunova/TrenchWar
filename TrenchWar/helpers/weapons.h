@@ -16,4 +16,5 @@ const int kRifleReloadTime = 15;
 const double kRifleHitChance = 0.6;
 
 const int kTowerDamage = 2;
+const double kTrenchEffect = 0.5;
 }  // namespace weapons
