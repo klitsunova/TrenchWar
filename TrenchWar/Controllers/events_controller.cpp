@@ -93,7 +93,7 @@ void EventsController::StartPreparationStage() {
   game_controller_ = std::make_unique<GameController>(this, world_);
   game_controller_->SetWorldObjects(network_view_->GetPlayerSide());
   ConnectUI();
-  view_->SetFullScreen(Settings::Instance()->IsFullScreen());
+  view_->SetFullScreen(Settings::IsFullScreen());
   view_->show();
 }
 
