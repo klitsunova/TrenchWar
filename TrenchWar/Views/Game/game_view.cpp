@@ -39,7 +39,7 @@ void GameView::closeEvent(QCloseEvent* event) {
 }
 
 void GameView::Start() {
-  store_.
+  store_->FixModes();
   store_->HideReadyButton();
 }
 
@@ -65,4 +65,8 @@ MapView* GameView::GetMap() const {
 
 StoreView* GameView::GetStore() const {
   return store_;
+}
+
+void GameView::SetStoreDialog(QMouseEvent* event) {
+  map_->SetStoreDialog(event);
 }

@@ -5,15 +5,18 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QPoint>
+#include <QStyle>
 
 #include "Models/GameObjects/game_object.h"
 #include "helpers/sizes.h"
+#include "helpers/styles.h"
 
 MapView::MapView(QWidget* parent,
                  const std::shared_ptr<World>& world) {
   setParent(parent);
   // TODO(AZYAVCHIKOV): maybe not best solution
   // setMinimumSize(window_sizes::kWorld);
+  buy_window_ = new BuyWindow();
   world_ = world;
 }
 
@@ -93,4 +96,14 @@ void MapView::mousePressEvent(QMouseEvent* event) {
 
 void MapView::mouseReleaseEvent(QMouseEvent* event) {
   MouseReleasedHandler(event);
+}
+
+void MapView::mouseDoubleClickEvent(QMouseEvent* event) {
+  MouseDoubleClickedHandler(event);
+}
+
+void MapView::SetStoreDialog(QMouseEvent* event) {
+  buy_window_->show();
+  QPoint position = event->globalPosition().toPoint();
+  buy_window_->move(position);
 }

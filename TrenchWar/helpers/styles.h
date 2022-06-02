@@ -22,8 +22,7 @@ const QString kPushButton =
     "border-color: #233b0f;}"
 
     "QPushButton:hover {"
-    "border-color: navy;}"
-    ;
+    "border-color: navy;}";
 
 const QString kExitButton =
     "QPushButton {"
@@ -57,16 +56,13 @@ const QString kStoreBoxMoneyWidget =
     "padding: 2px;"
     "background-color: #BFB790;}";
 
-// const QString kStoreBox =
-//     "QLabel {"
-//     "border: 2px solid green;"
-//     "border-radius: 4px;"
-//     "padding: 2px;"
-//     "background-color: #BFB790;}";
-
 const QString kStoreMenu =
     "QWidget {"
     "background-color: #40826d;}";
+
+const QString kStoreDialog =
+    "QDialog {"
+    "background-color: white}";
 
 const QString kRadioButton =
     "QRadioButton::indicator {"

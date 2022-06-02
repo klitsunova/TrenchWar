@@ -59,6 +59,10 @@ void EventsController::ConnectUI() {
           &MapView::MousePressedHandler,
           this,
           &EventsController::MapPressHandler);
+  connect(view_->GetMap(),
+          &MapView::MouseDoubleClickedHandler,
+          this,
+          &EventsController::MapDoubleClickHandler);
   connect(view_->GetStore(),
           &StoreView::ModeChanged,
           this,
@@ -117,6 +121,10 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
   }
 
   view_->GetStore()->EnableStoreButtons();
+}
+
+void EventsController::MapDoubleClickHandler(QMouseEvent* event) {
+  view_->SetStoreDialog(event);
 }
 
 void EventsController::ConfirmPurchase(BuyMode mode) {

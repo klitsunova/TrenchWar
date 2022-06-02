@@ -28,6 +28,7 @@ class GameView : public QWidget {
 
   void UpdateMap();
   void Start();
+  void SetStoreDialog(QMouseEvent* event);
 
   void SetFullScreen(bool is_fullscreen);
   void SetStyle();

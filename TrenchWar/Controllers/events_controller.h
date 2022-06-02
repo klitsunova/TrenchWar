@@ -43,6 +43,7 @@ class EventsController : public QWidget {
 
   void MapPressHandler(QMouseEvent* event);
   void MapReleaseHandler(QMouseEvent* event);
+  void MapDoubleClickHandler(QMouseEvent* event);
 
  signals:
   void ShowPauseMenu();

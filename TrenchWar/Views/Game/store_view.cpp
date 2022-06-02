@@ -8,6 +8,7 @@
 #include <QRadioButton>
 #include <QVBoxLayout>
 #include <QPixmap>
+#include <iostream>
 
 #include "helpers/sizes.h"
 #include "helpers/styles.h"
@@ -133,5 +134,7 @@ void StoreView::SetMoneyWidget() {
 }
 
 void StoreView::FixModes() {
-  purchase_modes_->button(static_cast<int>(BuyMode::kUnits));
+  purchase_modes_->button(static_cast<int>(BuyMode::kUnits))->setChecked(true);
+  setDisabled(purchase_modes_);
+  mode_ = BuyMode::kUnits;
 }
