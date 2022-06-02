@@ -12,6 +12,7 @@
 #include "Controllers/game_controller.h"
 #include "Controllers/trench_controller.h"
 #include "Views/Game/game_view.h"
+#include "helpers/modes.h"
 #include "helpers/styles.h"
 
 class EventsController : public QWidget {
@@ -26,12 +27,13 @@ class EventsController : public QWidget {
   explicit EventsController(QWidget* parent = nullptr);
   ~EventsController() override = default;
 
-  void Start();
+  void Start(BuyMode mode);
   void HideGame();
   void SetFullScreen(bool is_fullscreen);
 
-  void BuildTrench();
-  void DeleteTrench();
+  void ConfirmPurchase(BuyMode mode);
+  void CancelPurchase(BuyMode mode);
+  void ChangeMode(BuyMode mode);
 
   void StartTimer();
   void PauseTimer();

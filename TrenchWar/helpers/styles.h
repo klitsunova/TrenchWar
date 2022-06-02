@@ -16,7 +16,14 @@ const QString kPushButton =
 
     "QPushButton::pressed {"
     "background-color: #233b0f;"
-    "border-style: inset; }";
+    "border-style: inset; }"
+
+    "QPushButton:disabled {"
+    "border-color: #233b0f;}"
+
+    "QPushButton:hover {"
+    "border-color: navy;}"
+    ;
 
 const QString kExitButton =
     "QPushButton {"
@@ -36,7 +43,14 @@ const QString kWidget =
     "QWidget {"
     "background-color: #BFB790;}";
 
-const QString kStoreBox =
+const QString kStoreBoxMoneyLabels =
+    "QWidget {"
+    "border: 0px solid green;"
+    "border-radius: 4px;"
+    "padding: 2px;"
+    "background-color: #BFB790;}";
+
+const QString kStoreBoxMoneyWidget =
     "QWidget {"
     "border: 2px solid green;"
     "border-radius: 4px;"

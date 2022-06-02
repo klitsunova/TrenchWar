@@ -21,13 +21,15 @@ class StoreView : public QWidget {
 
   void HideReadyButton();
   void HideTrenchButtons() const;
-  void ShowTrenchButtons() const;
+  void EnableStoreButtons() const;
   void paintEvent(QPaintEvent*) override;
+  void FixModes();
 
  signals:
-  void Ready();
-  void ConfirmButtonPressed();
-  void CancelButtonPressed();
+  void Ready(BuyMode mode);
+  void ConfirmButtonPressed(BuyMode mode);
+  void CancelButtonPressed(BuyMode mode);
+  void ModeChanged(BuyMode mode);
 
  private:
   void AddItems();
@@ -41,10 +43,9 @@ class StoreView : public QWidget {
   QPushButton* ready_button_;
   QPushButton* confirm_button_;
   QPushButton* cancel_button_;
-  std::vector<QLabel*> items_;
-  QButtonGroup* modes_;
-  QWidget* money_widget_;
+  QButtonGroup* purchase_modes_;
+  QWidget* money_widget_area_;
   QLabel* money_label_;
-  QHBoxLayout* money_layout_;
   int count_money_{1000};
+  BuyMode mode_{BuyMode::kTrench};
 };

@@ -18,10 +18,9 @@ StoreView::StoreView(QWidget* parent)
       ready_button_(new QPushButton("Ready", this)),
       confirm_button_(new QPushButton("Confirm", this)),
       cancel_button_(new QPushButton("Cancel", this)),
-      modes_(new QButtonGroup(this)),
-      money_widget_(new QWidget(this)),
-      money_label_(new QLabel),
-      money_layout_(new QHBoxLayout()) {
+      purchase_modes_(new QButtonGroup(this)),
+      money_widget_area_(new QWidget(this)),
+      money_label_(new QLabel) {
   HideTrenchButtons(); // TODO
   AddItems();
   SetLayout();
@@ -34,16 +33,15 @@ void StoreView::HideReadyButton() {
 }
 
 void StoreView::AddItems() {
+  purchase_modes_->addButton(new QRadioButton(this), static_cast<int>(BuyMode::kTrench));
+  purchase_modes_->addButton(new QRadioButton(this), static_cast<int>(BuyMode::kUnits));
   SetMoneyWidget();
-  modes_->addButton(new QRadioButton(this), static_cast<int>(BuyMode::kTrench));
-  modes_->addButton(new QRadioButton(this), static_cast<int>(BuyMode::kUnits));
   SetNames();
 }
 
 void StoreView::SetStyles() {
-  for (const auto& item : items_) {
-    item->setStyleSheet(styles::kStoreBox);
-  }
+  setStyleSheet(styles::kStoreMenu);
+
   ready_button_->setStyleSheet(styles::kPushButton);
   ready_button_->setMinimumSize(element_sizes::kDialogButton);
   confirm_button_->setMinimumSize(element_sizes::kTrenchBuild);
@@ -51,97 +49,89 @@ void StoreView::SetStyles() {
   cancel_button_->setMinimumSize(element_sizes::kTrenchBuild);
   cancel_button_->setStyleSheet(styles::kPushButton);
 
-  modes_->button(
+  purchase_modes_->button(
       static_cast<int>(BuyMode::kTrench))->setStyleSheet(styles::kRadioButton);
-  modes_->button(
+  purchase_modes_->button(
       static_cast<int>(BuyMode::kUnits))->setStyleSheet(styles::kRadioButton);
 
-  setStyleSheet(styles::kStoreMenu);
-
-  money_widget_->setStyleSheet(styles::kStoreBox);
+  money_widget_area_->setStyleSheet(styles::kStoreBoxMoneyWidget);
 }
 
 void StoreView::ConnectUI() {
   connect(ready_button_,
           &QPushButton::clicked,
-          this,
-          &StoreView::Ready);
+          this,[&](){
+    emit Ready(mode_);
+  });
   connect(confirm_button_,
           &QPushButton::clicked,
-          this,
-          &StoreView::ConfirmButtonPressed);
+          this,[&](){
+    emit ConfirmButtonPressed(mode_);
+  });
   connect(cancel_button_,
           &QPushButton::clicked,
-          this,
-          &StoreView::CancelButtonPressed);
+          this, [&](){
+    emit CancelButtonPressed(mode_);
+  });
+  connect(purchase_modes_,
+          &QButtonGroup::buttonPressed,
+          this, [&](QAbstractButton* button){
+    BuyMode mode = static_cast<BuyMode>(button->group()->id(button));
+    emit ModeChanged(mode);
+  });
 }
 
-void StoreView::ShowTrenchButtons() const {
-  confirm_button_->show();
-  cancel_button_->show();
+void StoreView::EnableStoreButtons() const {
+  confirm_button_->setEnabled(true);
+  cancel_button_->setEnabled(true);
 }
 
 void StoreView::HideTrenchButtons() const {
-  confirm_button_ ->hide();
-  cancel_button_->hide();
+  confirm_button_ ->setDisabled(true);
+  cancel_button_->setDisabled(true);
 }
 
 void StoreView::paintEvent(QPaintEvent*) {
-  QStyleOption opt;
-  opt.initFrom(this);
-  QPainter p(this);
-  style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+  QStyleOption option;
+  option.initFrom(this);
+  QPainter painter(this);
+  style()->drawPrimitive(QStyle::PE_Widget, &option, &painter, this);
 }
 
 void StoreView::SetNames() {
-  modes_->button(static_cast<int>(BuyMode::kTrench))->setText("Trench mode");
-  modes_->button(static_cast<int>(BuyMode::kUnits))->setText("Units mode");
-  // money_widget_->setPixmap(PixmapLoader::GetDollar()->scaled(element_sizes::kStoreBox));
-  // money_widget_->widget()->setWindowIconText() ->setText(QString::number(count_money_));
+  purchase_modes_->button(static_cast<int>(BuyMode::kTrench))->setText("Trench mode");
+  purchase_modes_->button(static_cast<int>(BuyMode::kUnits))->setText("Units mode");
 }
 
 void StoreView::SetLayout() {
   setLayout(layout_);
-  // QLabel* label = new QLabel;
-  // QString str= "<img src=\":/Resources/Images/Dollar.png\">";
-  // label->setTextFormat(Qt::RichText);
-  // label->setText(str);
-  // layout_->addWidget(label);
 
-  layout_->addWidget(money_widget_, 0);
+  layout_->addWidget(money_widget_area_, 0);
   layout_->addStretch(1);
 
-  // temporary code
-  for (int i = 0; i < 5; ++i) {
-    auto* soldier = new QLabel(this);
-    soldier->setPixmap(
-        PixmapLoader::GetSoldier()->scaled(element_sizes::kStoreBox));
-    items_.push_back(soldier);
-    layout_->addWidget(soldier, 0);
-  }
+  QVBoxLayout* mode_layout = new QVBoxLayout();
+  mode_layout->addWidget(purchase_modes_->button(static_cast<int>(BuyMode::kTrench)), 0);
+  mode_layout->addWidget(purchase_modes_->button(static_cast<int>(BuyMode::kUnits)), 0);
+  layout_->addLayout(mode_layout, 0);
 
-  layout_->addStretch(1);
-
-  QVBoxLayout* mode_layout_ = new QVBoxLayout();
-  mode_layout_->addWidget(modes_->button(static_cast<int>(BuyMode::kTrench)), 0);
-  mode_layout_->addWidget(modes_->button(static_cast<int>(BuyMode::kUnits)), 0);
-  layout_->addLayout(mode_layout_, 0);
-
-  layout_->addWidget(ready_button_, 0);
   layout_->addWidget(confirm_button_, 0);
   layout_->addWidget(cancel_button_, 0);
+  layout_->addWidget(ready_button_, 0);
 }
 
 void StoreView::SetMoneyWidget() {
-  money_widget_->setLayout(money_layout_);
+  QHBoxLayout* money_link_layout = new QHBoxLayout();
+  money_widget_area_->setLayout(money_link_layout);
   QLabel* dollar = new QLabel();
   dollar->setPixmap(PixmapLoader::GetDollar()->scaled(element_sizes::kStoreBox));
-  dollar->setStyleSheet(styles::kStoreMenu);
-  money_layout_->addWidget(dollar);
+  dollar->setStyleSheet(styles::kStoreBoxMoneyLabels);
+  money_link_layout->addWidget(dollar);
 
   money_label_->setText(QString::number(count_money_));
-  money_label_->setStyleSheet(styles::kStoreMenu);
-  money_layout_->addWidget(money_label_);
+  money_label_->setStyleSheet(styles::kStoreBoxMoneyLabels);
+  money_link_layout->addWidget(money_label_);
+}
 
-  // QLabel* label = new QLabel;
+void StoreView::FixModes() {
+  purchase_modes_->button(static_cast<int>(BuyMode::kUnits));
 }

@@ -38,7 +38,8 @@ void GameView::closeEvent(QCloseEvent* event) {
   Close();
 }
 
-void GameView::HideReadyButton() {
+void GameView::Start() {
+  store_.
   store_->HideReadyButton();
 }
 

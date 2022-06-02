@@ -46,11 +46,11 @@ void EventsController::ConnectUI() {
   connect(view_->GetStore(),
           &StoreView::ConfirmButtonPressed,
           this,
-          &EventsController::BuildTrench);
+          &EventsController::ConfirmPurchase);
   connect(view_->GetStore(),
           &StoreView::CancelButtonPressed,
           this,
-          &EventsController::DeleteTrench);
+          &EventsController::CancelPurchase);
   connect(view_->GetMap(),
           &MapView::MouseReleasedHandler,
           this,
@@ -59,15 +59,19 @@ void EventsController::ConnectUI() {
           &MapView::MousePressedHandler,
           this,
           &EventsController::MapPressHandler);
+  connect(view_->GetStore(),
+          &StoreView::ModeChanged,
+          this,
+          &EventsController::ChangeMode);
 }
 
 void EventsController::HideGame() {
   view_->hide();
 }
 
-void EventsController::Start() {
-  DeleteTrench();
-  view_->HideReadyButton();
+void EventsController::Start(BuyMode mode) {
+  CancelPurchase(mode);
+  view_->Start();
   game_stage = Stage::kActive;
   StartTimer();
 }
@@ -112,23 +116,54 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
     return;
   }
 
-  view_->GetStore()->ShowTrenchButtons();
+  view_->GetStore()->EnableStoreButtons();
 }
 
-void EventsController::BuildTrench() {
-  for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
-    world_->GetCell(changed_cell.first).is_trench = true;
+void EventsController::ConfirmPurchase(BuyMode mode) {
+  switch (mode) {
+    case BuyMode::kTrench: {
+      for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
+        world_->GetCell(changed_cell.first).is_trench = true;
+      }
+      trench_controller_->ClearChangedCells();
+      view_->GetStore()->HideTrenchButtons();
+      trench_controller_->SetTrenchFixed(false);
+      break;
+    }
+    case BuyMode::kUnits: {
+      // TODO
+      break;
+    }
   }
-  trench_controller_->ClearChangedCells();
-  view_->GetStore()->HideTrenchButtons();
-  trench_controller_->SetTrenchFixed(false);
 }
 
-void EventsController::DeleteTrench() {
-  trench_controller_->SetSaveCellsState();
-  world_->TrenchUpdate();
-  view_->UpdateMap();
-  trench_controller_->ClearChangedCells();
-  view_->GetStore()->HideTrenchButtons();
-  trench_controller_->SetTrenchFixed(false);
+void EventsController::CancelPurchase(BuyMode mode) {
+  switch (mode) {
+    case BuyMode::kTrench: {
+      trench_controller_->SetSaveCellsState();
+      world_->TrenchUpdate();
+      view_->UpdateMap();
+      trench_controller_->ClearChangedCells();
+      view_->GetStore()->HideTrenchButtons();
+      trench_controller_->SetTrenchFixed(false);
+      break;
+    }
+    case BuyMode::kUnits: {
+      // TODO
+      break;
+    }
+  }
+}
+
+void EventsController::ChangeMode(BuyMode mode) {
+  switch (mode) {
+    case BuyMode::kUnits: {
+      CancelPurchase(BuyMode::kTrench);
+      break;
+    }
+    case BuyMode::kTrench: {
+      CancelPurchase(BuyMode::kUnits);
+      break;
+    }
+  }
 }
