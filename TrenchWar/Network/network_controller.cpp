@@ -47,7 +47,6 @@ void NetworkController::ParseData() {
       break;
     }
     case MessageType::kEndPreparationStatus: {
-      // q_variant_ = data.data;
       if (player_->GetSide() == Side::kAttacker) {
         defenders_data_ = JsonHelper::DecodeGameData(data.data);
 
@@ -58,12 +57,9 @@ void NetworkController::ParseData() {
       emit GotSignalForActiveStage();
       break;
     }
-    case MessageType::kPlayersData: {
+    case MessageType::kPlayersData:
+    case MessageType::kReadyStatus:
       break;
-    }
-    default: {
-      break;
-    }
   }
 }
 

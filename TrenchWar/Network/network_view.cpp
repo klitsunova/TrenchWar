@@ -19,6 +19,7 @@ NetworkView::NetworkView(QWidget* parent)
   SetStyles();
   SetUpLayouts();
   ConnectButtons();
+  setWindowModality(Qt::ApplicationModal);
   show();
 }
 

@@ -1,6 +1,7 @@
 #include "events_controller.h"
 
 #include "Network/network_view.h"
+#include "Models/Tools/settings.h"
 
 #include <QMessageBox>
 
@@ -80,6 +81,7 @@ void EventsController::HideGame() {
 }
 
 void EventsController::StartPreparationStage() {
+  emit HideMainMenu();
   network_view_->hide();
   network_controller_ = network_view_->GetNetworkController();
   world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
@@ -91,6 +93,7 @@ void EventsController::StartPreparationStage() {
   game_controller_ = std::make_unique<GameController>(this, world_);
   game_controller_->SetWorldObjects(network_view_->GetPlayerSide());
   ConnectUI();
+  view_->SetFullScreen(Settings::Instance()->IsFullScreen());
   view_->show();
 }
 
@@ -120,7 +123,9 @@ EventsController::Stage EventsController::GetGameStage() const {
 }
 
 void EventsController::SetFullScreen(bool is_fullscreen) {
-  view_->SetFullScreen(is_fullscreen);
+  if (view_) {
+    view_->SetFullScreen(is_fullscreen);
+  }
 }
 
 void EventsController::MapPressHandler(QMouseEvent* event) {

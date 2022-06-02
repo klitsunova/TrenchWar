@@ -48,6 +48,7 @@ class EventsController : public QWidget {
  signals:
   void ShowPauseMenu();
   void ReturnToMainMenu();
+  void HideMainMenu();
 
  private:
   static constexpr int kTimerInterval{30};
