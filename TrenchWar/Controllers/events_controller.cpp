@@ -23,8 +23,8 @@ void EventsController::timerEvent(QTimerEvent*) {
   world_->MakeShots();
   world_->MoveBullets();
   world_->FireTower();
-  world_->Update();
   view_->UpdateMap();
+  world_->Update();
 }
 
 void EventsController::StartTimer() {

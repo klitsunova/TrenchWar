@@ -76,8 +76,7 @@ class World {
   std::vector<std::shared_ptr<Bullet>> bullets_;
   std::vector<std::shared_ptr<Tower>> towers_;
   bool is_need_update_towers_{true};
-  int used_bullets_{0};
-  int used_soldiers_{0};
+  int dead_soldiers_{0};
 
   void LoadMap(const QString& path);
 
