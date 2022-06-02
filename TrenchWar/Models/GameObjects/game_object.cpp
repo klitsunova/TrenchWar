@@ -28,8 +28,8 @@ void GameObject::SetPosition(const QPoint& position) {
 
 void GameObject::SetRandomPosition(const QSize& size) {
   std::random_device rd;
-  std::uniform_int_distribution<int> width_distribution(0, size.width());
-  std::uniform_int_distribution<int> height_distribution(0, size.height());
+  std::uniform_int_distribution<int> width_distribution(0, size.width() - 1);
+  std::uniform_int_distribution<int> height_distribution(0, size.height() - 1);
   position_ = QPoint(width_distribution(rd),
                      height_distribution(rd));
 }

@@ -12,12 +12,12 @@ GameController::GameController(
 }
 
 void GameController::SetWorldObjects(Side side) {
-  for (int i = 0; i < 50; ++i) {
+  for (int i = 0; i < 500; ++i) {
     if (side == Side::kAttacker) {
       world_->AddSoldier(Side::kAttacker);
     } else {
       world_->AddSoldier(Side::kDefender);
-      if (i < 10) {
+      if (i < 30) {
         world_->AddTower();
       }
     }
