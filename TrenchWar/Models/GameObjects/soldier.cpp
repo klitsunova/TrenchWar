@@ -65,6 +65,11 @@ bool Soldier::IsDead() const {
   return hit_points_ <= 0;
 }
 
+
 void Soldier::SetHitPoints(int hit_points) {
-  hit_points_ =  hit_points;
+  hit_points_ = hit_points;
+}
+
+int Soldier::GetTowerDamage() const {
+  return weapons::kTowerDamage;
 }

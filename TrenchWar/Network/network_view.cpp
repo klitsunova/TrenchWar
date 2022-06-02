@@ -167,6 +167,7 @@ void NetworkView::PrepareForStart() {
       return;
     }
   }
+  network_controller_->SetStarted(true);
   network_controller_->SendStartSignal();
   SetUpAndStartGame();
 }

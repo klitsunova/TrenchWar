@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <memory>
 #include <vector>
 
@@ -25,6 +26,8 @@ class GameController : public QWidget {
   void UpdateAttackers(const GameData& data);
   GameData GetAttackersData();
   GameData GetDefendersData();
+
+  void SetWeaponsParameters();
 
  signals:
   void Exit();

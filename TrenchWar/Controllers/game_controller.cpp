@@ -18,7 +18,7 @@ void GameController::SetWorldObjects(Side side) {
     } else {
       world_->AddSoldier(Side::kDefender);
       if (i < 10) {
-        world_->AddTerrainObject();
+        world_->AddTower();
       }
     }
   }
@@ -37,7 +37,7 @@ void GameController::UpdateDefenders(const GameData& data) {
       world_->AddSoldier(position, Side::kDefender);
   }
   for (const auto& object: data.terrain_objects) {
-    world_->AddTerrainObject(QPoint(object.first, object.second));
+    world_->AddTower(QPoint(object.first, object.second));
   }
   for (const auto& trench: data.trenches) {
     world_->GetCell(QPoint(trench.first, trench.second)).is_trench = true;
@@ -66,7 +66,7 @@ GameData GameController::GetDefendersData() {
     new_data.soldiers.push_back(data);
   }
 
-  for (const auto& object: world_->GetTerrainObjects()) {
+  for (const auto& object: world_->GetTowers()) {
     new_data.terrain_objects.emplace_back(
         object->GetPosition().x(), object->GetPosition().y());
   }
@@ -80,4 +80,11 @@ GameData GameController::GetDefendersData() {
   }
 
   return new_data;
+}
+
+void GameController::SetWeaponsParameters() {
+  int k = std::min(world_->GetSize().width(), world_->GetSize().height());
+  // weapons::kBulletRadius = (k * 5) / 800;
+  //
+  // weapons::kRifleRange = (k * 3600) / 800;
 }

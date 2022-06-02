@@ -13,13 +13,13 @@
 #include <vector>
 
 #include "GameObjects/soldier.h"
-#include "GameObjects/terrain_object.h"
+#include "GameObjects/tower.h"
 #include "Models/GameObjects/bullet.h"
 #include "Tools/pixmap_loader.h"
 #include "helpers/sides.h"
 #include "helpers/sizes.h"
 
-    class World {
+class World {
  private:
   struct Cell;
 
@@ -29,7 +29,7 @@
   ~World() = default;
 
   const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
-  const std::vector<std::shared_ptr<TerrainObject>>& GetTerrainObjects() const;
+  const std::vector<std::shared_ptr<Tower>>& GetTowers() const;
   const std::vector<std::shared_ptr<Bullet>>& GetBullets() const;
 
   const QSize& GetSize() const;
@@ -43,14 +43,16 @@
 
   void AddSoldier(Side side);
   void AddSoldier(const QPoint& position, Side side);
-  void AddTerrainObject();
-  void AddTerrainObject(const QPoint& position);
+  void AddTower();
+  void AddTower(const QPoint& position);
   void AddBullet(const std::shared_ptr<Bullet>& bullet);
 
   void MoveSoldiers();
   void MoveBullets();
 
   void MakeShots();
+
+  void FireTower();
 
  private:
   struct Landscape {
@@ -60,7 +62,6 @@
   };
 
   struct Cell {
-    std::vector<std::shared_ptr<TerrainObject>> terrain_objects;
     Landscape landscape{Landscape(Qt::white, 0)};
     bool is_trench;
     std::set<std::shared_ptr<Soldier>> soldiers;
@@ -73,8 +74,10 @@
   std::vector<std::vector<Cell>> cells_;
   std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<Bullet>> bullets_;
-  std::vector<std::shared_ptr<TerrainObject>> terrain_objects_;
+  std::vector<std::shared_ptr<Tower>> towers_;
   bool is_need_update_towers_{true};
+  int used_bullets_{0};
+  int used_soldiers_{0};
 
   void LoadMap(const QString& path);
 
