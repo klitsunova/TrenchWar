@@ -44,7 +44,6 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with: 
-	modules: 'qtmultimedia
         version: "6.3.0"
 
     - name: Create Makefile
