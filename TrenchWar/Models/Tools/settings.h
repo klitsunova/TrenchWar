@@ -16,13 +16,6 @@ class Settings : public QObject {
   Settings(const Settings&) = delete;
   Settings& operator=(Settings&) = delete;
 
-  // static Settings* Instance() {
-  //   if (instance_ == nullptr) {
-  //     instance_ = new Settings();
-  //   }
-  //   return instance_;
-  // }
-
   static void SetMusicVolume(int volume);
   static int GetMusicVolume();
 
