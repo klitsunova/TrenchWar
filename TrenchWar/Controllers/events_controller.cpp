@@ -1,18 +1,22 @@
 #include "events_controller.h"
 
+#include "Network/network_view.h"
+#include "Models/Tools/settings.h"
+
+#include <QMessageBox>
+
 EventsController::EventsController(QWidget* parent) {
   setParent(parent);
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
-  view_ = std::make_unique<GameView>(this, world_);
-  trench_controller_ = std::make_unique<TrenchController>(this,
-                                                          world_,
-                                                          view_->GetMap());
-  timer_ = std::make_unique<QBasicTimer>();
-  game_controller_ = std::make_unique<GameController>(this, world_);
-  game_controller_->SetWorldObjects();
-  game_controller_->SetWeaponsParameters();
-  ConnectUI();
-  view_->show();
+  network_view_ = std::make_unique<NetworkView>(this);
+  network_view_->show();
+  connect(network_view_.get(),
+          &NetworkView::StartGame,
+          this,
+          &EventsController::StartPreparationStage);
+  connect(network_view_.get(),
+          &NetworkView::ReturnToMainMenu,
+          this,
+          &EventsController::ReturnToMainMenu);
 }
 
 void EventsController::timerEvent(QTimerEvent*) {
@@ -44,7 +48,11 @@ void EventsController::ConnectUI() {
   connect(view_.get(),
           &GameView::StartGame,
           this,
-          &EventsController::Start);
+          &EventsController::SetPreparedStatus);
+  connect(network_controller_.get(),
+          &NetworkController::GotSignalForActiveStage,
+          this,
+          &EventsController::StartActiveStage);
   connect(view_->GetStore(),
           &StoreView::BuildTrenchButtonPressed,
           this,
@@ -64,10 +72,46 @@ void EventsController::ConnectUI() {
 }
 
 void EventsController::HideGame() {
-  view_->hide();
+  if (network_view_) {
+    network_view_->hide();
+  }
+  if (view_) {
+    view_->hide();
+  }
 }
 
-void EventsController::Start() {
+void EventsController::StartPreparationStage() {
+  emit HideMainMenu();
+  network_view_->hide();
+  network_controller_ = network_view_->GetNetworkController();
+  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
+  view_ = std::make_unique<GameView>(this, world_);
+  trench_controller_ = std::make_unique<TrenchController>(this,
+                                                          world_,
+                                                          view_->GetMap());
+  timer_ = std::make_unique<QBasicTimer>();
+  game_controller_ = std::make_unique<GameController>(this, world_);
+  game_controller_->SetWorldObjects(network_view_->GetPlayerSide());
+  ConnectUI();
+  view_->SetFullScreen(Settings::Instance()->IsFullScreen());
+  view_->show();
+}
+
+void EventsController::SetPreparedStatus() {
+  if (network_view_->GetPlayerSide() == Side::kAttacker) {
+    network_controller_->SetAttackersData(game_controller_->GetAttackersData());
+  } else {
+    network_controller_->SetDefendersData(game_controller_->GetDefendersData());
+  }
+  network_controller_->SendData();
+}
+
+void EventsController::StartActiveStage() {
+  if (network_view_->GetPlayerSide() == Side::kAttacker) {
+    game_controller_->UpdateDefenders(network_controller_->GetDefendersData());
+  } else {
+    game_controller_->UpdateAttackers(network_controller_->GetAttackersData());
+  }
   DeleteTrench();
   view_->HideReadyButton();
   game_stage = Stage::kActive;
@@ -79,11 +123,14 @@ EventsController::Stage EventsController::GetGameStage() const {
 }
 
 void EventsController::SetFullScreen(bool is_fullscreen) {
-  view_->SetFullScreen(is_fullscreen);
+  if (view_) {
+    view_->SetFullScreen(is_fullscreen);
+  }
 }
 
 void EventsController::MapPressHandler(QMouseEvent* event) {
-  if (!trench_controller_->IsTrenchFixed()
+  if (network_view_->GetPlayerSide() == Side::kDefender
+      && !trench_controller_->IsTrenchFixed()
       && game_stage == Stage::kPreparation) {
     trench_controller_->SetMouseClicked(true);
     trench_controller_->SetFirstPoint(event->pos());
@@ -92,7 +139,8 @@ void EventsController::MapPressHandler(QMouseEvent* event) {
 }
 
 void EventsController::MapReleaseHandler(QMouseEvent* event) {
-  if (trench_controller_->IsTrenchFixed()
+  if (network_view_->GetPlayerSide() == Side::kAttacker
+      || trench_controller_->IsTrenchFixed()
       || game_stage != Stage::kPreparation) {
     return;
   }

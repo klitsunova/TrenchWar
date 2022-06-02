@@ -44,6 +44,7 @@ class World {
   void AddSoldier(Side side);
   void AddSoldier(const QPoint& position, Side side);
   void AddTower();
+  void AddTower(const QPoint& position);
   void AddBullet(const std::shared_ptr<Bullet>& bullet);
 
   void MoveSoldiers();
