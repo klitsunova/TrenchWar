@@ -9,6 +9,9 @@ MainController::MainController(QWidget* parent)
   ConnectUI();
 
   CreateAudioOutput();
+
+  music_player_->setSource(QUrl("qrc:Resources/Music/gameplay_sound_1.mp3"));
+  music_player_->play();
 }
 
 void MainController::ConnectUI() {
@@ -91,7 +94,6 @@ void MainController::ChangeScreenValue() {
 
 void MainController::CreateAudioOutput() {
   auto* audioOutput = new QAudioOutput(this);
-  // music_player_->setSource(QUrl("qrc:Resources/Music/gameplay_sound_1.mp3"));
   audioOutput->setVolume(Settings::GetMusicVolume() /
       static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
   music_player_->setAudioOutput(audioOutput);
