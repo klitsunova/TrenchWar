@@ -369,7 +369,11 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
       auto& container = cells_[i][j].soldiers;
       for (auto k = container.begin(); k != container.end(); k++) {
         if ((*k)->GetSide() == bullet->GetSide()) continue;
-        (*k)->TakeDamage(bullet->GetDamage());
+        int damage = bullet->GetDamage();
+        if (cells_[i][j].is_trench) {
+          damage = static_cast<int>(damage * weapons::kTrenchEffect);
+        }
+        (*k)->TakeDamage(damage);
         bullet->MakeUsed();
         if ((*k)->IsDead()) {
           cells_[i][j].soldiers.erase(k);
