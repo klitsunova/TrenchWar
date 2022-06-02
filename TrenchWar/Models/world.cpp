@@ -1,3 +1,4 @@
+#include <iostream>
 #include <random>
 #include <utility>
 
@@ -422,7 +423,6 @@ void World::TrenchUpdate() {
 }
 
 void World::FireTower() {
-  std::shared_ptr<Tower> temp = nullptr;
   for (int i = 0; i < towers_.size(); ++i) {
     auto& tower = towers_[i];
     Cell& cell = cells_[tower->GetPosition().y()][tower->GetPosition().x()];
@@ -431,7 +431,6 @@ void World::FireTower() {
     }
     if (tower->IsDestroyed()) {
       towers_.erase(towers_.begin() + i);
-      is_need_update_towers_ = true;
     }
   }
 }

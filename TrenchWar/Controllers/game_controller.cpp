@@ -11,11 +11,13 @@ GameController::GameController(
 
 void GameController::SetWorldObjects() {
   // temporary code
-  for (int i = 0; i < 400; ++i) {
-    world_->AddSoldier(Side::kAttacker);
+  for (int i = 0; i < 50; ++i) {
     world_->AddSoldier(Side::kAttacker);
     world_->AddSoldier(Side::kDefender);
   }
+  world_->AddTower();
+  world_->AddTower();
+  world_->AddTower();
 }
 void GameController::SetWeaponsParameters() {
   int k = std::min(world_->GetSize().width(), world_->GetSize().height());
