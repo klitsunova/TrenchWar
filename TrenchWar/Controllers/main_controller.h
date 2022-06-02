@@ -2,7 +2,6 @@
 
 #include <QAudioOutput>
 #include <QScreen>
-#include <QSoundEffect>
 #include <QMediaPlayer>
 #include <QWidget>
 
