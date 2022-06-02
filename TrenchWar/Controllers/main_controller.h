@@ -11,7 +11,7 @@
 #include "Models/Tools/settings.h"
 
 class MainController : public QWidget {
-  Q_OBJECT
+ Q_OBJECT
 
  public:
   explicit MainController(QWidget* parent = nullptr);
@@ -28,7 +28,7 @@ class MainController : public QWidget {
  private:
   void ConnectUI();
   void ConnectEventsControllerUI();
-  
+
   void CreateAudioOutput();
 
   MenuController* menu_controller_;
