@@ -77,14 +77,14 @@ void World::Update() {
     UpdateGroundDistances();
   }
   is_need_update_towers_ = false;
-  if (used_soldiers_ * 2 > soldiers_.size()) {
+  if (dead_soldiers_ * 2 > soldiers_.size()) {
     std::sort(soldiers_.begin(), soldiers_.end(),
               [&](std::shared_ptr<Soldier> soldier1,
                   std::shared_ptr<Soldier> soldier2) {
                 return soldier1->GetHitPoints() > soldier2->GetHitPoints();
               });
-    soldiers_.resize(soldiers_.size() - used_soldiers_);
-    used_soldiers_ = 0;
+    soldiers_.resize(soldiers_.size() - dead_soldiers_);
+    dead_soldiers_ = 0;
   }
 }
 
@@ -368,7 +368,7 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
         bullet->MakeUsed();
         if ((*k)->IsDead()) {
           cells_[i][j].soldiers.erase(k);
-          ++used_soldiers_;
+          ++dead_soldiers_;
         }
         return;
       }
