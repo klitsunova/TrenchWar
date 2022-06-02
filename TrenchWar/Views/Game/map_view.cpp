@@ -74,7 +74,7 @@ void MapView::paintEvent(QPaintEvent*) {
   const std::vector<std::shared_ptr<Bullet>>& bullets =
       world_->GetBullets();
   for (const auto& bullet : bullets) {
-    if (bullet->IsUsed()) continue;
+    assert(!bullet->IsUsed());
     DrawObject(&painter, bullet->GetPosition(),
                bullet->GetSize(), bullet->GetPixmap());
   }
