@@ -3,8 +3,8 @@
 
 #include "world.h"
 
-World::World(const QString& path) {
-  LoadMap(path);
+World::World(const QString& path, Mode mode) {
+  LoadMap(path, mode);
   picture_ = DrawWorld();
 }
 
@@ -213,7 +213,7 @@ void World::MoveSoldiers() {
   }
 }
 
-void World::LoadMap(const QString& path) {
+void World::LoadMap(const QString& path, Mode mode) {
   QFile file(path);
 
   if (!file.open(QIODevice::ReadOnly)) {
@@ -245,6 +245,12 @@ void World::LoadMap(const QString& path) {
                                          color_and_value[color_index].second);
     }
   }
+
+  if (mode == Mode::kNetwork) {
+    file.close();
+    return;
+  }
+
 
   file.close();
 }

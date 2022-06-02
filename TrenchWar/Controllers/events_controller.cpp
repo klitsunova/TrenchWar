@@ -1,22 +1,30 @@
 #include "events_controller.h"
 
-#include "Network/network_view.h"
+#include <random>
+
 #include "Models/Tools/settings.h"
+#include "Network/network_view.h"
 
 #include <QMessageBox>
 
-EventsController::EventsController(QWidget* parent) {
+EventsController::EventsController(QWidget* parent, Mode mode) : mode_(mode) {
   setParent(parent);
-  network_view_ = std::make_unique<NetworkView>(this);
-  network_view_->show();
-  connect(network_view_.get(),
-          &NetworkView::StartGame,
-          this,
-          &EventsController::StartPreparationStage);
-  connect(network_view_.get(),
-          &NetworkView::ReturnToMainMenu,
-          this,
-          &EventsController::ReturnToMainMenu);
+  if (mode_ == Mode::kNetwork) {
+    network_view_ = std::make_unique<NetworkView>(this);
+    network_view_->show();
+    connect(network_view_.get(),
+            &NetworkView::StartGame,
+            this,
+            &EventsController::StartPreparationStage);
+    connect(network_view_.get(),
+            &NetworkView::ReturnToMainMenu,
+            this,
+            &EventsController::ReturnToMainMenu);
+  }
+  else {
+    player_side_ = static_cast<Side>(std::rand() % 2);
+    StartPreparationStage();
+  }
 }
 
 void EventsController::timerEvent(QTimerEvent*) {
@@ -49,10 +57,6 @@ void EventsController::ConnectUI() {
           &GameView::StartGame,
           this,
           &EventsController::SetPreparedStatus);
-  connect(network_controller_.get(),
-          &NetworkController::GotSignalForActiveStage,
-          this,
-          &EventsController::StartActiveStage);
   connect(view_->GetStore(),
           &StoreView::BuildTrenchButtonPressed,
           this,
@@ -82,23 +86,37 @@ void EventsController::HideGame() {
 
 void EventsController::StartPreparationStage() {
   emit HideMainMenu();
-  network_view_->hide();
-  network_controller_ = network_view_->GetNetworkController();
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
+  world_ = std::make_shared<World>(":Resources/Maps/map2.txt", mode_);
   view_ = std::make_unique<GameView>(this, world_);
   trench_controller_ = std::make_unique<TrenchController>(this,
                                                           world_,
                                                           view_->GetMap());
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
-  game_controller_->SetWorldObjects(network_view_->GetPlayerSide());
+
+  if (mode_ == Mode::kNetwork) {
+    network_view_->hide();
+    network_controller_ = network_view_->GetNetworkController();
+    player_side_ = network_view_->GetPlayerSide();
+    connect(network_controller_.get(),
+            &NetworkController::GotSignalForActiveStage,
+            this,
+            &EventsController::StartActiveStage);
+  }
+  // temporary code
+  game_controller_->SetWorldObjects(player_side_);
+
   ConnectUI();
   view_->SetFullScreen(Settings::Instance()->IsFullScreen());
   view_->show();
 }
 
 void EventsController::SetPreparedStatus() {
-  if (network_view_->GetPlayerSide() == Side::kAttacker) {
+  if (mode_ == Mode::kBot) {
+    StartActiveStage();
+    return;
+  }
+  if (player_side_ == Side::kAttacker) {
     network_controller_->SetAttackersData(game_controller_->GetAttackersData());
   } else {
     network_controller_->SetDefendersData(game_controller_->GetDefendersData());
@@ -107,10 +125,14 @@ void EventsController::SetPreparedStatus() {
 }
 
 void EventsController::StartActiveStage() {
-  if (network_view_->GetPlayerSide() == Side::kAttacker) {
-    game_controller_->UpdateDefenders(network_controller_->GetDefendersData());
+  if (mode_ == Mode::kNetwork) {
+    if (player_side_ == Side::kAttacker) {
+      game_controller_->UpdateDefenders(network_controller_->GetDefendersData());
+    } else {
+      game_controller_->UpdateAttackers(network_controller_->GetAttackersData());
+    }
   } else {
-    game_controller_->UpdateAttackers(network_controller_->GetAttackersData());
+    // TODO : add soldiers and towers from file
   }
   DeleteTrench();
   view_->HideReadyButton();
@@ -129,7 +151,7 @@ void EventsController::SetFullScreen(bool is_fullscreen) {
 }
 
 void EventsController::MapPressHandler(QMouseEvent* event) {
-  if (network_view_->GetPlayerSide() == Side::kDefender
+  if (player_side_ == Side::kDefender
       && !trench_controller_->IsTrenchFixed()
       && game_stage == Stage::kPreparation) {
     trench_controller_->SetMouseClicked(true);
@@ -139,7 +161,7 @@ void EventsController::MapPressHandler(QMouseEvent* event) {
 }
 
 void EventsController::MapReleaseHandler(QMouseEvent* event) {
-  if (network_view_->GetPlayerSide() == Side::kAttacker
+  if (player_side_ == Side::kAttacker
       || trench_controller_->IsTrenchFixed()
       || game_stage != Stage::kPreparation) {
     return;
@@ -166,7 +188,7 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
 }
 
 void EventsController::BuildTrench() {
-  for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
+  for (const auto& changed_cell: trench_controller_->GetChangedCells()) {
     world_->GetCell(changed_cell.first).is_trench = true;
   }
   trench_controller_->ClearChangedCells();

@@ -3,7 +3,8 @@
 MenuView::MenuView(
     QWidget* parent) : layout_(new QVBoxLayout(this)),
                        title_label_(new QLabel(this)),
-                       start_button_(new QPushButton("Start", this)),
+                       start_network_button_(new QPushButton("Network game", this)),
+                       start_bot_button_(new QPushButton("Bot game", this)),
                        settings_button_(new QPushButton("Settings", this)),
                        exit_button_(new QPushButton("Exit", this)),
                        background_(PixmapLoader::GetMenuBackground()),
@@ -34,16 +35,21 @@ void MenuView::SetLayout() {
   layout_->setSpacing(interval_sizes::kSpacing);
   layout_->addWidget(title_label_, 1, Qt::AlignLeft);
   layout_->addStretch(interval_sizes::kStretch);
-  layout_->addWidget(start_button_, 1, Qt::AlignRight);
+  layout_->addWidget(start_network_button_, 1, Qt::AlignRight);
+  layout_->addWidget(start_bot_button_, 1, Qt::AlignRight);
   layout_->addWidget(settings_button_, 1, Qt::AlignRight);
   layout_->addWidget(exit_button_, 1, Qt::AlignRight);
 }
 
 void MenuView::ConnectUI() {
-  connect(start_button_,
+  connect(start_network_button_,
           &QPushButton::clicked,
           this,
-          &MenuView::StartButtonPressed);
+          &MenuView::StartNetworkPressed);
+  connect(start_bot_button_,
+          &QPushButton::clicked,
+          this,
+          &MenuView::StartBotPressed);
   connect(settings_button_,
           &QPushButton::clicked,
           this,

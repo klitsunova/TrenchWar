@@ -16,7 +16,7 @@
 #include "GameObjects/tower.h"
 #include "Models/GameObjects/bullet.h"
 #include "Tools/pixmap_loader.h"
-#include "helpers/sides.h"
+#include "helpers/enum_helpers.h"
 #include "helpers/sizes.h"
 
 class World {
@@ -24,7 +24,7 @@ class World {
   struct Cell;
 
  public:
-  explicit World(const QString& path);
+  explicit World(const QString& path, Mode mode);
 
   ~World() = default;
 
@@ -78,7 +78,7 @@ class World {
   bool is_need_update_towers_{true};
   int dead_soldiers_{0};
 
-  void LoadMap(const QString& path);
+  void LoadMap(const QString& path, Mode mode);
 
   QPixmap DrawWorld() const;
 

@@ -31,7 +31,8 @@ class MenuController : public QWidget {
   void HideExitWindow();
 
  signals:
-  void StartGame();
+  void StartNetworkGame();
+  void StartBotGame();
   void ResumeGame();
   void BackToMenu();
   void Exit();
