@@ -23,6 +23,8 @@ class Bullet : public GameObject {
 
   int GetDamage() const;
 
+  int GetProgress() const;
+
   Side GetSide() const;
 
   void Move();

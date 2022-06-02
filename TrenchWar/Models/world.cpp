@@ -6,7 +6,6 @@
 World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
-  AddTower();
 }
 
 void World::AddSoldier(Side side) {
@@ -31,6 +30,12 @@ void World::AddSoldier(const QPoint& position, Side side) {
 void World::AddTower() {
   auto new_object = std::make_shared<Tower>();
   new_object->SetRandomPosition(size_);
+  towers_.push_back(new_object);
+}
+
+void World::AddTower(const QPoint& position) {
+  auto new_object = std::make_shared<Tower>();
+  new_object->SetPosition(position);
   towers_.push_back(new_object);
 }
 
@@ -299,7 +304,7 @@ void World::UpdateGroundDistances() {
           return;
         }
         if (cells_[y][x].ground_distance > dist
-            + cells_[y][x].landscape.move_lag) {
+                + cells_[y][x].landscape.move_lag) {
           cells_[y][x].ground_distance = dist + cells_[y][x].landscape.move_lag;
           latest_at_ground.push(std::make_pair(x, y));
         }

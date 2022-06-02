@@ -35,10 +35,8 @@ void MainController::ConnectUI() {
 }
 
 void MainController::StartGame() {
-  menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
   events_controller_ = new EventsController(this);
-  events_controller_->SetFullScreen(Settings::Instance()->IsFullScreen());
   ConnectEventsControllerUI();
 }
 
@@ -68,12 +66,19 @@ void MainController::ConnectEventsControllerUI() {
           &EventsController::ShowPauseMenu,
           this,
           &MainController::PauseGame);
+  connect(events_controller_,
+          &EventsController::ReturnToMainMenu,
+          this,
+          &MainController::ReturnToMenu);
+  connect(events_controller_,
+          &EventsController::HideMainMenu,
+          menu_controller_,
+          &MenuController::HideMenu);
 }
 
 void MainController::Exit() {
   QApplication::exit(0);
 }
-
 
 // TODO(Zolokinos)
 void MainController::ChangeMusic() {}
