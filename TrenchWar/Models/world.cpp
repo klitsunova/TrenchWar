@@ -6,9 +6,7 @@
 World::World(const QString& path) {
   LoadMap(path);
   picture_ = DrawWorld();
-  for (int i = 0; i < 100; ++i) {
-    AddTower();
-  }
+  AddTower();
 }
 
 void World::AddSoldier(Side side) {
