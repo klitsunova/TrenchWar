@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.21)
 project(TrenchWar)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -15,6 +15,7 @@ find_package(Qt6 COMPONENTS
         Core
         Gui
         Widgets
+        Multimedia
         REQUIRED)
 
 set(MODELS
@@ -60,4 +61,5 @@ target_link_libraries(TrenchWar
         Qt::Core
         Qt::Gui
         Qt::Widgets
+        Qt::Multimedia
         )

@@ -12,28 +12,27 @@ class Settings : public QObject {
   static constexpr int kStartVolume = 50;
   static constexpr bool kFullScreen = true;
 
+  Settings() = delete;
   Settings(const Settings&) = delete;
   Settings& operator=(Settings&) = delete;
 
-  static Settings* Instance() {
-    if (instance_ == nullptr) {
-      instance_ = new Settings();
-    }
-    return instance_;
-  }
+  // static Settings* Instance() {
+  //   if (instance_ == nullptr) {
+  //     instance_ = new Settings();
+  //   }
+  //   return instance_;
+  // }
 
-  void SetMusicVolume(int volume);
-  int GetMusicVolume();
+  static void SetMusicVolume(int volume);
+  static int GetMusicVolume();
 
-  void SetEffectsVolume(int volume);
-  int GetEffectsVolume();
+  static void SetEffectsVolume(int volume);
+  static int GetEffectsVolume();
 
-  void SetFullScreenValue(bool IsFullScreen);
-  bool IsFullScreen();
+  static void SetFullScreenValue(bool IsFullScreen);
+  static bool IsFullScreen();
+
+  static void SetStandardSettings();
 
  private:
-  Settings();
-  static Settings* instance_;
-
-  QSettings settings_{};
 };

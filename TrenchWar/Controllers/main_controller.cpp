@@ -2,9 +2,13 @@
 
 MainController::MainController(QWidget* parent)
     : QWidget(parent),
-      menu_controller_(new MenuController(this)),
-      settings_(Settings::Instance()) {
+      music_player_(new QMediaPlayer(this)) {
+  Settings::SetStandardSettings();
+  menu_controller_ = new MenuController(this);
+
   ConnectUI();
+
+  CreateAudioOutput();
 }
 
 void MainController::ConnectUI() {
@@ -27,7 +31,7 @@ void MainController::ConnectUI() {
   connect(menu_controller_,
           &MenuController::MusicVolumeChanged,
           this,
-          &MainController::ChangeMusic);
+          &MainController::ChangeMusicVolume);
   connect(menu_controller_,
           &MenuController::FullScreenValueChanged,
           this,
@@ -38,7 +42,7 @@ void MainController::StartGame() {
   menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
   events_controller_ = new EventsController(this);
-  events_controller_->SetFullScreen(Settings::Instance()->IsFullScreen());
+  events_controller_->SetFullScreen(Settings::IsFullScreen());
   ConnectEventsControllerUI();
 }
 
@@ -74,12 +78,23 @@ void MainController::Exit() {
   QApplication::exit(0);
 }
 
-
-// TODO(Zolokinos)
-void MainController::ChangeMusic() {}
+void MainController::ChangeMusicVolume() {
+  music_player_->audioOutput()->setVolume(Settings::GetMusicVolume() /
+      static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
+}
 
 void MainController::ChangeScreenValue() {
   if (events_controller_ != nullptr) {
-    events_controller_->SetFullScreen(settings_->IsFullScreen());
+    events_controller_->SetFullScreen(Settings::IsFullScreen());
   }
+}
+
+void MainController::CreateAudioOutput() {
+  auto* audioOutput = new QAudioOutput(this);
+  // music_player_->setSource(QUrl("qrc:Resources/Music/gameplay_sound_1.mp3"));
+  audioOutput->setVolume(Settings::GetMusicVolume() /
+      static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
+  music_player_->setAudioOutput(audioOutput);
+  music_player_->setLoops(QMediaPlayer::Infinite);
+  music_player_->play();
 }
