@@ -1,5 +1,5 @@
-#include <iostream>
 #include "events_controller.h"
+#include <iostream>
 
 #include <random>
 
@@ -122,7 +122,10 @@ void EventsController::StartPreparationStage() {
             this,
             &EventsController::StartActiveStage);
   }
-
+  QString side = (player_side_ == Side::kAttacker)
+      ? "attacker"
+      : "defender";
+  view_->SetStoreSideLabel("You are " + side);
   ConnectUI();
   view_->SetFullScreen(Settings::IsFullScreen());
   view_->show();
@@ -155,8 +158,8 @@ void EventsController::StartActiveStage() {
     }
   } else {
     Side bot_side = (player_side_ == Side::kAttacker)
-                    ? Side::kDefender
-                    : Side::kAttacker;
+        ? Side::kDefender
+        : Side::kAttacker;
     world_->LoadBotData(bot_side);
   }
   CancelPurchase(buy_mode_);
@@ -245,7 +248,7 @@ void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
   switch (mode) {
     case BuyMode::kTrench: {
       if ((view_->GetStore()->SpendMoney(name))) {
-        for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
+        for (const auto& changed_cell: trench_controller_->GetChangedCells()) {
           world_->GetCell(changed_cell.first).is_trench = true;
         }
         trench_controller_->ClearChangedCells();
@@ -264,12 +267,10 @@ void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
         int window_height = view_->GetMap()->geometry().height() - 1;
 
         QPoint game_point;
-        game_point.setX(world_->GetSize().width() * (location.x()
-            - view_->GetMap()->mapToGlobal(QPoint(0, 0)).x())
-                            / window_width);
-        game_point.setY(world_->GetSize().height() * (location.y()
-            - view_->GetMap()->mapToGlobal(QPoint(0, 0)).y())
-                            / window_height);
+        game_point.setX(world_->GetSize().width() * (location.x() - view_->GetMap()->mapToGlobal(QPoint(0, 0)).x())
+                        / window_width);
+        game_point.setY(world_->GetSize().height() * (location.y() - view_->GetMap()->mapToGlobal(QPoint(0, 0)).y())
+                        / window_height);
 
         world_->AddSoldier(game_point, player_side_);
         world_->Update();
@@ -326,13 +327,11 @@ void EventsController::CheckGameEnding() {
     game_finish_window_->Show(GameFinishWindow::States::kDraw);
   }
 
-  if ((attackers == 0 && player_side_ == Side::kDefender) ||
-      (towers == 0 && player_side_ == Side::kAttacker)) {
+  if ((attackers == 0 && player_side_ == Side::kDefender) || (towers == 0 && player_side_ == Side::kAttacker)) {
     game_finish_window_->Show(GameFinishWindow::States::kWin);
   }
 
-  if ((attackers == 0 && player_side_ == Side::kAttacker) ||
-      (towers == 0 && player_side_ == Side::kDefender)) {
+  if ((attackers == 0 && player_side_ == Side::kAttacker) || (towers == 0 && player_side_ == Side::kDefender)) {
     game_finish_window_->Show(GameFinishWindow::States::kLose);
   }
 }

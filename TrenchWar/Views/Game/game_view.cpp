@@ -90,3 +90,7 @@ StoreView* GameView::GetStore() const {
 void GameView::SetStoreDialog(QMouseEvent* event) {
   map_->SetStoreDialog(event);
 }
+
+void GameView::SetStoreSideLabel(const QString& value) {
+  store_->SetSideLabel(value);
+}
