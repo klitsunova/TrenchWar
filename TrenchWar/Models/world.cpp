@@ -317,7 +317,7 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& object: towers_) {
+  for (auto& object : towers_) {
     int x = object->GetPosition().x();
     int y = object->GetPosition().y();
     cells_[y][x].ground_distance = 0;
@@ -435,7 +435,8 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
     if (soldiers_[i]->IsDead()) continue;
     if (soldiers_[i]->GetSide() == soldier->GetSide()) continue;
     to = soldiers_[i]->GetPosition();
-    new_dist = (from.x() - to.x()) * (from.x() - to.x()) + (from.y() - to.y()) * (from.y() - to.y());
+    new_dist = (from.x() - to.x()) * (from.x() - to.x())
+        + (from.y() - to.y()) * (from.y() - to.y());
     if (new_dist < dist) {
       dist = new_dist;
       nearest_index = i;
@@ -455,7 +456,7 @@ void World::FireTower() {
   for (int i = 0; i < towers_.size(); ++i) {
     auto& tower = towers_[i];
     Cell& cell = cells_[tower->GetPosition().y()][tower->GetPosition().x()];
-    for (const auto& soldier: cell.soldiers) {
+    for (const auto& soldier : cell.soldiers) {
       tower->TakeDamage(soldier->GetTowerDamage());
     }
     if (tower->IsDestroyed()) {
@@ -470,12 +471,12 @@ void World::FireTower() {
 
 void World::LoadBotData(Side side) {
   if (!bot_tower_buffer_.empty()) {
-    for (const auto& point: bot_tower_buffer_) {
+    for (const auto& point : bot_tower_buffer_) {
       AddTower(point);
     }
   }
   if (!bot_soldier_buffer_.empty()) {
-    for (const auto& point: bot_soldier_buffer_) {
+    for (const auto& point : bot_soldier_buffer_) {
       AddSoldier(point, side);
     }
   }

@@ -25,7 +25,8 @@ class EventsController : public QWidget {
     kActive,
   };
 
-  explicit EventsController(QWidget* parent = nullptr, Mode mode = Mode::kNetwork);
+  explicit EventsController(QWidget* parent = nullptr,
+                            Mode mode = Mode::kNetwork);
   ~EventsController() override = default;
 
   void StartPreparationStage();

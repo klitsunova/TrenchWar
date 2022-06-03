@@ -85,7 +85,9 @@ void EventsController::HideGame() {
 
 void EventsController::StartPreparationStage() {
   emit HideMainMenu();
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt", mode_, player_side_);
+  world_ = std::make_shared<World>(":Resources/Maps/map2.txt",
+                                   mode_,
+                                   player_side_);
   view_ = std::make_unique<GameView>(this, world_);
   trench_controller_ = std::make_unique<TrenchController>(this,
                                                           world_,
@@ -126,9 +128,11 @@ void EventsController::SetPreparedStatus() {
 void EventsController::StartActiveStage() {
   if (mode_ == Mode::kNetwork) {
     if (player_side_ == Side::kAttacker) {
-      game_controller_->UpdateDefenders(network_controller_->GetDefendersData());
+      game_controller_->UpdateDefenders(
+          network_controller_->GetDefendersData());
     } else {
-      game_controller_->UpdateAttackers(network_controller_->GetAttackersData());
+      game_controller_->UpdateAttackers(
+          network_controller_->GetAttackersData());
     }
   } else {
     Side bot_side = (player_side_ == Side::kAttacker)
@@ -190,7 +194,7 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
 }
 
 void EventsController::BuildTrench() {
-  for (const auto& changed_cell: trench_controller_->GetChangedCells()) {
+  for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
     world_->GetCell(changed_cell.first).is_trench = true;
   }
   trench_controller_->ClearChangedCells();

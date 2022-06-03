@@ -3,7 +3,8 @@
 MenuView::MenuView(
     QWidget* parent) : layout_(new QVBoxLayout(this)),
                        title_label_(new QLabel(this)),
-                       start_network_button_(new QPushButton("Network game", this)),
+                       start_network_button_(new QPushButton("Network game",
+                                                             this)),
                        start_bot_button_(new QPushButton("Bot game", this)),
                        settings_button_(new QPushButton("Settings", this)),
                        exit_button_(new QPushButton("Exit", this)),
