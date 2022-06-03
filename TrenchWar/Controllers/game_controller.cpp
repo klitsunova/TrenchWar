@@ -17,9 +17,6 @@ void GameController::SetWorldObjects(Side side) {
       world_->AddSoldier(Side::kAttacker);
     } else {
       world_->AddSoldier(Side::kDefender);
-      if (i < 3) {
-        world_->AddTower();
-      }
     }
   }
 }
@@ -35,9 +32,6 @@ void GameController::UpdateDefenders(const GameData& data) {
   for (size_t i = 0; i < data.soldiers.size(); ++i) {
     QPoint position = QPoint(data.soldiers[i].x, data.soldiers[i].y);
       world_->AddSoldier(position, Side::kDefender);
-  }
-  for (const auto& object : data.terrain_objects) {
-    world_->AddTower(QPoint(object.first, object.second));
   }
   for (const auto& trench : data.trenches) {
     world_->GetCell(QPoint(trench.first, trench.second)).is_trench = true;
@@ -64,11 +58,6 @@ GameData GameController::GetDefendersData() {
                      soldier->GetPosition().y(),
                      soldier->GetHitPoints()};
     new_data.soldiers.push_back(data);
-  }
-
-  for (const auto& object : world_->GetTowers()) {
-    new_data.terrain_objects.emplace_back(
-        object->GetPosition().x(), object->GetPosition().y());
   }
 
   for (int i = 0; i < world_->GetSize().width(); ++i) {
