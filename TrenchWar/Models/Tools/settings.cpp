@@ -41,7 +41,6 @@ bool Settings::IsFullScreen() {
 }
 
 void Settings::SetStandardSettings() {
-  // TODO(AZYAVCHIKOV): maybe not best settings
   SetMusicVolume(50);
   SetFullScreenValue(false);
   SetEffectsVolume(50);

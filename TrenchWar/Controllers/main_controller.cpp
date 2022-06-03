@@ -4,7 +4,6 @@
 MainController::MainController(QWidget* parent)
     : QWidget(parent),
       music_player_(new QMediaPlayer(this)) {
-  Settings::SetStandardSettings();
   menu_controller_ = new MenuController(this);
 
   ConnectUI();

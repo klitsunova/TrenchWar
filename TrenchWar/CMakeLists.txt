@@ -73,7 +73,7 @@ set(LIBRARIES
         Qt::Core
         Qt::Gui
         Qt::Widgets
-        Qt::Multimedia
+        Qt6::Multimedia
         Qt6::Network
         )
 
