@@ -36,9 +36,9 @@ void MapView::DrawObject(QPainter* painter, const QPoint& pos,
   int window_height = painter->window().height() - 1;
   QPoint screen_point;
   screen_point.setX((window_width * (2 * pos.x() + 1))
-                        / (2 * world_->GetSize().width()));
+                    / (2 * world_->GetSize().width()));
   screen_point.setY((window_height * (2 * pos.y() + 1))
-                        / (2 * world_->GetSize().height()));
+                    / (2 * world_->GetSize().height()));
 
   QPoint top_point = QPoint(screen_point.x() - size.width() / 2,
                             screen_point.y() - size.height() / 2);
@@ -62,14 +62,14 @@ void MapView::paintEvent(QPaintEvent*) {
   painter.drawPixmap(QRect(0, 0,
                            window_width + 1, window_height + 1),
                      world_->GetPixmap());
-  for (const auto& object : towers) {
+  for (const auto& object: towers) {
     DrawObject(&painter, object->GetPosition(),
                object->GetSize(), object->GetPixmap());
   }
 
   const std::vector<std::shared_ptr<Soldier>>& soldiers =
       world_->GetSoldiers();
-  for (const auto& soldier : soldiers) {
+  for (const auto& soldier: soldiers) {
     if (soldier->IsDead()) continue;
     DrawObject(&painter, soldier->GetPosition(),
                soldier->GetSize(), soldier->GetPixmap());
@@ -77,7 +77,7 @@ void MapView::paintEvent(QPaintEvent*) {
 
   const std::vector<std::shared_ptr<Bullet>>& bullets =
       world_->GetBullets();
-  for (const auto& bullet : bullets) {
+  for (const auto& bullet: bullets) {
     assert(!bullet->IsUsed());
     DrawObject(&painter, bullet->GetPosition(),
                bullet->GetSize(), bullet->GetPixmap());
@@ -114,13 +114,11 @@ void MapView::ConnectUI() {
   connect(buy_window_,
           &BuyWindow::ConfirmButtonPressed,
           this,
-          &MapView::ConfirmButtonPressed
-          );
+          &MapView::ConfirmButtonPressed);
   connect(buy_window_,
           &BuyWindow::CancelButtonPressed,
           this,
-          &MapView::CancelButtonPressed
-          );
+          &MapView::CancelButtonPressed);
 }
 
 BuyWindow* MapView::GetBuyWindow() {

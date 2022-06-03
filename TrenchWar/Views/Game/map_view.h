@@ -27,7 +27,7 @@ class MapView : public QWidget {
 
   void paintEvent(QPaintEvent* event) override;
 
-  void mousePressEvent(QMouseEvent *event) override;
+  void mousePressEvent(QMouseEvent* event) override;
   void mouseReleaseEvent(QMouseEvent* event) override;
   void mouseDoubleClickEvent(QMouseEvent* event) override;
 

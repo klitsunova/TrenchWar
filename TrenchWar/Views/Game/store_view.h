@@ -2,16 +2,15 @@
 
 #include <vector>
 
-#include <QWidget>
 #include <QHBoxLayout>
-#include <QPushButton>
 #include <QLabel>
+#include <QPushButton>
 #include <QWidget>
 
-#include "helpers/enum_helpers.h"
-#include "helpers/store.h"
 #include "Models/Tools/pixmap_loader.h"
 #include "Models/world.h"
+#include "helpers/enum_helpers.h"
+#include "helpers/store.h"
 
 class StoreView : public QWidget {
   Q_OBJECT

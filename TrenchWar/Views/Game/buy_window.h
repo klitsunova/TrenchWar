@@ -7,8 +7,8 @@
 #include <QTextEdit>
 #include <map>
 
-#include "helpers/store.h"
 #include "helpers/enum_helpers.h"
+#include "helpers/store.h"
 
 class BuyWindow : public QDialog {
   Q_OBJECT
@@ -22,7 +22,7 @@ class BuyWindow : public QDialog {
   void SetWindowLocation(QPoint point);
   QPoint GetLocation();
 
-  signals:
+ signals:
   void ConfirmButtonPressed(BuyMode mode, QString name);
   void CancelButtonPressed(BuyMode mode, QString name = "");
 
@@ -31,7 +31,7 @@ class BuyWindow : public QDialog {
   void SetList();
   void SetLayout();
   void ConnectUI();
-  void ChangeCost(QListWidgetItem *item);
+  void ChangeCost(QListWidgetItem* item);
   struct Data {
     QString filename;
     QString name;

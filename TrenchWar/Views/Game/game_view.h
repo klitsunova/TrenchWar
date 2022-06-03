@@ -8,10 +8,10 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "helpers/enum_helpers.h"
 #include "Models/world.h"
 #include "Views/Game/map_view.h"
 #include "Views/Game/store_view.h"
+#include "helpers/enum_helpers.h"
 
 class GameView : public QWidget {
   Q_OBJECT
@@ -39,7 +39,6 @@ class GameView : public QWidget {
   void Close();
   void ConfirmButtonPressed(BuyMode mode, QString name = "");
   void CancelButtonPressed(BuyMode mode, QString name = "");
-
 
  private:
   void ConnectUI();
