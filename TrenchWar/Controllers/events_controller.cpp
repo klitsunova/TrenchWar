@@ -7,11 +7,10 @@
 #include "Models/Tools/settings.h"
 #include "Network/network_view.h"
 
-EventsController::EventsController(QWidget* parent, Mode mode) : mode_(mode),
-                                                                 game_finish_window_(
-                                                                     new GameFinishWindow()),
-                                                                 player_(new QMediaPlayer(
-                                                                     this)) {
+EventsController::EventsController(QWidget* parent, Mode mode)
+    : mode_(mode),
+      game_finish_window_(new GameFinishWindow()),
+      player_(new QMediaPlayer(this)) {
   setParent(parent);
   std::random_device rd;
   std::uniform_int_distribution<int> distribution(0, 1);
@@ -104,9 +103,8 @@ void EventsController::StartPreparationStage() {
                                    mode_,
                                    player_side_);
   view_ = std::make_unique<GameView>(this, world_);
-  trench_controller_ = std::make_unique<TrenchController>(this,
-                                                          world_,
-                                                          view_->GetMap());
+  trench_controller_ =
+      std::make_unique<TrenchController>(this, world_, view_->GetMap());
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
 
