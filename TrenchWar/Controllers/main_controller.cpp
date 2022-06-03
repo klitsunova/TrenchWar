@@ -81,10 +81,6 @@ void MainController::ConnectEventsControllerUI() {
           &EventsController::HideMainMenu,
           menu_controller_,
           &MenuController::HideMenu);
-  connect(events_controller_,
-          &EventsController::Shot,
-          this,
-          &MainController::MakeShotSound);
 }
 
 void MainController::Exit() {
