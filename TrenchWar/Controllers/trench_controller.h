@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 
+#include "helpers/store.h"
 #include "Models/world.h"
 #include "Views/Game/map_view.h"
 
@@ -30,10 +31,11 @@ class TrenchController : public QWidget {
 
   void ClearChangedCells();
 
+  int GetTrenchLength();
+
   const std::vector<std::pair<QPoint, QColor>>& GetChangedCells() const;
 
  private:
-  static constexpr int kMinimumTrenchLength{5};
 
   void DrawAndSaveTrench(const QPoint& pos);
   QPoint GlobalToCellsCoordinates(const QPoint& point) const;

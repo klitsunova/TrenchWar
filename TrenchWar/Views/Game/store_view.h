@@ -25,7 +25,9 @@ class StoreView : public QWidget {
   void EnableStoreButtons() const;
   void paintEvent(QPaintEvent*) override;
   void FixModes();
-  void SpendMoney(QString name);
+  bool SpendMoney(QString name);
+  void ShowCost(int cost);
+  void ClearToSpendMoneyLabel();
 
  signals:
   void Ready(BuyMode mode);
@@ -36,6 +38,7 @@ class StoreView : public QWidget {
  private:
   void AddItems();
   void SetMoneyWidget();
+  void SetToSpendMoneyWidget();
   void SetStyles();
   void ConnectUI();
   void SetNames();
@@ -48,6 +51,8 @@ class StoreView : public QWidget {
   QButtonGroup* purchase_modes_;
   QWidget* money_widget_area_;
   QLabel* money_label_;
+  QWidget* money_widget_area_to_spend_;
+  QLabel* money_label_to_spend_;
   BuyMode mode_{BuyMode::kTrench};
   std::map<QString, int> price_list_;
 };

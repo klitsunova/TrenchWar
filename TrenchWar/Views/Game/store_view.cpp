@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QRadioButton>
 #include <QVBoxLayout>
+#include <iostream>
 
 #include "helpers/sizes.h"
 #include "helpers/styles.h"
@@ -18,7 +19,9 @@ StoreView::StoreView(QWidget* parent)
       cancel_button_(new QPushButton("Cancel", this)),
       purchase_modes_(new QButtonGroup(this)),
       money_widget_area_(new QWidget(this)),
-      money_label_(new QLabel) {
+      money_label_(new QLabel),
+      money_widget_area_to_spend_(new QWidget(this)),
+      money_label_to_spend_(new QLabel) {
   HideTrenchButtons(); // TODO
   AddItems();
   SetLayout();
@@ -34,6 +37,7 @@ void StoreView::AddItems() {
   purchase_modes_->addButton(new QRadioButton(this), static_cast<int>(BuyMode::kTrench));
   purchase_modes_->addButton(new QRadioButton(this), static_cast<int>(BuyMode::kUnits));
   SetMoneyWidget();
+  SetToSpendMoneyWidget();
   SetNames();
 
   // TODO(Zolokinos) Tempo code
@@ -56,6 +60,7 @@ void StoreView::SetStyles() {
       static_cast<int>(BuyMode::kUnits))->setStyleSheet(styles::kRadioButton);
 
   money_widget_area_->setStyleSheet(styles::kStoreBoxMoneyWidget);
+  money_widget_area_to_spend_->setStyleSheet(styles::kStoreBoxMoneyWidget);
 }
 
 void StoreView::ConnectUI() {
@@ -78,6 +83,8 @@ void StoreView::ConnectUI() {
           &QButtonGroup::buttonPressed,
           this, [&](QAbstractButton* button){
     BuyMode mode = static_cast<BuyMode>(button->group()->id(button));
+    std::cerr << static_cast<int>(mode) << "\n";
+    mode_ = mode;
     emit ModeChanged(mode);
   });
 }
@@ -108,6 +115,7 @@ void StoreView::SetLayout() {
   setLayout(layout_);
 
   layout_->addWidget(money_widget_area_, 0);
+  layout_->addWidget(money_widget_area_to_spend_, 0);
   layout_->addStretch(1);
 
   QVBoxLayout* mode_layout = new QVBoxLayout();
@@ -133,13 +141,58 @@ void StoreView::SetMoneyWidget() {
   money_link_layout->addWidget(money_label_);
 }
 
+void StoreView::SetToSpendMoneyWidget() {
+  QHBoxLayout* money_link_layout = new QHBoxLayout();
+  money_widget_area_to_spend_->setLayout(money_link_layout);
+  QLabel* dollar = new QLabel();
+  dollar->setPixmap(PixmapLoader::GetDollar()->scaled(element_sizes::kStoreBox));
+  dollar->setStyleSheet(styles::kStoreBoxMoneyLabels);
+  money_link_layout->addWidget(dollar);
+
+  money_label_to_spend_->setText(QString::number(0));
+  money_label_to_spend_->setStyleSheet(styles::kStoreBoxMoneyLabels);
+  money_link_layout->addWidget(money_label_to_spend_);
+}
+
 void StoreView::FixModes() {
   purchase_modes_->button(static_cast<int>(BuyMode::kUnits))->setChecked(true);
   setDisabled(purchase_modes_);
   mode_ = BuyMode::kUnits;
 }
 
-void StoreView::SpendMoney(QString name) {
-  count_money -= price_list_[name];
-  money_label_->setText(QString::number(count_money));
+bool StoreView::SpendMoney(QString name) {
+  switch (mode_) {
+    case BuyMode::kUnits: {
+          if (count_money < price_list_[name]) {
+            return false;
+          } else {
+            std::cerr << "Unit_\n";
+            count_money -= price_list_[name];
+            money_label_->setText(QString::number(count_money));
+            return true;
+          }
+          break;
+      }
+      case BuyMode::kTrench: {
+        if (count_money < money_label_to_spend_->text().toInt()) {
+          return false;
+        } else {
+          std::cerr << "Trench_\n";
+          count_money -= money_label_to_spend_->text().toInt();
+          money_label_->setText(QString::number(count_money));
+          return true;
+        }
+        break;
+      }
+  }
+  return false;
 }
+
+void StoreView::ShowCost(int cost) {
+  money_label_to_spend_->setText(QString::number(cost / kTrenchStep));
+}
+
+void StoreView::ClearToSpendMoneyLabel() {
+  money_label_to_spend_->setText(QString::number(0));
+}
+

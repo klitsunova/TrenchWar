@@ -107,6 +107,7 @@ void EventsController::MapPressHandler(QMouseEvent* event) {
 }
 
 void EventsController::MapReleaseHandler(QMouseEvent* event) {
+  std::cout << static_cast<int>(mode_) << std::endl;
   switch (mode_) {
     case BuyMode::kUnits: {
       break;
@@ -125,6 +126,9 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
       trench_controller_->SetMouseClicked(true);
       trench_controller_->SetTrenchFixed(
           !trench_controller_->GetChangedCells().empty());
+
+      int cost = trench_controller_->GetTrenchLength();
+      view_->GetStore()->ShowCost(cost);
 
       if (!trench_controller_->IsTrenchFixed()) {
         trench_controller_->SetSaveCellsState();
@@ -155,38 +159,43 @@ void EventsController::MapDoubleClickHandler(QMouseEvent* event) {
 void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
   switch (mode) {
     case BuyMode::kTrench: {
-      for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
-        world_->GetCell(changed_cell.first).is_trench = true;
+      if ((view_->GetStore()->SpendMoney(name))) {
+        for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
+          world_->GetCell(changed_cell.first).is_trench = true;
+        }
+        trench_controller_->ClearChangedCells();
+        view_->GetStore()->HideTrenchButtons();
+        trench_controller_->SetTrenchFixed(false);
+        view_->GetStore()->ClearToSpendMoneyLabel();
       }
-      trench_controller_->ClearChangedCells();
-      view_->GetStore()->HideTrenchButtons();
-      trench_controller_->SetTrenchFixed(false);
       break;
     }
     case BuyMode::kUnits: {
       QPoint location;
-      location = view_->GetMap()->GetBuyWindow()->GetLocation();
-      int window_width = view_->GetMap()->geometry().width() - 1;
-      int window_height = view_->GetMap()->geometry().height() - 1;
+      if (view_->GetStore()->SpendMoney(name)) {
+        std::cerr << "Unit\n";
+        location = view_->GetMap()->GetBuyWindow()->GetLocation();
+        int window_width = view_->GetMap()->geometry().width() - 1;
+        int window_height = view_->GetMap()->geometry().height() - 1;
 
-      QPoint game_point;
-      game_point.setX(world_->GetSize().width() * (location.x()
-          - view_->GetMap()->mapToGlobal(QPoint(0, 0)).x())
-                          / window_width);
-      game_point.setY(world_->GetSize().height() * (location.y()
-          - view_->GetMap()->mapToGlobal(QPoint(0, 0)).y())
-                          / window_height);
+        QPoint game_point;
+        game_point.setX(world_->GetSize().width() * (location.x()
+            - view_->GetMap()->mapToGlobal(QPoint(0, 0)).x())
+                            / window_width);
+        game_point.setY(world_->GetSize().height() * (location.y()
+            - view_->GetMap()->mapToGlobal(QPoint(0, 0)).y())
+                            / window_height);
 
-      world_->AddSoldier(game_point, Side::kAttacker);
-      world_->Update();
-      view_->UpdateMap();
+        world_->AddSoldier(game_point, Side::kAttacker);
+        world_->Update();
+        view_->UpdateMap();
+      }
       break;
     }
   }
 }
 
 void EventsController::CancelPurchase(BuyMode mode, QString name) {
-  std::cout << static_cast<int>(mode) << std::endl;
   switch (mode) {
     case BuyMode::kTrench: {
       trench_controller_->SetSaveCellsState();
@@ -194,6 +203,7 @@ void EventsController::CancelPurchase(BuyMode mode, QString name) {
       view_->UpdateMap();
       trench_controller_->ClearChangedCells();
       view_->GetStore()->HideTrenchButtons();
+      view_->GetStore()->ClearToSpendMoneyLabel();
       trench_controller_->SetTrenchFixed(false);
       break;
     }
