@@ -101,11 +101,9 @@ void BuyWindow::ConnectUI() {
   connect(confirm_,
           &QPushButton::clicked,
           this, [&]() {
-        if (count_money >= 50) {
-          emit ConfirmButtonPressed(
-              BuyMode::kUnits,
-              list_->currentItem()->text());
-        }
+    emit ConfirmButtonPressed(
+        BuyMode::kUnits,
+        list_->currentItem()->text());
   });
   connect(cancel_,
           &QPushButton::clicked,

@@ -136,7 +136,7 @@ void StoreView::SetMoneyWidget() {
   dollar->setStyleSheet(styles::kStoreBoxMoneyLabels);
   money_link_layout->addWidget(dollar);
 
-  money_label_->setText(QString::number(count_money));
+  money_label_->setText(QString::number(count_money_));
   money_label_->setStyleSheet(styles::kStoreBoxMoneyLabels);
   money_link_layout->addWidget(money_label_);
 }
@@ -163,23 +163,23 @@ void StoreView::FixModes() {
 bool StoreView::SpendMoney(QString name) {
   switch (mode_) {
     case BuyMode::kUnits: {
-          if (count_money < price_list_[name]) {
+          if (count_money_ < price_list_[name]) {
             return false;
           } else {
             std::cerr << "Unit_\n";
-            count_money -= price_list_[name];
-            money_label_->setText(QString::number(count_money));
+            count_money_ -= price_list_[name];
+            money_label_->setText(QString::number(count_money_));
             return true;
           }
           break;
       }
       case BuyMode::kTrench: {
-        if (count_money < money_label_to_spend_->text().toInt()) {
+        if (count_money_ < money_label_to_spend_->text().toInt()) {
           return false;
         } else {
           std::cerr << "Trench_\n";
-          count_money -= money_label_to_spend_->text().toInt();
-          money_label_->setText(QString::number(count_money));
+          count_money_ -= money_label_to_spend_->text().toInt();
+          money_label_->setText(QString::number(count_money_));
           return true;
         }
         break;
