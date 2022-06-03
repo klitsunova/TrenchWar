@@ -88,16 +88,6 @@ QVariant JsonHelper::EncodeGameData(const GameData& data) {
     json_trench_array.push_back(json_trench);
   }
   json_object.insert("trenches", json_trench_array);
-
-  QJsonArray json_terrain_object_array;
-  for (auto& object : data.terrain_objects) {
-    QJsonObject json_terrain_object;
-    json_terrain_object.insert("x", QJsonValue::fromVariant(object.first));
-    json_terrain_object.insert("y", QJsonValue::fromVariant(object.second));
-    json_terrain_object_array.push_back(json_terrain_object);
-  }
-  json_object.insert("terrain_objects", json_terrain_object_array);
-
   return json_object;
 }
 
@@ -118,13 +108,6 @@ GameData JsonHelper::DecodeGameData(const QVariant& q_variant) {
     new_data.trenches.emplace_back(
         json_trench["x"].toInt(),
         json_trench["y"].toInt());
-  }
-  QJsonArray terrain_data = json_object["terrain_objects"].toArray();
-  for (const auto& record : terrain_data) {
-    QJsonObject json_terrain_object = record.toObject();
-    new_data.terrain_objects.emplace_back(
-        json_terrain_object["x"].toInt(),
-        json_terrain_object["y"].toInt());
   }
   return new_data;
 }

@@ -39,6 +39,7 @@ void MainController::ConnectUI() {
 }
 
 void MainController::StartNetworkGame() {
+  menu_controller_->SetGameStarted();
   events_controller_ = new EventsController(this, Mode::kNetwork);
   ConnectEventsControllerUI();
 }

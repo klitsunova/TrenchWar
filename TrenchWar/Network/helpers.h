@@ -39,7 +39,6 @@ struct SoldierData {
 struct GameData {
   std::vector<SoldierData> soldiers;
   std::vector<std::pair<int, int>> trenches;
-  std::vector<std::pair<int, int>> terrain_objects;
 };
 
 class Network {

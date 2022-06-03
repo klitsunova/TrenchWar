@@ -83,7 +83,6 @@ class World {
   std::vector<std::shared_ptr<Bullet>> bullets_;
   std::vector<std::shared_ptr<Tower>> towers_;
   std::vector<QPoint> bot_soldier_buffer_;
-  std::vector<QPoint> bot_tower_buffer_;
   bool is_need_update_towers_{true};
   int dead_soldiers_{0};
 

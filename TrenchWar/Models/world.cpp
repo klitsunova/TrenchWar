@@ -248,11 +248,6 @@ void World::LoadMap(const QString& path, Mode mode, Side side) {
   in.readLine();
   in.readLine();
 
-  if (mode == Mode::kNetwork) {
-    file.close();
-    return;
-  }
-
   size = in.readLine();
   size_int = size.toInt();
 
@@ -262,7 +257,7 @@ void World::LoadMap(const QString& path, Mode mode, Side side) {
     QString type;
     in >> x >> y >> type;
     if (type == "kTerrainObject") {
-      bot_tower_buffer_.emplace_back(x, y);
+      AddTower(QPoint(x, y));
     } else if (
         (type == "kDefender" && side == Side::kDefender)
         || (type == "kAttacker" && side == Side::kAttacker)) {
@@ -482,11 +477,6 @@ void World::UpdateCountAttackers() {
 }
 
 void World::LoadBotData(Side side) {
-  if (!bot_tower_buffer_.empty()) {
-    for (const auto& point : bot_tower_buffer_) {
-      AddTower(point);
-    }
-  }
   if (!bot_soldier_buffer_.empty()) {
     for (const auto& point : bot_soldier_buffer_) {
       AddSoldier(point, side);

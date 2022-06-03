@@ -4,6 +4,7 @@
 Tower::Tower()
     : GameObject() {
   picture_ = PixmapLoader::GetTower();
+  size_ = kStandardSize * 1.5;
 }
 
 Tower::Tower(const QPoint& point)
