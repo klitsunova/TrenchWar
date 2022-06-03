@@ -51,6 +51,8 @@ void MainController::StartNetworkGame() {
 }
 
 void MainController::StartBotGame() {
+  music_player_->setSource(QUrl("qrc:Resources/Music/gameplay_sound_2.mp3"));
+  music_player_->play();
   menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
   events_controller_ = new EventsController(this, GameMode::kBot);
@@ -61,6 +63,8 @@ void MainController::ReturnToMenu() {
   events_controller_->HideGame();
   delete events_controller_;
   events_controller_ = nullptr;
+  music_player_->setSource(QUrl("qrc:Resources/Music/gameplay_sound_1.mp3"));
+  music_player_->play();
   menu_controller_->HidePauseMenu();
   menu_controller_->SetGameFinished();
   menu_controller_->ShowMenu();
@@ -91,6 +95,10 @@ void MainController::ConnectEventsControllerUI() {
           &EventsController::HideMainMenu,
           menu_controller_,
           &MenuController::HideMenu);
+  connect(events_controller_,
+          &EventsController::PlayGameMusic,
+          this,
+          &MainController::PlayNetworkGameMusic);
 }
 
 void MainController::Exit() {
@@ -121,4 +129,9 @@ void MainController::CreateAudioOutput() {
 void MainController::HideMenu() {
   menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
+}
+
+void MainController::PlayNetworkGameMusic() {
+  music_player_->setSource(QUrl("qrc:Resources/Music/gameplay_sound_2.mp3"));
+  music_player_->play();
 }

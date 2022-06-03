@@ -35,7 +35,7 @@ class GameObject {
 
  protected:
   static constexpr int kStep{1};
-  static constexpr QSize kStandardSize{QSize(30, 30)};
+  static constexpr QSize kStandardSize{QSize(45, 45)};
 
   QSize size_{kStandardSize};
   QPoint position_;

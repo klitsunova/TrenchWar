@@ -6,6 +6,7 @@
 
 #include "Models/Tools/settings.h"
 #include <QAudioOutput>
+#include <QMediaPlayer>
 
 World::World(const QString& path, GameMode mode, Side side) {
   LoadMap(path, mode, side);
@@ -46,6 +47,13 @@ void World::AddTower(const QPoint& position) {
 }
 
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
+  auto *player = new QMediaPlayer(this);
+  auto* audioOutput = new QAudioOutput(this);
+  player->setAudioOutput(audioOutput);
+  audioOutput->setVolume(Settings::GetMusicVolume() /
+                         static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
+  player->setSource(QUrl("qrc:Resources/Music/singleshot_voice.mp3"));
+  player->play();
   assert(bullet.get() != nullptr);
   bullets_.push_back(bullet);
 }

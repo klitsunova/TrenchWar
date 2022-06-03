@@ -10,9 +10,7 @@
 
 EventsController::EventsController(QWidget* parent, GameMode mode)
     : game_mode_(mode),
-      game_finish_window_(new GameFinishWindow()),
-      player_(new QMediaPlayer(this)) {
-
+      game_finish_window_(new GameFinishWindow()) {
   setParent(parent);
   std::random_device rd;
   std::uniform_int_distribution<int> distribution(0, 1);
@@ -88,10 +86,6 @@ void EventsController::ConnectUI() {
           &StoreView::ModeChanged,
           this,
           &EventsController::ChangeMode);
-  connect(world_.get(),
-          &World::Shot,
-          this,
-          &EventsController::Shot);
   connect(game_finish_window_,
           &GameFinishWindow::ToMenu,
           this,
@@ -118,7 +112,7 @@ void EventsController::StartPreparationStage() {
       std::make_unique<TrenchController>(this, world_, view_->GetMap());
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
-
+  emit PlayGameMusic();
   if (game_mode_ == GameMode::kNetwork) {
     network_view_->hide();
     network_controller_ = network_view_->GetNetworkController();
@@ -318,11 +312,6 @@ void EventsController::ChangeMode(BuyMode mode) {
       break;
     }
   }
-}
-
-void EventsController::Shot() {
-  player_->setLoops(1);
-  player_->play();
 }
 
 void EventsController::CheckGameEnding() {

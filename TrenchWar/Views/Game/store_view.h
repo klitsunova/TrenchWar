@@ -55,5 +55,5 @@ class StoreView : public QWidget {
   QLabel* money_label_to_spend_;
   BuyMode mode_{BuyMode::kTrench};
   std::map<QString, int> price_list_;
-  int count_money_{1000};
+  int count_money_{500};
 };
