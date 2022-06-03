@@ -114,7 +114,3 @@ GameData NetworkController::GetAttackersData() const {
 GameData NetworkController::GetDefendersData() const {
   return defenders_data_;
 }
-
-Side NetworkController::GetPlayerSide() const {
-  return player_->GetSide();
-}

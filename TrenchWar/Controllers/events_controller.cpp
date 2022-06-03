@@ -223,7 +223,6 @@ void EventsController::DeleteTrench() {
 void EventsController::CheckGameEnding() {
   int attackers = world_->GetCountAttackers();
   int towers = world_->GetCountTowers();
-  Side player = network_controller_->GetPlayerSide();
 
   if (attackers == 0 || towers == 0) {
     PauseTimer();
@@ -233,13 +232,13 @@ void EventsController::CheckGameEnding() {
     game_finish_window_->Show(GameFinishWindow::States::kDraw);
   }
 
-  if ((attackers == 0 && player == Side::kDefender) ||
-      (towers == 0 && player == Side::kAttacker)) {
+  if ((attackers == 0 && player_side_ == Side::kDefender) ||
+      (towers == 0 && player_side_ == Side::kAttacker)) {
     game_finish_window_->Show(GameFinishWindow::States::kWin);
   }
 
-  if ((attackers == 0 && player == Side::kAttacker) ||
-      (towers == 0 && player == Side::kDefender)) {
+  if ((attackers == 0 && player_side_ == Side::kAttacker) ||
+      (towers == 0 && player_side_ == Side::kDefender)) {
     game_finish_window_->Show(GameFinishWindow::States::kLose);
   }
 }
