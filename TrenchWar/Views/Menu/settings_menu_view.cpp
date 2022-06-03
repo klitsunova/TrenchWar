@@ -13,6 +13,7 @@ SettingsMenuView::SettingsMenuView(
                        cancel_button_(new QPushButton("Cancel", this)),
                        sound_slider_(new QSlider(this)),
                        set_full_screen_checkbox_(new QCheckBox()) {
+  setWindowIcon(QIcon(":Resources/Images/Soldier1.png"));
   SetStyles();
   SetLayout();
   ConnectUI();

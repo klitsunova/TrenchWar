@@ -5,7 +5,6 @@ MainController::MainController(QWidget* parent)
     : QWidget(parent),
       music_player_(new QMediaPlayer(this)) {
   menu_controller_ = new MenuController(this);
-
   ConnectUI();
 
   CreateAudioOutput();
