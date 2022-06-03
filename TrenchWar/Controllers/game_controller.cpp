@@ -27,17 +27,14 @@ void GameController::SetWorldObjects(Side side) {
 void GameController::UpdateAttackers(const GameData& data) {
   for (size_t i = 0; i < data.soldiers.size(); ++i) {
     QPoint position = QPoint(data.soldiers[i].x, data.soldiers[i].y);
-      world_->AddSoldier(position, Side::kAttacker);
-  }
-  for (int i = 0; i < 40; ++i) {
-    world_->AddTower();
+    world_->AddSoldier(position, Side::kAttacker);
   }
 }
 
 void GameController::UpdateDefenders(const GameData& data) {
   for (size_t i = 0; i < data.soldiers.size(); ++i) {
     QPoint position = QPoint(data.soldiers[i].x, data.soldiers[i].y);
-      world_->AddSoldier(position, Side::kDefender);
+    world_->AddSoldier(position, Side::kDefender);
   }
   for (const auto& object : data.terrain_objects) {
     world_->AddTower(QPoint(object.first, object.second));

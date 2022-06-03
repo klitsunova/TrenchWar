@@ -38,6 +38,7 @@ void World::AddTower(const QPoint& position) {
   auto new_object = std::make_shared<Tower>();
   new_object->SetPosition(position);
   towers_.push_back(new_object);
+  GenerateNewDistances(new_object->GetPosition());
 }
 
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
