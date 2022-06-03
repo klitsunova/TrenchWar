@@ -7,8 +7,10 @@
 #include "Models/Tools/settings.h"
 #include "Network/network_view.h"
 
-EventsController::EventsController(QWidget* parent, Mode mode) : mode_(mode),
-                                   game_finish_window_(new GameFinishWindow()) {
+EventsController::EventsController(QWidget* parent, Mode mode)
+    : mode_(mode),
+      game_finish_window_(new GameFinishWindow()),
+      player_(new QMediaPlayer(this)) {
   setParent(parent);
   std::random_device rd;
   std::uniform_int_distribution<int> distribution(0, 1);
@@ -76,6 +78,10 @@ void EventsController::ConnectUI() {
           &MapView::MousePressedHandler,
           this,
           &EventsController::MapPressHandler);
+  connect(world_.get(),
+          &World::Shot,
+          this,
+          &EventsController::Shot);
   connect(game_finish_window_,
           &GameFinishWindow::ToMenu,
           this,
@@ -97,9 +103,8 @@ void EventsController::StartPreparationStage() {
                                    mode_,
                                    player_side_);
   view_ = std::make_unique<GameView>(this, world_);
-  trench_controller_ = std::make_unique<TrenchController>(this,
-                                                          world_,
-                                                          view_->GetMap());
+  trench_controller_ =
+      std::make_unique<TrenchController>(this, world_, view_->GetMap());
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
 
@@ -116,7 +121,7 @@ void EventsController::StartPreparationStage() {
   }
 
   ConnectUI();
-  view_->SetFullScreen(Settings::Instance()->IsFullScreen());
+  view_->SetFullScreen(Settings::IsFullScreen());
   view_->show();
 }
 
@@ -144,8 +149,8 @@ void EventsController::StartActiveStage() {
     }
   } else {
     Side bot_side = (player_side_ == Side::kAttacker)
-        ? Side::kDefender
-        : Side::kAttacker;
+                    ? Side::kDefender
+                    : Side::kAttacker;
     world_->LoadBotData(bot_side);
   }
   DeleteTrench();
@@ -218,6 +223,16 @@ void EventsController::DeleteTrench() {
   trench_controller_->ClearChangedCells();
   view_->GetStore()->HideTrenchButtons();
   trench_controller_->SetTrenchFixed(false);
+}
+
+void EventsController::Shot() {
+  auto* audioOutput = new QAudioOutput(this);
+  player_->setAudioOutput(audioOutput);
+  player_->setSource(QUrl("qrc:Resources/Music/singleshot_voice.mp3"));
+  audioOutput->setVolume(Settings::GetMusicVolume() /
+      static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
+  player_->setLoops(1);
+  player_->play();
 }
 
 void EventsController::CheckGameEnding() {

@@ -48,6 +48,4 @@ class SettingsMenuView : public QWidget {
   QPushButton* cancel_button_;
   QSlider* sound_slider_;
   QCheckBox* set_full_screen_checkbox_;
-
-  Settings* settings_;
 };

@@ -15,6 +15,7 @@ find_package(Qt6 COMPONENTS
         Core
         Gui
         Widgets
+        Multimedia
         Network
         REQUIRED)
 
@@ -73,6 +74,7 @@ set(LIBRARIES
         Qt::Core
         Qt::Gui
         Qt::Widgets
+        Qt6::Multimedia
         Qt6::Network
         )
 

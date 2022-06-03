@@ -4,8 +4,10 @@
 #include <utility>
 #include <vector>
 
+#include <QAudioOutput>
 #include <QBasicTimer>
 #include <QKeyEvent>
+#include <QMediaPlayer>
 #include <QShortcut>
 #include <QWidget>
 
@@ -48,6 +50,7 @@ class EventsController : public QWidget {
   void MapPressHandler(QMouseEvent* event);
   void MapReleaseHandler(QMouseEvent* event);
 
+  void Shot();
   void CheckGameEnding();
 
  signals:
@@ -70,6 +73,7 @@ class EventsController : public QWidget {
   std::unique_ptr<GameController> game_controller_;
   std::unique_ptr<NetworkView> network_view_;
   std::shared_ptr<NetworkController> network_controller_;
+  QMediaPlayer* player_;
   GameFinishWindow* game_finish_window_;
 
   Stage game_stage = Stage::kPreparation;
