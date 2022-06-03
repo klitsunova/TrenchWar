@@ -14,7 +14,7 @@ GameView::GameView(QWidget* parent, const std::shared_ptr<World>& world)
       store_(new StoreView(this)),
       pause_(new QShortcut(Qt::Key_Escape, this)),
       game_finished_message_(new QMessageBox(this)),
-      menu_button_(new QPushButton(tr("menu"), this)){
+      menu_button_(new QPushButton(tr("menu"), this)) {
   layout_->addWidget(map_, 1);
   layout_->addWidget(store_, 0);
   SetStyle();

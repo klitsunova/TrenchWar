@@ -31,6 +31,8 @@ class NetworkView : public QWidget {
   std::shared_ptr<NetworkController> GetNetworkController() const;
   Side GetPlayerSide() const;
 
+  void closeEvent(QCloseEvent* event) override;
+
  signals:
   void StartGame();
   void StartActiveStage();
@@ -38,6 +40,7 @@ class NetworkView : public QWidget {
   void ExitDisconnected();
 
  private:
+  void ReturnToMenu();
   static constexpr int kMillisWaitForConnection = 100;
 
   void UpdatePlayersVector();

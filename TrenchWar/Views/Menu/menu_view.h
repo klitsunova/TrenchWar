@@ -25,7 +25,8 @@ class MenuView : public QWidget {
   void resizeEvent(QResizeEvent* event);
 
  signals:
-  void StartButtonPressed();
+  void StartNetworkPressed();
+  void StartBotPressed();
   void SettingsButtonPressed();
   void ExitButtonPressed();
 
@@ -38,7 +39,8 @@ class MenuView : public QWidget {
 
   QVBoxLayout* layout_;
   QLabel* title_label_;
-  QPushButton* start_button_;
+  QPushButton* start_network_button_;
+  QPushButton* start_bot_button_;
   QPushButton* settings_button_;
   QPushButton* exit_button_;
   std::shared_ptr<QPixmap> background_;

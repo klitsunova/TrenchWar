@@ -5,10 +5,10 @@
 
 #include <memory>
 
-#include "helpers/sides.h"
-#include "helpers/sizes.h"
-#include "Models/Tools/pixmap_loader.h"
 #include "Models/GameObjects/game_object.h"
+#include "Models/Tools/pixmap_loader.h"
+#include "helpers/enum_helpers.h"
+#include "helpers/sizes.h"
 
 class Bullet : public GameObject {
  public:
