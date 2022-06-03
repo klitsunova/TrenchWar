@@ -23,7 +23,6 @@ class MainController : public QWidget {
   void Exit();
   void ChangeMusicVolume();
   void ChangeScreenValue();
-  void MakeShotSound();
 
  private:
   void ConnectUI();

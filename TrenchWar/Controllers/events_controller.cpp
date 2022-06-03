@@ -70,7 +70,6 @@ void EventsController::ConnectUI() {
           &MapView::MousePressedHandler,
           this,
           &EventsController::MapPressHandler);
-  assert(world_.get() != nullptr);
   connect(world_.get(),
           &World::Shot,
           this,
@@ -189,13 +188,10 @@ void EventsController::DeleteTrench() {
   trench_controller_->SetTrenchFixed(false);
 }
 
-#include <iostream>
 void EventsController::Shot() {
   auto* audioOutput = new QAudioOutput(this);
   player_->setAudioOutput(audioOutput);
-  // QFile file1("qrc:Resources/Music/singleshot_voice.mp3");
   player_->setSource(QUrl("qrc:Resources/Music/singleshot_voice.mp3"));
-  // std::cerr << Settings::GetMusicVolume() << " - shot volume\n";
   audioOutput->setVolume(Settings::GetMusicVolume() /
       static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
   player_->setLoops(1);

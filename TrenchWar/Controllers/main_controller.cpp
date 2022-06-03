@@ -78,13 +78,13 @@ void MainController::ConnectEventsControllerUI() {
           this,
           &MainController::ReturnToMenu);
   connect(events_controller_,
+          &EventsController::HideMainMenu,
+          menu_controller_,
+          &MenuController::HideMenu);
+  connect(events_controller_,
           &EventsController::Shot,
           this,
           &MainController::MakeShotSound);
-  // connect(events_controller_,
-  //         &EventsController::HideMainMenu,
-  //         menu_controller_,
-  //         &MenuController::HideMenu);
 }
 
 void MainController::Exit() {
@@ -110,15 +110,4 @@ void MainController::CreateAudioOutput() {
   music_player_->setAudioOutput(audioOutput);
   music_player_->setLoops(QMediaPlayer::Infinite);
   music_player_->play();
-}
-
-void MainController::MakeShotSound() {
-  // auto new_music_player = new QMediaPlayer(this);
-  // auto* audioOutput = new QAudioOutput(this);
-  // new_music_player->setAudioOutput(audioOutput);
-  // new_music_player->setSource(QUrl("qrc:singleshot_voice.mp3"));
-  // audioOutput->setVolume(Settings::GetMusicVolume() /
-  //     static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
-  // new_music_player->setLoops(1);
-  // new_music_player->play();
 }
