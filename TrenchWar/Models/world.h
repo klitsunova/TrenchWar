@@ -62,7 +62,6 @@ class World {
 
  private:
   int count_attackers_;
-  
   struct Landscape {
     Landscape(const QColor& q_color, int speed);
     QColor color = Qt::white;
