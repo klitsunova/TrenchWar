@@ -1,5 +1,6 @@
 #include <random>
 #include <utility>
+#include <iostream>
 
 #include "world.h"
 
@@ -19,6 +20,7 @@ void World::AddSoldier(Side side) {
 }
 
 void World::AddSoldier(const QPoint& position, Side side) {
+  std::cout << position.x() << " " << position.y() << std::endl;
   assert(position.y() >= 0 && position.y() < cells_.size());
   assert(position.x() >= 0 && position.x() < cells_[position.y()].size());
   auto new_object = std::make_shared<Soldier>(position, side);

@@ -17,6 +17,7 @@ MapView::MapView(QWidget* parent,
   // TODO(AZYAVCHIKOV): maybe not best solution
   // setMinimumSize(window_sizes::kWorld);
   buy_window_ = new BuyWindow();
+  ConnectUI();
   world_ = world;
 }
 
@@ -106,4 +107,22 @@ void MapView::SetStoreDialog(QMouseEvent* event) {
   buy_window_->show();
   QPoint position = event->globalPosition().toPoint();
   buy_window_->move(position);
+  buy_window_->SetWindowLocation(position);
+}
+
+void MapView::ConnectUI() {
+  connect(buy_window_,
+          &BuyWindow::ConfirmButtonPressed,
+          this,
+          &MapView::ConfirmButtonPressed
+          );
+  connect(buy_window_,
+          &BuyWindow::CancelButtonPressed,
+          this,
+          &MapView::CancelButtonPressed
+          );
+}
+
+BuyWindow* MapView::GetBuyWindow() {
+  return buy_window_;
 }

@@ -9,6 +9,7 @@
 #include <QWidget>
 
 #include "helpers/modes.h"
+#include "helpers/store.h"
 #include "Models/Tools/pixmap_loader.h"
 #include "Models/world.h"
 
@@ -24,11 +25,12 @@ class StoreView : public QWidget {
   void EnableStoreButtons() const;
   void paintEvent(QPaintEvent*) override;
   void FixModes();
+  void SpendMoney(QString name);
 
  signals:
   void Ready(BuyMode mode);
-  void ConfirmButtonPressed(BuyMode mode);
-  void CancelButtonPressed(BuyMode mode);
+  void ConfirmButtonPressed(BuyMode mode, QString name = "");
+  void CancelButtonPressed(BuyMode mode, QString name = "");
   void ModeChanged(BuyMode mode);
 
  private:
@@ -46,6 +48,6 @@ class StoreView : public QWidget {
   QButtonGroup* purchase_modes_;
   QWidget* money_widget_area_;
   QLabel* money_label_;
-  int count_money_{1000};
   BuyMode mode_{BuyMode::kTrench};
+  std::map<QString, int> price_list_;
 };

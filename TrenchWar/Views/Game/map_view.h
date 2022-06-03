@@ -17,6 +17,7 @@ class MapView : public QWidget {
   ~MapView() = default;
 
   int GetScale() const;
+  BuyWindow* GetBuyWindow();
   void SetScale(int scale);
 
   void DrawObject(QPainter* painter, const QPoint& pos,
@@ -34,8 +35,12 @@ class MapView : public QWidget {
   void MousePressedHandler(QMouseEvent* event);
   void MouseReleasedHandler(QMouseEvent* event);
   void MouseDoubleClickedHandler(QMouseEvent* event);
+  void ConfirmButtonPressed(BuyMode mode, QString name = "");
+  void CancelButtonPressed(BuyMode mode, QString name = "");
 
  private:
+  void ConnectUI();
+
   int scale_;
   std::shared_ptr<World> world_;
   BuyWindow* buy_window_;

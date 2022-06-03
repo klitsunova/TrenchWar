@@ -36,6 +36,9 @@ class GameView : public QWidget {
  signals:
   void StartGame(BuyMode mode);
   void Close();
+  void ConfirmButtonPressed(BuyMode mode, QString name = "");
+  void CancelButtonPressed(BuyMode mode, QString name = "");
+
 
  private:
   void ConnectUI();

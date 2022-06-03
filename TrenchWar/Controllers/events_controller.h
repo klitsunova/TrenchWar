@@ -31,8 +31,8 @@ class EventsController : public QWidget {
   void HideGame();
   void SetFullScreen(bool is_fullscreen);
 
-  void ConfirmPurchase(BuyMode mode);
-  void CancelPurchase(BuyMode mode);
+  void ConfirmPurchase(BuyMode mode, QString name = "");
+  void CancelPurchase(BuyMode mode, QString name = "");
   void ChangeMode(BuyMode mode);
 
   void StartTimer();
@@ -60,4 +60,5 @@ class EventsController : public QWidget {
   std::unique_ptr<GameController> game_controller_;
 
   Stage game_stage = Stage::kPreparation;
+  BuyMode mode_;
 };

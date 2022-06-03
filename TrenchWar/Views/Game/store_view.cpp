@@ -2,13 +2,10 @@
 
 #include <QButtonGroup>
 #include <QLabel>
-#include <QSizePolicy>
 #include <QStyleOption>
 #include <QPainter>
 #include <QRadioButton>
 #include <QVBoxLayout>
-#include <QPixmap>
-#include <iostream>
 
 #include "helpers/sizes.h"
 #include "helpers/styles.h"
@@ -38,6 +35,9 @@ void StoreView::AddItems() {
   purchase_modes_->addButton(new QRadioButton(this), static_cast<int>(BuyMode::kUnits));
   SetMoneyWidget();
   SetNames();
+
+  // TODO(Zolokinos) Tempo code
+  price_list_["Soldier"] = 50;
 }
 
 void StoreView::SetStyles() {
@@ -128,7 +128,7 @@ void StoreView::SetMoneyWidget() {
   dollar->setStyleSheet(styles::kStoreBoxMoneyLabels);
   money_link_layout->addWidget(dollar);
 
-  money_label_->setText(QString::number(count_money_));
+  money_label_->setText(QString::number(count_money));
   money_label_->setStyleSheet(styles::kStoreBoxMoneyLabels);
   money_link_layout->addWidget(money_label_);
 }
@@ -137,4 +137,9 @@ void StoreView::FixModes() {
   purchase_modes_->button(static_cast<int>(BuyMode::kUnits))->setChecked(true);
   setDisabled(purchase_modes_);
   mode_ = BuyMode::kUnits;
+}
+
+void StoreView::SpendMoney(QString name) {
+  count_money -= price_list_[name];
+  money_label_->setText(QString::number(count_money));
 }

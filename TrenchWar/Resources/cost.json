@@ -1,0 +1,9 @@
+{
+  "Positions": [
+    {
+      "filename": ":Resources/Images/Soldier1.png",
+      "name": "Soldier",
+      "cost": "50"
+    }
+  ]
+}

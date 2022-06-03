@@ -1,9 +1,7 @@
 #include "game_view.h"
 
 #include <QLabel>
-#include <QPainter>
 #include <QStyle>
-#include <utility>
 
 #include "helpers/sizes.h"
 
@@ -27,6 +25,22 @@ void GameView::ConnectUI() {
           &QShortcut::activated,
           this,
           &GameView::Close);
+  connect(store_,
+          &StoreView::ConfirmButtonPressed,
+          this,
+          &GameView::ConfirmButtonPressed);
+  connect(store_,
+          &StoreView::CancelButtonPressed,
+          this,
+          &GameView::CancelButtonPressed);
+  connect(map_,
+          &MapView::ConfirmButtonPressed,
+          this,
+          &GameView::ConfirmButtonPressed);
+  connect(map_,
+          &MapView::CancelButtonPressed,
+          this,
+          &GameView::CancelButtonPressed);
 }
 
 void GameView::UpdateMap() {
