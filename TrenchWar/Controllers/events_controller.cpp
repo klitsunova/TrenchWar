@@ -9,6 +9,7 @@
 
 EventsController::EventsController(QWidget* parent, Mode mode) : mode_(mode) {
   setParent(parent);
+  player_side_ = static_cast<Side>(std::rand() % 2);
   if (mode_ == Mode::kNetwork) {
     network_view_ = std::make_unique<NetworkView>(this);
     network_view_->show();
@@ -20,9 +21,7 @@ EventsController::EventsController(QWidget* parent, Mode mode) : mode_(mode) {
             &NetworkView::ReturnToMainMenu,
             this,
             &EventsController::ReturnToMainMenu);
-  }
-  else {
-    player_side_ = static_cast<Side>(std::rand() % 2);
+  } else {
     StartPreparationStage();
   }
 }
@@ -86,7 +85,7 @@ void EventsController::HideGame() {
 
 void EventsController::StartPreparationStage() {
   emit HideMainMenu();
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt", mode_);
+  world_ = std::make_shared<World>(":Resources/Maps/map2.txt", mode_, player_side_);
   view_ = std::make_unique<GameView>(this, world_);
   trench_controller_ = std::make_unique<TrenchController>(this,
                                                           world_,
@@ -102,9 +101,9 @@ void EventsController::StartPreparationStage() {
             &NetworkController::GotSignalForActiveStage,
             this,
             &EventsController::StartActiveStage);
+    // temporary code
+    game_controller_->SetWorldObjects(player_side_);
   }
-  // temporary code
-  game_controller_->SetWorldObjects(player_side_);
 
   ConnectUI();
   view_->SetFullScreen(Settings::Instance()->IsFullScreen());
@@ -132,7 +131,10 @@ void EventsController::StartActiveStage() {
       game_controller_->UpdateAttackers(network_controller_->GetAttackersData());
     }
   } else {
-    // TODO : add soldiers and towers from file
+    Side bot_side = (player_side_ == Side::kAttacker)
+        ? Side::kDefender
+        : Side::kAttacker;
+    world_->LoadBotData(bot_side);
   }
   DeleteTrench();
   view_->HideReadyButton();

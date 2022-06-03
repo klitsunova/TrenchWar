@@ -24,7 +24,7 @@ class World {
   struct Cell;
 
  public:
-  explicit World(const QString& path, Mode mode);
+  explicit World(const QString& path, Mode mode, Side side);
 
   ~World() = default;
 
@@ -46,6 +46,8 @@ class World {
   void AddTower();
   void AddTower(const QPoint& position);
   void AddBullet(const std::shared_ptr<Bullet>& bullet);
+
+  void LoadBotData(Side side);
 
   void MoveSoldiers();
   void MoveBullets();
@@ -75,10 +77,12 @@ class World {
   std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<Bullet>> bullets_;
   std::vector<std::shared_ptr<Tower>> towers_;
+  std::vector<QPoint> bot_soldier_buffer_;
+  std::vector<QPoint> bot_tower_buffer_;
   bool is_need_update_towers_{true};
   int dead_soldiers_{0};
 
-  void LoadMap(const QString& path, Mode mode);
+  void LoadMap(const QString& path, Mode mode, Side side);
 
   QPixmap DrawWorld() const;
 
