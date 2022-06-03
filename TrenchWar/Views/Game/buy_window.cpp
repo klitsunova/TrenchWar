@@ -9,11 +9,12 @@
 #include "helpers/sizes.h"
 #include "helpers/styles.h"
 
-BuyWindow::BuyWindow(QWidget* parent) : list_(new QListWidget(this)),
-                                        total_price_(new QLabel("0", this)),
-                                        confirm_(new QPushButton("Confirm", this)),
-                                        cancel_(new QPushButton("Cancel", this)),
-                                        count_(new QTextEdit(this)) {
+BuyWindow::BuyWindow(QWidget* parent)
+    : list_(new QListWidget(this)),
+      total_price_(new QLabel("0", this)),
+      confirm_(new QPushButton("Confirm", this)),
+      cancel_(new QPushButton("Cancel", this)),
+      count_(new QTextEdit(this)) {
   // TODO(Zolokinos) Make area purchase
   count_->setVisible(false);
   confirm_->setDisabled(true);
