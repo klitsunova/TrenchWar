@@ -20,7 +20,7 @@
 #include "helpers/sizes.h"
 
 class World : public QObject {
- Q_OBJECT
+  Q_OBJECT
 
  private:
   struct Cell;
