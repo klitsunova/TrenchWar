@@ -84,6 +84,7 @@ void EventsController::HideGame() {
 }
 
 void EventsController::StartPreparationStage() {
+  emit HideMainMenu();
   world_ = std::make_shared<World>(":Resources/Maps/map2.txt", mode_, player_side_);
   view_ = std::make_unique<GameView>(this, world_);
   trench_controller_ = std::make_unique<TrenchController>(this,

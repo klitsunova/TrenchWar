@@ -39,12 +39,12 @@ void MainController::ConnectUI() {
 }
 
 void MainController::StartNetworkGame() {
-  menu_controller_->SetGameStarted();
   events_controller_ = new EventsController(this, Mode::kNetwork);
   ConnectEventsControllerUI();
 }
 
 void MainController::StartBotGame() {
+  menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
   events_controller_ = new EventsController(this, Mode::kBot);
   ConnectEventsControllerUI();
@@ -82,8 +82,8 @@ void MainController::ConnectEventsControllerUI() {
           &MainController::ReturnToMenu);
   connect(events_controller_,
           &EventsController::HideMainMenu,
-          this,
-          &MainController::HideMenu);
+          menu_controller_,
+          &MenuController::HideMenu);
 }
 
 void MainController::Exit() {
@@ -101,4 +101,5 @@ void MainController::ChangeScreenValue() {
 
 void MainController::HideMenu() {
   menu_controller_->HideMenu();
+  menu_controller_->SetGameStarted();
 }
