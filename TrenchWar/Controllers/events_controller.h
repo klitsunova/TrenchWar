@@ -18,7 +18,7 @@
 #include "helpers/styles.h"
 
 class EventsController : public QWidget {
- Q_OBJECT
+  Q_OBJECT
 
  public:
   enum class Stage {

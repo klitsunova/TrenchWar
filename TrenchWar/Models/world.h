@@ -19,7 +19,7 @@
 #include "helpers/sides.h"
 #include "helpers/sizes.h"
 
-class World : public QObject{
+class World : public QObject {
   Q_OBJECT
  private:
   struct Cell;
@@ -56,7 +56,7 @@ class World : public QObject{
   void FireTower();
 
   signals:
-  void Shot();
+      void Shot();
 
  private:
   struct Landscape {

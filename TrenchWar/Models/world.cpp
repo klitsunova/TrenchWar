@@ -394,7 +394,6 @@ void World::MakeShots() {
     auto bullet = soldiers_[i]->Fire(soldiers_[i]->GetPosition(),
                                      nearest.value()->GetPosition());
     if (bullet.has_value()) {
-
       AddBullet(bullet.value());
     }
   }
