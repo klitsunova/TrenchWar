@@ -23,6 +23,7 @@ class MainController : public QWidget {
   void Exit();
   void ChangeMusic();
   void ChangeScreenValue();
+  void HideMenu();
 
  private:
   void ConnectUI();

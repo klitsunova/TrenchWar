@@ -82,8 +82,8 @@ void MainController::ConnectEventsControllerUI() {
           &MainController::ReturnToMenu);
   connect(events_controller_,
           &EventsController::HideMainMenu,
-          menu_controller_,
-          &MenuController::HideMenu);
+          this,
+          &MainController::HideMenu);
 }
 
 void MainController::Exit() {
@@ -97,4 +97,8 @@ void MainController::ChangeScreenValue() {
   if (events_controller_ != nullptr) {
     events_controller_->SetFullScreen(settings_->IsFullScreen());
   }
+}
+
+void MainController::HideMenu() {
+  menu_controller_->HideMenu();
 }
