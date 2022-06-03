@@ -74,9 +74,7 @@ void GameView::SetWinState() {
   game_finished_message_->setText("Win");
   game_finished_message_->addButton(menu_button_, QMessageBox::ActionRole);
   game_finished_message_->exec();
-  if(game_finished_message_->clickedButton() == menu_button_) {
-    GameFinishedEvent();
-  }
+  GameFinishedEvent();
 }
 
 void GameView::SetLoseState() {
@@ -84,9 +82,7 @@ void GameView::SetLoseState() {
   game_finished_message_->setText("Lose");
   game_finished_message_->addButton(menu_button_, QMessageBox::ActionRole);
   game_finished_message_->exec();
-  if(game_finished_message_->clickedButton() == menu_button_) {
-    GameFinishedEvent();
-  }
+  GameFinishedEvent();
 }
 
 void GameView::SetDrawState() {
@@ -94,7 +90,5 @@ void GameView::SetDrawState() {
   game_finished_message_->setText("Draw");
   game_finished_message_->addButton(menu_button_, QMessageBox::ActionRole);
   game_finished_message_->exec();
-  if(game_finished_message_->clickedButton() == menu_button_) {
-    GameFinishedEvent();
-  }
+  GameFinishedEvent();
 }
