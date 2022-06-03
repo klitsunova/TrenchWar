@@ -403,7 +403,7 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
         bullet->MakeUsed();
         if ((*k)->IsDead()) {
           if ((*k)->GetSide() == Side::kAttacker) {
-            count_attackers--;
+            count_attackers_--;
           }
           cells_[i][j].soldiers.erase(k);
           ++dead_soldiers_;
@@ -473,10 +473,10 @@ void World::FireTower() {
 }
 
 void World::UpdateCountAttackers() {
-  count_attackers = 0;
+  count_attackers_ = 0;
   for (const auto& soldier : soldiers_) {
     if (soldier->GetSide() == Side::kAttacker) {
-      count_attackers++;
+      count_attackers_++;
     }
   }
 }
@@ -495,7 +495,7 @@ void World::LoadBotData(Side side) {
 }
 
 int World::GetCountAttackers() const {
-    return count_attackers;
+    return count_attackers_;
 }
 
 int World::GetCountTowers() const {
