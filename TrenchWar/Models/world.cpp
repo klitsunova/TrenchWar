@@ -223,8 +223,8 @@ void World::LoadMap(const QString& path, Mode mode, Side side) {
   std::vector<std::pair<int64_t, int>> color_and_value;
 
   QString size = in.readLine();
-  int size_t = size.toInt();
-  for (int i = 0; i < size_t; i++) {
+  int size_int = size.toInt();
+  for (int i = 0; i < size_int; i++) {
     int64_t color;
     int value;
     in >> color >> value;
@@ -254,9 +254,9 @@ void World::LoadMap(const QString& path, Mode mode, Side side) {
   }
 
   size = in.readLine();
-  size_t = size.toInt();
+  size_int = size.toInt();
 
-  for (int i = 0; i < size_t; i++) {
+  for (int i = 0; i < size_int; i++) {
     int x;
     int y;
     QString type;

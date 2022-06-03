@@ -2,14 +2,16 @@
 
 #include <random>
 
+#include <QMessageBox>
+
 #include "Models/Tools/settings.h"
 #include "Network/network_view.h"
 
-#include <QMessageBox>
-
 EventsController::EventsController(QWidget* parent, Mode mode) : mode_(mode) {
   setParent(parent);
-  player_side_ = static_cast<Side>(std::rand() % 2);
+  std::random_device rd;
+  std::uniform_int_distribution<int> distribution(0, 1);
+  player_side_ = static_cast<Side>(distribution(rd));
   if (mode_ == Mode::kNetwork) {
     network_view_ = std::make_unique<NetworkView>(this);
     network_view_->show();
