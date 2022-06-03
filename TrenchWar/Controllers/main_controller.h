@@ -16,13 +16,16 @@ class MainController : public QWidget {
   explicit MainController(QWidget* parent = nullptr);
   ~MainController() override = default;
 
-  void StartGame();
+  void StartNetworkGame();
+  void StartBotGame();
+
   void PauseGame();
   void ResumeGame();
   void ReturnToMenu();
   void Exit();
   void ChangeMusicVolume();
   void ChangeScreenValue();
+  void HideMenu();
 
  private:
   void ConnectUI();

@@ -19,9 +19,13 @@ void MenuController::ConnectUI() {
 
 void MenuController::ConnectMenuUI() {
   connect(menu_,
-          &MenuView::StartButtonPressed,
+          &MenuView::StartNetworkPressed,
           this,
-          &MenuController::StartGame);
+          &MenuController::StartNetworkGame);
+  connect(menu_,
+          &MenuView::StartBotPressed,
+          this,
+          &MenuController::StartBotGame);
   connect(menu_,
           &MenuView::SettingsButtonPressed,
           this,

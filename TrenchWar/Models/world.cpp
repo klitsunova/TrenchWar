@@ -3,8 +3,8 @@
 
 #include "world.h"
 
-World::World(const QString& path) {
-  LoadMap(path);
+World::World(const QString& path, Mode mode, Side side) {
+  LoadMap(path, mode, side);
   picture_ = DrawWorld();
 }
 
@@ -214,7 +214,7 @@ void World::MoveSoldiers() {
   }
 }
 
-void World::LoadMap(const QString& path) {
+void World::LoadMap(const QString& path, Mode mode, Side side) {
   QFile file(path);
 
   if (!file.open(QIODevice::ReadOnly)) {
@@ -224,8 +224,8 @@ void World::LoadMap(const QString& path) {
   std::vector<std::pair<int64_t, int>> color_and_value;
 
   QString size = in.readLine();
-  int size_t = size.toInt();
-  for (int i = 0; i < size_t; i++) {
+  int size_int = size.toInt();
+  for (int i = 0; i < size_int; i++) {
     int64_t color;
     int value;
     in >> color >> value;
@@ -244,6 +244,27 @@ void World::LoadMap(const QString& path) {
       in >> color_index;
       cells_[i][j].landscape = Landscape(color_and_value[color_index].first,
                                          color_and_value[color_index].second);
+    }
+  }
+  in.readLine();
+  in.readLine();
+
+  size = in.readLine();
+  size_int = size.toInt();
+
+  for (int i = 0; i < size_int; i++) {
+    int x;
+    int y;
+    QString type;
+    in >> x >> y >> type;
+    if (type == "kTerrainObject") {
+      AddTower(QPoint(x, y));
+    } else if (
+        (type == "kDefender" && side == Side::kDefender)
+        || (type == "kAttacker" && side == Side::kAttacker)) {
+      AddSoldier(QPoint(x, y), side);
+    } else {
+      bot_soldier_buffer_.emplace_back(x, y);
     }
   }
 
@@ -377,6 +398,9 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
         (*k)->TakeDamage(damage);
         bullet->MakeUsed();
         if ((*k)->IsDead()) {
+          if ((*k)->GetSide() == Side::kAttacker) {
+            count_attackers_--;
+          }
           cells_[i][j].soldiers.erase(k);
           ++dead_soldiers_;
         }
@@ -410,8 +434,8 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
     if (soldiers_[i]->IsDead()) continue;
     if (soldiers_[i]->GetSide() == soldier->GetSide()) continue;
     to = soldiers_[i]->GetPosition();
-    new_dist = (from.x() - to.x()) * (from.x() - to.x()) +
-        (from.y() - to.y()) * (from.y() - to.y());
+    new_dist = (from.x() - to.x()) * (from.x() - to.x())
+        + (from.y() - to.y()) * (from.y() - to.y());
     if (new_dist < dist) {
       dist = new_dist;
       nearest_index = i;
@@ -442,6 +466,31 @@ void World::FireTower() {
       is_need_update_towers_ = true;
     }
   }
+}
+
+void World::UpdateCountAttackers() {
+  count_attackers_ = 0;
+  for (const auto& soldier : soldiers_) {
+    if (soldier->GetSide() == Side::kAttacker) {
+      count_attackers_++;
+    }
+  }
+}
+
+void World::LoadBotData(Side side) {
+  if (!bot_soldier_buffer_.empty()) {
+    for (const auto& point : bot_soldier_buffer_) {
+      AddSoldier(point, side);
+    }
+  }
+}
+
+int World::GetCountAttackers() const {
+    return count_attackers_;
+}
+
+int World::GetCountTowers() const {
+    return towers_.size();
 }
 
 World::Landscape::Landscape(const QColor& q_color, int speed) {

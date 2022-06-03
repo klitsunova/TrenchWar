@@ -1,7 +1,8 @@
 #pragma once
 
-#include "helpers/sides.h"
 #include <QTcpSocket>
+
+#include "helpers/enum_helpers.h"
 
 class Player {
  public:
