@@ -47,14 +47,14 @@ void MainController::ConnectUI() {
 
 void MainController::StartNetworkGame() {
   menu_controller_->SetGameStarted();
-  events_controller_ = new EventsController(this, Mode::kNetwork);
+  events_controller_ = new EventsController(this, GameMode::kNetwork);
   ConnectEventsControllerUI();
 }
 
 void MainController::StartBotGame() {
   menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
-  events_controller_ = new EventsController(this, Mode::kBot);
+  events_controller_ = new EventsController(this, GameMode::kBot);
   ConnectEventsControllerUI();
 }
 

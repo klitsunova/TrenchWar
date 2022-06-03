@@ -1,10 +1,12 @@
 #pragma once
 
+#include <QMouseEvent>
 #include <QWidget>
 
 #include <memory>
 
 #include "Models/world.h"
+#include "Views/Game/buy_window.h"
 
 class MapView : public QWidget {
   Q_OBJECT
@@ -15,23 +17,31 @@ class MapView : public QWidget {
   ~MapView() = default;
 
   int GetScale() const;
+  BuyWindow* GetBuyWindow();
   void SetScale(int scale);
 
   void DrawObject(QPainter* painter, const QPoint& pos,
                   const QSize& size, const QPixmap& picture);
 
+  void SetStoreDialog(QMouseEvent* event);
+
   void paintEvent(QPaintEvent* event) override;
 
-  void mousePressEvent(QMouseEvent *event) override;
+  void mousePressEvent(QMouseEvent* event) override;
   void mouseReleaseEvent(QMouseEvent* event) override;
-
-
+  void mouseDoubleClickEvent(QMouseEvent* event) override;
 
  signals:
-  void MousePressedHandler(QMouseEvent *event);
-  void MouseReleasedHandler(QMouseEvent *event);
+  void MousePressedHandler(QMouseEvent* event);
+  void MouseReleasedHandler(QMouseEvent* event);
+  void MouseDoubleClickedHandler(QMouseEvent* event);
+  void ConfirmButtonPressed(BuyMode mode, QString name = "");
+  void CancelButtonPressed(BuyMode mode, QString name = "");
 
  private:
+  void ConnectUI();
+
   int scale_;
   std::shared_ptr<World> world_;
+  BuyWindow* buy_window_;
 };

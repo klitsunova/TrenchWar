@@ -1,9 +1,13 @@
 #include <random>
 #include <utility>
+#include <iostream>
 
 #include "world.h"
 
-World::World(const QString& path, Mode mode, Side side) {
+#include <QAudioOutput>
+#include "Models/Tools/settings.h"
+
+World::World(const QString& path, GameMode mode, Side side) {
   LoadMap(path, mode, side);
   picture_ = DrawWorld();
 }
@@ -44,7 +48,6 @@ void World::AddTower(const QPoint& position) {
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
   assert(bullet.get() != nullptr);
   bullets_.push_back(bullet);
-  emit Shot();
 }
 
 const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
@@ -212,7 +215,7 @@ void World::MoveSoldiers() {
   }
 }
 
-void World::LoadMap(const QString& path, Mode mode, Side side) {
+void World::LoadMap(const QString& path, GameMode mode, Side side) {
   QFile file(path);
 
   if (!file.open(QIODevice::ReadOnly)) {

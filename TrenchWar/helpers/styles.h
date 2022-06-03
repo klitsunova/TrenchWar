@@ -16,7 +16,13 @@ const QString kPushButton =
 
     "QPushButton::pressed {"
     "background-color: #233b0f;"
-    "border-style: inset; }";
+    "border-style: inset; }"
+
+    "QPushButton:disabled {"
+    "border-color: #233b0f;}"
+
+    "QPushButton:hover {"
+    "border-color: black;}";
 
 const QString kExitButton =
     "QPushButton {"
@@ -36,12 +42,76 @@ const QString kWidget =
     "QWidget {"
     "background-color: #BFB790;}";
 
-const QString kStoreBox =
-    "QLabel {"
+const QString kStoreBoxMoneyLabels =
+    "QWidget {"
+    "border: 0px solid green;"
+    "border-radius: 4px;"
+    "padding: 2px;"
+    "background-color: #BFB790;}";
+
+const QString kStoreBoxMoneyWidget =
+    "QWidget {"
     "border: 2px solid green;"
     "border-radius: 4px;"
     "padding: 2px;"
     "background-color: #BFB790;}";
+
+const QString kStoreMenu =
+    "QWidget {"
+    "background-color: #40826d;}";
+
+const QString kStoreDialog =
+    "QDialog {"
+    "background-color: white}";
+
+const QString kRadioButton =
+    "QRadioButton::indicator {"
+    "width: 30px;"
+    "height: 30px;}"
+
+    "QRadioButton::indicator::unchecked {"
+    "image: url(:/Resources/Images/UncheckedCommon.png);}"
+
+    "QRadioButton::indicator::checked {"
+    "image: url(:/Resources/Images/CheckedCommon.png);}"
+
+    "QRadioButton::indicator::unchecked:hover {"
+    "image: url(:/Resources/Images/UncheckedHovered.png);}"
+
+    "QRadioButton::indicator::checked:hover {"
+    "image: url(:/Resources/Images/CheckedHovered.png);}"
+
+    "QRadioButton::indicator::unchecked:pressed {"
+    "image: url(:/Resources/Images/UncheckedPressed.png);}"
+
+    "QRadioButton::indicator::checked:pressed {"
+    "image: url(:/Resources/Images/CheckedPressed.png);}";
+
+const QString kCheckBox =
+    "QCheckBox {"
+    "spacing: 5px;}"
+
+    "QCheckBox::indicator {"
+    "width: 30px;"
+    "height: 30px;}"
+
+    "QCheckBox::indicator::unchecked {"
+    "image: url(:/Resources/Images/UncheckedCommon.png);}"
+
+    "QCheckBox::indicator::checked {"
+    "image: url(:/Resources/Images/CheckedCommon.png);}"
+
+    "QCheckBox::indicator::unchecked:hover {"
+    "image: url(:/Resources/Images/UncheckedHovered.png);}"
+
+    "QCheckBox::indicator::checked:hover {"
+    "image: url(:/Resources/Images/CheckedHovered.png);}"
+
+    "QCheckBox::indicator::unchecked:pressed {"
+    "image: url(:/Resources/Images/UncheckedPressed.png);}"
+
+    "QCheckBox::indicator::checked:pressed {"
+    "image: url(:/Resources/Images/CheckedPressed.png);}";
 
 const QString kLineEdit =
     "QLineEdit {"

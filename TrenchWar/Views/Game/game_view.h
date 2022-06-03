@@ -11,6 +11,7 @@
 #include "Models/world.h"
 #include "Views/Game/map_view.h"
 #include "Views/Game/store_view.h"
+#include "helpers/enum_helpers.h"
 
 class GameView : public QWidget {
   Q_OBJECT
@@ -27,14 +28,17 @@ class GameView : public QWidget {
   StoreView* GetStore() const;
 
   void UpdateMap();
-  void HideReadyButton();
+  void Start();
+  void SetStoreDialog(QMouseEvent* event);
 
   void SetFullScreen(bool is_fullscreen);
   void SetStyle();
 
  signals:
-  void StartGame();
+  void StartGame(BuyMode mode);
   void Close();
+  void ConfirmButtonPressed(BuyMode mode, QString name = "");
+  void CancelButtonPressed(BuyMode mode, QString name = "");
 
  private:
   void ConnectUI();

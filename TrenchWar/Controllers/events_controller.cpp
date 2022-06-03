@@ -1,3 +1,4 @@
+#include <iostream>
 #include "events_controller.h"
 
 #include <random>
@@ -7,15 +8,16 @@
 #include "Models/Tools/settings.h"
 #include "Network/network_view.h"
 
-EventsController::EventsController(QWidget* parent, Mode mode)
-    : mode_(mode),
+EventsController::EventsController(QWidget* parent, GameMode mode)
+    : game_mode_(mode),
       game_finish_window_(new GameFinishWindow()),
       player_(new QMediaPlayer(this)) {
+
   setParent(parent);
   std::random_device rd;
   std::uniform_int_distribution<int> distribution(0, 1);
   player_side_ = static_cast<Side>(distribution(rd));
-  if (mode_ == Mode::kNetwork) {
+  if (game_mode_ == GameMode::kNetwork) {
     network_view_ = std::make_unique<NetworkView>(this);
     network_view_->show();
     connect(network_view_.get(),
@@ -62,14 +64,14 @@ void EventsController::ConnectUI() {
           &GameView::StartGame,
           this,
           &EventsController::SetPreparedStatus);
-  connect(view_->GetStore(),
-          &StoreView::BuildTrenchButtonPressed,
+  connect(view_.get(),
+          &GameView::ConfirmButtonPressed,
           this,
-          &EventsController::BuildTrench);
-  connect(view_->GetStore(),
-          &StoreView::DeleteTrenchButtonPressed,
+          &EventsController::ConfirmPurchase);
+  connect(view_.get(),
+          &GameView::CancelButtonPressed,
           this,
-          &EventsController::DeleteTrench);
+          &EventsController::CancelPurchase);
   connect(view_->GetMap(),
           &MapView::MouseReleasedHandler,
           this,
@@ -78,6 +80,14 @@ void EventsController::ConnectUI() {
           &MapView::MousePressedHandler,
           this,
           &EventsController::MapPressHandler);
+  connect(view_->GetMap(),
+          &MapView::MouseDoubleClickedHandler,
+          this,
+          &EventsController::MapDoubleClickHandler);
+  connect(view_->GetStore(),
+          &StoreView::ModeChanged,
+          this,
+          &EventsController::ChangeMode);
   connect(world_.get(),
           &World::Shot,
           this,
@@ -100,7 +110,7 @@ void EventsController::HideGame() {
 void EventsController::StartPreparationStage() {
   emit HideMainMenu();
   world_ = std::make_shared<World>(":Resources/Maps/map2.txt",
-                                   mode_,
+                                   game_mode_,
                                    player_side_);
   view_ = std::make_unique<GameView>(this, world_);
   trench_controller_ =
@@ -108,7 +118,7 @@ void EventsController::StartPreparationStage() {
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
 
-  if (mode_ == Mode::kNetwork) {
+  if (game_mode_ == GameMode::kNetwork) {
     network_view_->hide();
     network_controller_ = network_view_->GetNetworkController();
     player_side_ = network_view_->GetPlayerSide();
@@ -116,8 +126,6 @@ void EventsController::StartPreparationStage() {
             &NetworkController::GotSignalForActiveStage,
             this,
             &EventsController::StartActiveStage);
-    // temporary code
-    game_controller_->SetWorldObjects(player_side_);
   }
 
   ConnectUI();
@@ -126,7 +134,7 @@ void EventsController::StartPreparationStage() {
 }
 
 void EventsController::SetPreparedStatus() {
-  if (mode_ == Mode::kBot) {
+  if (game_mode_ == GameMode::kBot) {
     StartActiveStage();
     return;
   }
@@ -139,7 +147,10 @@ void EventsController::SetPreparedStatus() {
 }
 
 void EventsController::StartActiveStage() {
-  if (mode_ == Mode::kNetwork) {
+  CancelPurchase(buy_mode_);
+  view_->Start();
+  view_->GetStore()->setVisible(false);
+  if (game_mode_ == GameMode::kNetwork) {
     if (player_side_ == Side::kAttacker) {
       game_controller_->UpdateDefenders(
           network_controller_->GetDefendersData());
@@ -153,8 +164,7 @@ void EventsController::StartActiveStage() {
                     : Side::kAttacker;
     world_->LoadBotData(bot_side);
   }
-  DeleteTrench();
-  view_->HideReadyButton();
+  CancelPurchase(buy_mode_);
   game_stage = Stage::kActive;
   world_->UpdateCountAttackers();
   StartTimer();
@@ -171,66 +181,145 @@ void EventsController::SetFullScreen(bool is_fullscreen) {
 }
 
 void EventsController::MapPressHandler(QMouseEvent* event) {
-  if (player_side_ == Side::kDefender
-      && !trench_controller_->IsTrenchFixed()
-      && game_stage == Stage::kPreparation) {
-    trench_controller_->SetMouseClicked(true);
-    trench_controller_->SetFirstPoint(event->pos());
-    trench_controller_->SetSecondPoint(event->pos());
+  switch (buy_mode_) {
+    case BuyMode::kUnits: {
+      break;
+    }
+    case BuyMode::kTrench: {
+      if (player_side_ == Side::kDefender
+          && !trench_controller_->IsTrenchFixed()
+          && game_stage == Stage::kPreparation) {
+        trench_controller_->SetMouseClicked(true);
+        trench_controller_->SetFirstPoint(event->pos());
+        trench_controller_->SetSecondPoint(event->pos());
+      }
+    }
   }
 }
 
 void EventsController::MapReleaseHandler(QMouseEvent* event) {
-  if (player_side_ == Side::kAttacker
-      || trench_controller_->IsTrenchFixed()
-      || game_stage != Stage::kPreparation) {
-    return;
+  switch (buy_mode_) {
+    case BuyMode::kUnits: {
+      break;
+    }
+    case BuyMode::kTrench: {
+      if (player_side_ == Side::kAttacker
+          || trench_controller_->IsTrenchFixed()
+          || game_stage != Stage::kPreparation) {
+        return;
+      }
+
+      trench_controller_->SetSecondPoint(event->pos());
+      trench_controller_->Update();
+      world_->TrenchUpdate();
+      view_->UpdateMap();
+
+      trench_controller_->SetMouseClicked(true);
+      trench_controller_->SetTrenchFixed(
+          !trench_controller_->GetChangedCells().empty());
+
+      int cost = trench_controller_->GetTrenchLength();
+      view_->GetStore()->ShowCost(cost);
+
+      if (!trench_controller_->IsTrenchFixed()) {
+        trench_controller_->SetSaveCellsState();
+        world_->TrenchUpdate();
+        view_->UpdateMap();
+        trench_controller_->ClearChangedCells();
+        return;
+      }
+      view_->GetStore()->EnableStoreButtons();
+      break;
+    }
   }
-
-  trench_controller_->SetSecondPoint(event->pos());
-  trench_controller_->Update();
-  world_->TrenchUpdate();
-  view_->UpdateMap();
-
-  trench_controller_->SetMouseClicked(true);
-  trench_controller_->SetTrenchFixed(
-      !trench_controller_->GetChangedCells().empty());
-
-  if (!trench_controller_->IsTrenchFixed()) {
-    trench_controller_->SetSaveCellsState();
-    world_->TrenchUpdate();
-    view_->UpdateMap();
-    trench_controller_->ClearChangedCells();
-    return;
-  }
-
-  view_->GetStore()->ShowTrenchButtons();
 }
 
-void EventsController::BuildTrench() {
-  for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
-    world_->GetCell(changed_cell.first).is_trench = true;
+void EventsController::MapDoubleClickHandler(QMouseEvent* event) {
+  switch (buy_mode_) {
+    case BuyMode::kUnits: {
+      view_->SetStoreDialog(event);
+      break;
+    }
+    case BuyMode::kTrench: {
+      break;
+    }
   }
-  trench_controller_->ClearChangedCells();
-  view_->GetStore()->HideTrenchButtons();
-  trench_controller_->SetTrenchFixed(false);
 }
 
-void EventsController::DeleteTrench() {
-  trench_controller_->SetSaveCellsState();
-  world_->TrenchUpdate();
-  view_->UpdateMap();
-  trench_controller_->ClearChangedCells();
-  view_->GetStore()->HideTrenchButtons();
-  trench_controller_->SetTrenchFixed(false);
+void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
+  switch (mode) {
+    case BuyMode::kTrench: {
+      if ((view_->GetStore()->SpendMoney(name))) {
+        for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
+          world_->GetCell(changed_cell.first).is_trench = true;
+        }
+        trench_controller_->ClearChangedCells();
+        view_->GetStore()->HideTrenchButtons();
+        trench_controller_->SetTrenchFixed(false);
+        view_->GetStore()->ClearToSpendMoneyLabel();
+      }
+      break;
+    }
+    case BuyMode::kUnits: {
+      QPoint location;
+      if (view_->GetStore()->SpendMoney(name)) {
+        std::cerr << "Unit\n";
+        location = view_->GetMap()->GetBuyWindow()->GetLocation();
+        int window_width = view_->GetMap()->geometry().width() - 1;
+        int window_height = view_->GetMap()->geometry().height() - 1;
+
+        QPoint game_point;
+        game_point.setX(world_->GetSize().width() * (location.x()
+            - view_->GetMap()->mapToGlobal(QPoint(0, 0)).x())
+                            / window_width);
+        game_point.setY(world_->GetSize().height() * (location.y()
+            - view_->GetMap()->mapToGlobal(QPoint(0, 0)).y())
+                            / window_height);
+
+        world_->AddSoldier(game_point, Side::kAttacker);
+        world_->Update();
+        view_->UpdateMap();
+      }
+      break;
+    }
+  }
+}
+
+void EventsController::CancelPurchase(BuyMode mode, QString name) {
+  switch (mode) {
+    case BuyMode::kTrench: {
+      trench_controller_->SetSaveCellsState();
+      world_->TrenchUpdate();
+      view_->UpdateMap();
+      trench_controller_->ClearChangedCells();
+      view_->GetStore()->HideTrenchButtons();
+      view_->GetStore()->ClearToSpendMoneyLabel();
+      trench_controller_->SetTrenchFixed(false);
+      break;
+    }
+    case BuyMode::kUnits: {
+      view_->GetMap()->GetBuyWindow()->ClearWindow();
+      view_->GetMap()->GetBuyWindow()->Close();
+      break;
+    }
+  }
+}
+
+void EventsController::ChangeMode(BuyMode mode) {
+  buy_mode_ = mode;
+  switch (mode) {
+    case BuyMode::kUnits: {
+      CancelPurchase(BuyMode::kTrench);
+      break;
+    }
+    case BuyMode::kTrench: {
+      CancelPurchase(BuyMode::kUnits);
+      break;
+    }
+  }
 }
 
 void EventsController::Shot() {
-  auto* audioOutput = new QAudioOutput(this);
-  player_->setAudioOutput(audioOutput);
-  player_->setSource(QUrl("qrc:Resources/Music/singleshot_voice.mp3"));
-  audioOutput->setVolume(Settings::GetMusicVolume() /
-      static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
   player_->setLoops(1);
   player_->play();
 }

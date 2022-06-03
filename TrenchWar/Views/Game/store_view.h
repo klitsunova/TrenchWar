@@ -1,14 +1,17 @@
 #pragma once
 
+#include <map>
 #include <vector>
 
-#include <QWidget>
 #include <QHBoxLayout>
-#include <QPushButton>
 #include <QLabel>
+#include <QPushButton>
+#include <QWidget>
 
 #include "Models/Tools/pixmap_loader.h"
-
+#include "Models/world.h"
+#include "helpers/enum_helpers.h"
+#include "helpers/store.h"
 
 class StoreView : public QWidget {
   Q_OBJECT
@@ -19,21 +22,38 @@ class StoreView : public QWidget {
 
   void HideReadyButton();
   void HideTrenchButtons() const;
-  void ShowTrenchButtons() const;
+  void EnableStoreButtons() const;
+  void paintEvent(QPaintEvent*) override;
+  void FixModes();
+  bool SpendMoney(QString name);
+  void ShowCost(int cost);
+  void ClearToSpendMoneyLabel();
 
  signals:
-  void Ready();
-  void BuildTrenchButtonPressed();
-  void DeleteTrenchButtonPressed();
+  void Ready(BuyMode mode);
+  void ConfirmButtonPressed(BuyMode mode, QString name = "");
+  void CancelButtonPressed(BuyMode mode, QString name = "");
+  void ModeChanged(BuyMode mode);
 
  private:
   void AddItems();
+  void SetMoneyWidget();
+  void SetToSpendMoneyWidget();
   void SetStyles();
   void ConnectUI();
+  void SetNames();
+  void SetLayout();
 
   QHBoxLayout* layout_;
   QPushButton* ready_button_;
-  QPushButton* build_trench_;
-  QPushButton* delete_trench_;
-  std::vector<QLabel*> items_;
+  QPushButton* confirm_button_;
+  QPushButton* cancel_button_;
+  QButtonGroup* purchase_modes_;
+  QWidget* money_widget_area_;
+  QLabel* money_label_;
+  QWidget* money_widget_area_to_spend_;
+  QLabel* money_label_to_spend_;
+  BuyMode mode_{BuyMode::kTrench};
+  std::map<QString, int> price_list_;
+  int count_money_{1000};
 };

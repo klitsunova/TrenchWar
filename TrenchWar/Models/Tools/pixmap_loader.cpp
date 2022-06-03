@@ -14,6 +14,8 @@ const QString PixmapLoader::menu_background_path =
     ":Resources/Images/MenuBackground.jpg";
 const QString PixmapLoader::menu_title_path =
     ":Resources/Images/MenuTitle.png";
+const QString PixmapLoader::dollar_path =
+    ":Resources/Images/Dollar.png";
 
 std::map<QString, std::shared_ptr<QPixmap>> PixmapLoader::images;
 
@@ -56,4 +58,8 @@ const std::shared_ptr<QPixmap>& PixmapLoader::GetMenuBackground() {
 
 const std::shared_ptr<QPixmap>& PixmapLoader::GetMenuTitle() {
   return GetPixmap(menu_title_path);
+}
+
+const std::shared_ptr<QPixmap>& PixmapLoader::GetDollar() {
+  return GetPixmap(dollar_path);
 }

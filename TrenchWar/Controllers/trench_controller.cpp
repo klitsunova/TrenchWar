@@ -76,7 +76,7 @@ bool TrenchController::CheckMinimumTrenchLength(const QPoint& first,
   int dx = std::abs(first.x() - second.x());
   int dy = std::abs(first.y() - second.y());
 
-  if (dx >= kMinimumTrenchLength || dy >= kMinimumTrenchLength) {
+  if (dx >= kTrenchStep || dy >= kTrenchStep) {
     return true;
   }
 
@@ -140,4 +140,8 @@ void TrenchController::ClearChangedCells() {
 const std::vector<std::pair<QPoint, QColor>>& TrenchController::
     GetChangedCells() const {
   return changed_cells_;
+}
+
+int TrenchController::GetTrenchLength() {
+  return changed_cells_.size();
 }

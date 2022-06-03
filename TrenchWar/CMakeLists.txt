@@ -38,6 +38,7 @@ set(VIEWS
         Views/Menu/settings_menu_view.cpp
         Views/Menu/pause_menu_view.cpp
         Views/Menu/exit_window.cpp
+        Views/Game/buy_window.cpp Views/Game/buy_window.h
         Views/Game/game_end_window.cpp
         )
 

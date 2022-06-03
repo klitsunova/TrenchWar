@@ -25,6 +25,8 @@ class PixmapLoader {
   static const std::shared_ptr<QPixmap>& GetMenuBackground();
   static const std::shared_ptr<QPixmap>& GetMenuTitle();
 
+  static const std::shared_ptr<QPixmap>& GetDollar();
+
  private:
   PixmapLoader() = default;
 
@@ -36,4 +38,5 @@ class PixmapLoader {
   static const QString bullet_path;
   static const QString menu_background_path;
   static const QString menu_title_path;
+  static const QString dollar_path;
 };

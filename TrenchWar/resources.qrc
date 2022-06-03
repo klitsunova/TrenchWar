@@ -13,6 +13,13 @@
         <file>Resources/Maps/map_test.txt</file>
         <file>Resources/Images/MenuBackground.jpg</file>
         <file>Resources/Images/MenuTitle.png</file>
+        <file>Resources/Images/CheckedCommon.png</file>
+        <file>Resources/Images/UncheckedCommon.png</file>
+        <file>Resources/Images/CheckedHovered.png</file>
+        <file>Resources/Images/UncheckedHovered.png</file>
+        <file>Resources/Images/CheckedPressed.png</file>
+        <file>Resources/Images/UncheckedPressed.png</file>
+        <file>Resources/Images/Dollar.png</file>
         <file>Resources/Music/gameplay_sound_1.mp3</file>
         <file>Resources/Music/gameplay_sound_2.mp3</file>
         <file>Resources/Music/singleshot_voice.mp3</file>

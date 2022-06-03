@@ -36,6 +36,8 @@ void SettingsMenuView::SetStyles() {
   cancel_button_->setFont(fonts::kDialogButton);
   cancel_button_->setFixedSize(element_sizes::kDialogButton);
   cancel_button_->setStyleSheet(styles::kExitButton);
+
+  set_full_screen_checkbox_->setStyleSheet(styles::kCheckBox);
 }
 
 void SettingsMenuView::SetLayout() {

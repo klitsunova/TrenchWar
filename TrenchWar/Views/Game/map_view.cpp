@@ -5,15 +5,19 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QPoint>
+#include <QStyle>
 
 #include "Models/GameObjects/game_object.h"
 #include "helpers/sizes.h"
+#include "helpers/styles.h"
 
 MapView::MapView(QWidget* parent,
                  const std::shared_ptr<World>& world) {
   setParent(parent);
   // TODO(AZYAVCHIKOV): maybe not best solution
   // setMinimumSize(window_sizes::kWorld);
+  buy_window_ = new BuyWindow();
+  ConnectUI();
   world_ = world;
 }
 
@@ -32,9 +36,9 @@ void MapView::DrawObject(QPainter* painter, const QPoint& pos,
   int window_height = painter->window().height() - 1;
   QPoint screen_point;
   screen_point.setX((window_width * (2 * pos.x() + 1))
-                        / (2 * world_->GetSize().width()));
+                    / (2 * world_->GetSize().width()));
   screen_point.setY((window_height * (2 * pos.y() + 1))
-                        / (2 * world_->GetSize().height()));
+                    / (2 * world_->GetSize().height()));
 
   QPoint top_point = QPoint(screen_point.x() - size.width() / 2,
                             screen_point.y() - size.height() / 2);
@@ -93,4 +97,30 @@ void MapView::mousePressEvent(QMouseEvent* event) {
 
 void MapView::mouseReleaseEvent(QMouseEvent* event) {
   MouseReleasedHandler(event);
+}
+
+void MapView::mouseDoubleClickEvent(QMouseEvent* event) {
+  MouseDoubleClickedHandler(event);
+}
+
+void MapView::SetStoreDialog(QMouseEvent* event) {
+  buy_window_->show();
+  QPoint position = event->globalPosition().toPoint();
+  buy_window_->move(position);
+  buy_window_->SetWindowLocation(position);
+}
+
+void MapView::ConnectUI() {
+  connect(buy_window_,
+          &BuyWindow::ConfirmButtonPressed,
+          this,
+          &MapView::ConfirmButtonPressed);
+  connect(buy_window_,
+          &BuyWindow::CancelButtonPressed,
+          this,
+          &MapView::CancelButtonPressed);
+}
+
+BuyWindow* MapView::GetBuyWindow() {
+  return buy_window_;
 }

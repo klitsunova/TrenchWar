@@ -29,17 +29,19 @@ class EventsController : public QWidget {
   };
 
   explicit EventsController(QWidget* parent = nullptr,
-                            Mode mode = Mode::kNetwork);
+                            GameMode mode = GameMode::kNetwork);
   ~EventsController() override = default;
 
   void StartPreparationStage();
   void SetPreparedStatus();
   void StartActiveStage();
+
   void HideGame();
   void SetFullScreen(bool is_fullscreen);
 
-  void BuildTrench();
-  void DeleteTrench();
+  void ConfirmPurchase(BuyMode mode, QString name = "");
+  void CancelPurchase(BuyMode mode, QString name = "");
+  void ChangeMode(BuyMode mode);
 
   void StartTimer();
   void PauseTimer();
@@ -49,6 +51,7 @@ class EventsController : public QWidget {
 
   void MapPressHandler(QMouseEvent* event);
   void MapReleaseHandler(QMouseEvent* event);
+  void MapDoubleClickHandler(QMouseEvent* event);
 
   void Shot();
   void CheckGameEnding();
@@ -65,7 +68,7 @@ class EventsController : public QWidget {
 
   void ConnectUI();
 
-  Mode mode_;
+  GameMode game_mode_;
   std::shared_ptr<World> world_;
   std::unique_ptr<TrenchController> trench_controller_;
   std::unique_ptr<GameView> view_;
@@ -77,5 +80,6 @@ class EventsController : public QWidget {
   GameFinishWindow* game_finish_window_;
 
   Stage game_stage = Stage::kPreparation;
+  BuyMode buy_mode_;
   Side player_side_;
 };

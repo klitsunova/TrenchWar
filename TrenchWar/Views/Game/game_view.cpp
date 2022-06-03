@@ -1,7 +1,6 @@
 #include "game_view.h"
 
 #include <QLabel>
-#include <QPainter>
 #include <QStyle>
 
 #include <helpers/fonts.h>
@@ -31,6 +30,22 @@ void GameView::ConnectUI() {
           &QShortcut::activated,
           this,
           &GameView::Close);
+  connect(store_,
+          &StoreView::ConfirmButtonPressed,
+          this,
+          &GameView::ConfirmButtonPressed);
+  connect(store_,
+          &StoreView::CancelButtonPressed,
+          this,
+          &GameView::CancelButtonPressed);
+  connect(map_,
+          &MapView::ConfirmButtonPressed,
+          this,
+          &GameView::ConfirmButtonPressed);
+  connect(map_,
+          &MapView::CancelButtonPressed,
+          this,
+          &GameView::CancelButtonPressed);
 }
 
 void GameView::UpdateMap() {
@@ -42,7 +57,8 @@ void GameView::closeEvent(QCloseEvent* event) {
   Close();
 }
 
-void GameView::HideReadyButton() {
+void GameView::Start() {
+  store_->FixModes();
   store_->HideReadyButton();
 }
 
@@ -68,4 +84,8 @@ MapView* GameView::GetMap() const {
 
 StoreView* GameView::GetStore() const {
   return store_;
+}
+
+void GameView::SetStoreDialog(QMouseEvent* event) {
+  map_->SetStoreDialog(event);
 }

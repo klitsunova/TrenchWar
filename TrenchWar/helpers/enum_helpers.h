@@ -5,7 +5,12 @@ enum class Side {
   kAttacker
 };
 
-enum class Mode {
+enum class BuyMode {
+  kTrench,
+  kUnits
+};
+
+enum class GameMode {
   kNetwork,
   kBot,
 };

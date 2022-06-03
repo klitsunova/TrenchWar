@@ -18,6 +18,7 @@
 #include "Tools/pixmap_loader.h"
 #include "helpers/enum_helpers.h"
 #include "helpers/sizes.h"
+#include <QMediaPlayer>
 
 class World : public QObject {
   Q_OBJECT
@@ -26,7 +27,7 @@ class World : public QObject {
   struct Cell;
 
  public:
-  explicit World(const QString& path, Mode mode, Side side);
+  explicit World(const QString& path, GameMode mode, Side side);
 
   ~World() = default;
 
@@ -93,7 +94,7 @@ class World : public QObject {
   bool is_need_update_towers_{true};
   int dead_soldiers_{0};
 
-  void LoadMap(const QString& path, Mode mode, Side side);
+  void LoadMap(const QString& path, GameMode mode, Side side);
 
   QPixmap DrawWorld() const;
 
