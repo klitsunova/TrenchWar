@@ -66,7 +66,7 @@ set(SOURCES
         ${VIEWS}
         ${CONTROLLERS}
         ${NETWORK}
-        )
+        Views/Game/game_end_window.h Views/Game/game_end_window.cpp)
 
 set(LIBRARIES
         Qt::Core

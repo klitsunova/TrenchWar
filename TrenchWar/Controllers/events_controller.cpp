@@ -7,7 +7,8 @@
 #include "Models/Tools/settings.h"
 #include "Network/network_view.h"
 
-EventsController::EventsController(QWidget* parent, Mode mode) : mode_(mode) {
+EventsController::EventsController(QWidget* parent, Mode mode) : mode_(mode),
+                                   game_finish_window_(new GameFinishWindow()) {
   setParent(parent);
   std::random_device rd;
   std::uniform_int_distribution<int> distribution(0, 1);
@@ -75,10 +76,10 @@ void EventsController::ConnectUI() {
           &MapView::MousePressedHandler,
           this,
           &EventsController::MapPressHandler);
-  connect(view_.get(),
-          &GameView::GameFinishedEvent,
+  connect(game_finish_window_,
+          &GameFinishWindow::ToMenu,
           this,
-          &EventsController::ReturnToMainMenu);
+          &EventsController::CloseFinishWindow);
 }
 
 void EventsController::HideGame() {
@@ -229,16 +230,21 @@ void EventsController::CheckGameEnding() {
   }
 
   if (attackers == 0 && towers == 0) {
-    view_->SetDrawState();
+    game_finish_window_->Show(GameFinishWindow::States::kDraw);
   }
 
   if ((attackers == 0 && player == Side::kDefender) ||
       (towers == 0 && player == Side::kAttacker)) {
-    view_->SetWinState();
+    game_finish_window_->Show(GameFinishWindow::States::kWin);
   }
 
   if ((attackers == 0 && player == Side::kAttacker) ||
       (towers == 0 && player == Side::kDefender)) {
-    view_->SetLoseState();
+    game_finish_window_->Show(GameFinishWindow::States::kLose);
   }
+}
+
+void EventsController::CloseFinishWindow() {
+  game_finish_window_->hide();
+  ReturnToMainMenu();
 }

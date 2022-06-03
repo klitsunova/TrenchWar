@@ -32,21 +32,12 @@ class GameView : public QWidget {
   void SetFullScreen(bool is_fullscreen);
   void SetStyle();
 
-  void SetWinState();
-  void SetLoseState();
-  void SetDrawState();
-
  signals:
   void StartGame();
   void Close();
-  void GameFinishedEvent();
 
  private:
   void ConnectUI();
-
-  QMessageBox* game_finished_message_;
-
-  QPushButton* menu_button_;
 
   QVBoxLayout* layout_;
   MapView* map_;

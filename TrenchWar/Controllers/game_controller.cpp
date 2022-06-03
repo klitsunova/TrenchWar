@@ -17,7 +17,7 @@ void GameController::SetWorldObjects(Side side) {
       world_->AddSoldier(Side::kAttacker);
     } else {
       world_->AddSoldier(Side::kDefender);
-      if (i < 3) {
+      if (i < 1) {
         world_->AddTower();
       }
     }

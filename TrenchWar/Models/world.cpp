@@ -474,7 +474,7 @@ void World::FireTower() {
 
 void World::UpdateCountAttackers() {
   count_attackers = 0;
-  for (const auto& soldier: soldiers_) {
+  for (const auto& soldier : soldiers_) {
     if (soldier->GetSide() == Side::kAttacker) {
       count_attackers++;
     }
