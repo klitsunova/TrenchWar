@@ -198,7 +198,6 @@ void EventsController::MapPressHandler(QMouseEvent* event) {
 }
 
 void EventsController::MapReleaseHandler(QMouseEvent* event) {
-  std::cout << static_cast<int>(buy_mode_) << std::endl;
   switch (buy_mode_) {
     case BuyMode::kUnits: {
       break;

@@ -37,38 +37,6 @@ void BuyWindow::SetStyles() {
 }
 
 void BuyWindow::SetList() {
-  // https://habr.com/ru/post/147952/
-  // TODO (Make jsoned)
-  // QVariant variant;
-  //
-  // QDataStream in(":Resources/cost.json");
-  // QString string;
-  // in >> string;
-  //
-  // std::cout << string.size();
-  // assert(variant.isNull());
-  // QJsonObject object = variant.toJsonObject();
-  // QJsonArray array = object["Positions"].toArray();
-  //
-  // std::cout << array.size();
-  // for (const auto& element : array) {
-  //   QJsonObject json_element = element.toObject();
-  //   Data data;
-  //   data.filename = json_element["filename"].toString();
-  //   data.name = json_element["name"].toString();
-  //   data.cost = json_element["cost"].toInt();
-  //
-  //   std::cout << data.cost << std::endl;
-  //
-  //   QListWidgetItem* item = new QListWidgetItem;
-  //   item->setText(data.name);
-  //   QPixmap pixmap(data.filename);
-  //   QIcon icon;
-  //   icon.addPixmap(pixmap);
-  //   item->setIcon(icon);
-  //   list_->addItem(item);
-  //   price_list_[data.name] = data.cost;
-  // }
     auto* item = new QListWidgetItem;
     item->setText("Soldier");
     QPixmap pixmap(":Resources/Images/Soldier1.png");

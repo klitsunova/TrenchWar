@@ -22,7 +22,7 @@ const QString kPushButton =
     "border-color: #233b0f;}"
 
     "QPushButton:hover {"
-    "border-color: navy;}";
+    "border-color: black;}";
 
 const QString kExitButton =
     "QPushButton {"
