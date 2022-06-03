@@ -472,6 +472,15 @@ void World::FireTower() {
   }
 }
 
+void World::UpdateCountAttackers() {
+  count_attackers = 0;
+  for (const auto& soldier: soldiers_) {
+    if (soldier->GetSide() == Side::kAttacker) {
+      count_attackers++;
+    }
+  }
+}
+
 void World::LoadBotData(Side side) {
   if (!bot_tower_buffer_.empty()) {
     for (const auto& point : bot_tower_buffer_) {
