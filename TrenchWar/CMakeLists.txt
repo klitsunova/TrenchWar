@@ -37,6 +37,7 @@ set(VIEWS
         Views/Menu/settings_menu_view.cpp
         Views/Menu/pause_menu_view.cpp
         Views/Menu/exit_window.cpp
+        Views/Game/game_end_window.cpp
         )
 
 set(CONTROLLERS
@@ -66,7 +67,7 @@ set(SOURCES
         ${VIEWS}
         ${CONTROLLERS}
         ${NETWORK}
-        Views/Game/game_end_window.h Views/Game/game_end_window.cpp)
+        )
 
 set(LIBRARIES
         Qt::Core
