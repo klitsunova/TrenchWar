@@ -1,6 +1,8 @@
 #pragma once
 
+#include <QAudioOutput>
 #include <QScreen>
+#include <QMediaPlayer>
 #include <QWidget>
 
 #include "Controllers/events_controller.h"
@@ -21,7 +23,7 @@ class MainController : public QWidget {
   void ResumeGame();
   void ReturnToMenu();
   void Exit();
-  void ChangeMusic();
+  void ChangeMusicVolume();
   void ChangeScreenValue();
   void HideMenu();
 
@@ -29,7 +31,9 @@ class MainController : public QWidget {
   void ConnectUI();
   void ConnectEventsControllerUI();
 
+  void CreateAudioOutput();
+
   MenuController* menu_controller_;
   EventsController* events_controller_{nullptr};
-  Settings* settings_{nullptr};
+  QMediaPlayer* music_player_;
 };

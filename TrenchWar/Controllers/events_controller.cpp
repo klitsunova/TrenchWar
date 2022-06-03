@@ -8,7 +8,11 @@
 #include "Models/Tools/settings.h"
 #include "Network/network_view.h"
 
-EventsController::EventsController(QWidget* parent, GameMode mode) : game_mode_(mode) {
+EventsController::EventsController(QWidget* parent, GameMode mode)
+    : game_mode_(mode),
+      game_finish_window_(new GameFinishWindow()),
+      player_(new QMediaPlayer(this)) {
+
   setParent(parent);
   std::random_device rd;
   std::uniform_int_distribution<int> distribution(0, 1);
@@ -36,6 +40,7 @@ void EventsController::timerEvent(QTimerEvent*) {
   world_->FireTower();
   view_->UpdateMap();
   world_->Update();
+  CheckGameEnding();
 }
 
 void EventsController::StartTimer() {
@@ -83,6 +88,14 @@ void EventsController::ConnectUI() {
           &StoreView::ModeChanged,
           this,
           &EventsController::ChangeMode);
+  connect(world_.get(),
+          &World::Shot,
+          this,
+          &EventsController::Shot);
+  connect(game_finish_window_,
+          &GameFinishWindow::ToMenu,
+          this,
+          &EventsController::CloseFinishWindow);
 }
 
 void EventsController::HideGame() {
@@ -100,9 +113,8 @@ void EventsController::StartPreparationStage() {
                                    game_mode_,
                                    player_side_);
   view_ = std::make_unique<GameView>(this, world_);
-  trench_controller_ = std::make_unique<TrenchController>(this,
-                                                          world_,
-                                                          view_->GetMap());
+  trench_controller_ =
+      std::make_unique<TrenchController>(this, world_, view_->GetMap());
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
 
@@ -114,12 +126,10 @@ void EventsController::StartPreparationStage() {
             &NetworkController::GotSignalForActiveStage,
             this,
             &EventsController::StartActiveStage);
-    // temporary code
-    game_controller_->SetWorldObjects(player_side_);
   }
 
   ConnectUI();
-  view_->SetFullScreen(Settings::Instance()->IsFullScreen());
+  view_->SetFullScreen(Settings::IsFullScreen());
   view_->show();
 }
 
@@ -150,13 +160,13 @@ void EventsController::StartActiveStage() {
     }
   } else {
     Side bot_side = (player_side_ == Side::kAttacker)
-        ? Side::kDefender
-        : Side::kAttacker;
+                    ? Side::kDefender
+                    : Side::kAttacker;
     world_->LoadBotData(bot_side);
   }
-  // DeleteTrench();
-  // view_->HideReadyButton();
+  CancelPurchase(buy_mode_);
   game_stage = Stage::kActive;
+  world_->UpdateCountAttackers();
   StartTimer();
 }
 
@@ -194,7 +204,8 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
       break;
     }
     case BuyMode::kTrench: {
-      if (trench_controller_->IsTrenchFixed()
+      if (player_side_ == Side::kAttacker
+          || trench_controller_->IsTrenchFixed()
           || game_stage != Stage::kPreparation) {
         return;
       }
@@ -211,8 +222,7 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
       int cost = trench_controller_->GetTrenchLength();
       view_->GetStore()->ShowCost(cost);
 
-      if (player_side_ == Side::kAttacker
-          && !trench_controller_->IsTrenchFixed()) {
+      if (!trench_controller_->IsTrenchFixed()) {
         trench_controller_->SetSaveCellsState();
         world_->TrenchUpdate();
         view_->UpdateMap();
@@ -308,4 +318,37 @@ void EventsController::ChangeMode(BuyMode mode) {
       break;
     }
   }
+}
+
+void EventsController::Shot() {
+  player_->setLoops(1);
+  player_->play();
+}
+
+void EventsController::CheckGameEnding() {
+  int attackers = world_->GetCountAttackers();
+  int towers = world_->GetCountTowers();
+
+  if (attackers == 0 || towers == 0) {
+    PauseTimer();
+  }
+
+  if (attackers == 0 && towers == 0) {
+    game_finish_window_->Show(GameFinishWindow::States::kDraw);
+  }
+
+  if ((attackers == 0 && player_side_ == Side::kDefender) ||
+      (towers == 0 && player_side_ == Side::kAttacker)) {
+    game_finish_window_->Show(GameFinishWindow::States::kWin);
+  }
+
+  if ((attackers == 0 && player_side_ == Side::kAttacker) ||
+      (towers == 0 && player_side_ == Side::kDefender)) {
+    game_finish_window_->Show(GameFinishWindow::States::kLose);
+  }
+}
+
+void EventsController::CloseFinishWindow() {
+  game_finish_window_->hide();
+  ReturnToMainMenu();
 }

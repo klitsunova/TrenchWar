@@ -20,5 +20,8 @@
         <file>Resources/Images/CheckedPressed.png</file>
         <file>Resources/Images/UncheckedPressed.png</file>
         <file>Resources/Images/Dollar.png</file>
+        <file>Resources/Music/gameplay_sound_1.mp3</file>
+        <file>Resources/Music/gameplay_sound_2.mp3</file>
+        <file>Resources/Music/singleshot_voice.mp3</file>
     </qresource>
 </RCC>

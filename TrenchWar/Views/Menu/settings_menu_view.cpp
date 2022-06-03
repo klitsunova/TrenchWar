@@ -12,8 +12,7 @@ SettingsMenuView::SettingsMenuView(
                        apply_button_(new QPushButton("Apply", this)),
                        cancel_button_(new QPushButton("Cancel", this)),
                        sound_slider_(new QSlider(this)),
-                       set_full_screen_checkbox_(new QCheckBox()),
-                       settings_(Settings::Instance()) {
+                       set_full_screen_checkbox_(new QCheckBox()) {
   SetStyles();
   SetLayout();
   ConnectUI();
@@ -76,7 +75,8 @@ void SettingsMenuView::closeEvent(QCloseEvent* event) {
 }
 
 int SettingsMenuView::GetVolume() {
-  return sound_slider_->sliderPosition();
+  // returns value in percents
+  return (sound_slider_->sliderPosition() * 100) / sound_slider_->maximum();
 }
 
 bool SettingsMenuView::IsFullScreen() {
@@ -88,9 +88,9 @@ void SettingsMenuView::SetValues() {
   sound_slider_->setOrientation(Qt::Horizontal);
   sound_slider_->setMinimum(0);
   sound_slider_->setMaximum(100);
-  sound_slider_->setValue(settings_->GetMusicVolume());
+  sound_slider_->setValue(Settings::GetMusicVolume());
   // fullscreen check
-  if (settings_->IsFullScreen()) {
+  if (Settings::IsFullScreen()) {
     set_full_screen_checkbox_->setCheckState(Qt::Checked);
   } else {
     set_full_screen_checkbox_->setCheckState(Qt::Unchecked);

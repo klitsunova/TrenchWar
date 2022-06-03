@@ -15,6 +15,7 @@ find_package(Qt6 COMPONENTS
         Core
         Gui
         Widgets
+        Multimedia
         Network
         REQUIRED)
 
@@ -37,7 +38,9 @@ set(VIEWS
         Views/Menu/settings_menu_view.cpp
         Views/Menu/pause_menu_view.cpp
         Views/Menu/exit_window.cpp
-        Views/Game/buy_window.cpp Views/Game/buy_window.h)
+        Views/Game/buy_window.cpp Views/Game/buy_window.h
+        Views/Game/game_end_window.cpp
+        )
 
 set(CONTROLLERS
         Controllers/game_controller.cpp
@@ -72,6 +75,7 @@ set(LIBRARIES
         Qt::Core
         Qt::Gui
         Qt::Widgets
+        Qt6::Multimedia
         Qt6::Network
         )
 

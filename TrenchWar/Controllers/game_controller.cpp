@@ -24,14 +24,14 @@ void GameController::SetWorldObjects(Side side) {
 void GameController::UpdateAttackers(const GameData& data) {
   for (size_t i = 0; i < data.soldiers.size(); ++i) {
     QPoint position = QPoint(data.soldiers[i].x, data.soldiers[i].y);
-      world_->AddSoldier(position, Side::kAttacker);
+    world_->AddSoldier(position, Side::kAttacker);
   }
 }
 
 void GameController::UpdateDefenders(const GameData& data) {
   for (size_t i = 0; i < data.soldiers.size(); ++i) {
     QPoint position = QPoint(data.soldiers[i].x, data.soldiers[i].y);
-      world_->AddSoldier(position, Side::kDefender);
+    world_->AddSoldier(position, Side::kDefender);
   }
   for (const auto& trench : data.trenches) {
     world_->GetCell(QPoint(trench.first, trench.second)).is_trench = true;

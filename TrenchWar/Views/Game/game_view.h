@@ -2,10 +2,11 @@
 
 #include <memory>
 
+#include <QCloseEvent>
+#include <QMessageBox>
+#include <QShortcut>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <QCloseEvent>
-#include <QShortcut>
 
 #include "helpers/enum_helpers.h"
 #include "Models/world.h"
