@@ -9,9 +9,13 @@ MainController::MainController(QWidget* parent)
 
 void MainController::ConnectUI() {
   connect(menu_controller_,
-          &MenuController::StartGame,
+          &MenuController::StartNetworkGame,
           this,
-          &MainController::StartGame);
+          &MainController::StartNetworkGame);
+  connect(menu_controller_,
+          &MenuController::StartBotGame,
+          this,
+          &MainController::StartBotGame);
   connect(menu_controller_,
           &MenuController::ResumeGame,
           this,
@@ -34,9 +38,16 @@ void MainController::ConnectUI() {
           &MainController::ChangeScreenValue);
 }
 
-void MainController::StartGame() {
+void MainController::StartNetworkGame() {
   menu_controller_->SetGameStarted();
-  events_controller_ = new EventsController(this);
+  events_controller_ = new EventsController(this, Mode::kNetwork);
+  ConnectEventsControllerUI();
+}
+
+void MainController::StartBotGame() {
+  menu_controller_->HideMenu();
+  menu_controller_->SetGameStarted();
+  events_controller_ = new EventsController(this, Mode::kBot);
   ConnectEventsControllerUI();
 }
 
@@ -87,4 +98,9 @@ void MainController::ChangeScreenValue() {
   if (events_controller_ != nullptr) {
     events_controller_->SetFullScreen(settings_->IsFullScreen());
   }
+}
+
+void MainController::HideMenu() {
+  menu_controller_->HideMenu();
+  menu_controller_->SetGameStarted();
 }

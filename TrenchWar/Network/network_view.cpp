@@ -27,7 +27,7 @@ void NetworkView::ConnectButtons() const {
   connect(back_to_main_menu_,
           &QPushButton::clicked,
           this,
-          &NetworkView::ReturnToMainMenu);
+          &NetworkView::ReturnToMenu);
   connect(try_connect_,
           &QPushButton::clicked,
           this,
@@ -207,4 +207,13 @@ std::shared_ptr<NetworkController> NetworkView::GetNetworkController() const {
 
 Side NetworkView::GetPlayerSide() const {
   return network_player_->GetSide();
+}
+
+void NetworkView::ReturnToMenu() {
+  Disconnect();
+  emit ReturnToMainMenu();
+}
+
+void NetworkView::closeEvent(QCloseEvent* event) {
+  ReturnToMenu();
 }
