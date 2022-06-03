@@ -45,6 +45,8 @@ class EventsController : public QWidget {
   void MapPressHandler(QMouseEvent* event);
   void MapReleaseHandler(QMouseEvent* event);
 
+  void CheckGameEnding();
+
  signals:
   void ShowPauseMenu();
   void ReturnToMainMenu();

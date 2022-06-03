@@ -376,6 +376,9 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
         (*k)->TakeDamage(damage);
         bullet->MakeUsed();
         if ((*k)->IsDead()) {
+          if ((*k)->GetSide() == Side::kAttacker) {
+            count_attackers--;
+          }
           cells_[i][j].soldiers.erase(k);
           ++dead_soldiers_;
         }
@@ -441,6 +444,23 @@ void World::FireTower() {
       is_need_update_towers_ = true;
     }
   }
+}
+
+void World::UpdateCountAttackers() {
+  count_attackers = 0;
+  for (const auto& soldier : soldiers_) {
+    if (soldier->GetSide() == Side::kAttacker) {
+      count_attackers++;
+    }
+  }
+}
+
+int World::GetCountAttackers() const {
+    return count_attackers;
+}
+
+int World::GetCountTowers() const {
+    return towers_.size();
 }
 
 World::Landscape::Landscape(const QColor& q_color, int speed) {

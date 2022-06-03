@@ -26,6 +26,7 @@ void EventsController::timerEvent(QTimerEvent*) {
   world_->FireTower();
   view_->UpdateMap();
   world_->Update();
+  CheckGameEnding();
 }
 
 void EventsController::StartTimer() {
@@ -69,6 +70,10 @@ void EventsController::ConnectUI() {
           &MapView::MousePressedHandler,
           this,
           &EventsController::MapPressHandler);
+  connect(view_.get(),
+          &GameView::GameFinishedEvent,
+          this,
+          &EventsController::ReturnToMainMenu);
 }
 
 void EventsController::HideGame() {
@@ -115,6 +120,7 @@ void EventsController::StartActiveStage() {
   DeleteTrench();
   view_->HideReadyButton();
   game_stage = Stage::kActive;
+  world_->UpdateCountAttackers();
   StartTimer();
 }
 
@@ -181,4 +187,28 @@ void EventsController::DeleteTrench() {
   trench_controller_->ClearChangedCells();
   view_->GetStore()->HideTrenchButtons();
   trench_controller_->SetTrenchFixed(false);
+}
+
+void EventsController::CheckGameEnding() {
+  int attackers = world_->GetCountAttackers();
+  int towers = world_->GetCountTowers();
+  Side player = network_controller_->GetPlayerSide();
+
+  if (attackers == 0 || towers == 0) {
+    PauseTimer();
+  }
+
+  if (attackers == 0 && towers == 0) {
+    view_->SetDrawState();
+  }
+
+  if ((attackers == 0 && player == Side::kDefender) ||
+      (towers == 0 && player == Side::kAttacker)) {
+    view_->SetWinState();
+  }
+
+  if ((attackers == 0 && player == Side::kAttacker) ||
+      (towers == 0 && player == Side::kDefender)) {
+    view_->SetLoseState();
+  }
 }

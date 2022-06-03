@@ -2,10 +2,11 @@
 
 #include <memory>
 
+#include <QCloseEvent>
+#include <QMessageBox>
+#include <QShortcut>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <QCloseEvent>
-#include <QShortcut>
 
 #include "Models/world.h"
 #include "Views/Game/map_view.h"
@@ -31,12 +32,21 @@ class GameView : public QWidget {
   void SetFullScreen(bool is_fullscreen);
   void SetStyle();
 
+  void SetWinState();
+  void SetLoseState();
+  void SetDrawState();
+
  signals:
   void StartGame();
   void Close();
+  void GameFinishedEvent();
 
  private:
   void ConnectUI();
+
+  QMessageBox* game_finished_message_;
+
+  QPushButton* menu_button_;
 
   QVBoxLayout* layout_;
   MapView* map_;

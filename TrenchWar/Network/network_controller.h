@@ -30,6 +30,8 @@ class NetworkController : public QObject {
   GameData& GetEnemyData();
   void SetOwnData(GameData data);
 
+  Side GetPlayerSide() const;
+
   size_t GetId();
   bool IsStarted() const;
   void SetStarted(bool is_started);
