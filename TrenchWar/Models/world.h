@@ -55,6 +55,9 @@ class World : public QObject{
 
   void FireTower();
 
+  signals:
+  void Shot();
+
  private:
   struct Landscape {
     Landscape(const QColor& q_color, int speed);

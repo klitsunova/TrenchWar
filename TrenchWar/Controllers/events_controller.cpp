@@ -5,7 +5,8 @@
 
 #include <QMessageBox>
 
-EventsController::EventsController(QWidget* parent) {
+EventsController::EventsController(QWidget* parent)
+    : player_(new QMediaPlayer(this)) {
   setParent(parent);
   network_view_ = std::make_unique<NetworkView>(this);
   network_view_->show();
@@ -71,7 +72,7 @@ void EventsController::ConnectUI() {
           &EventsController::MapPressHandler);
   assert(world_.get() != nullptr);
   connect(world_.get(),
-          &World::AddBullet,
+          &World::Shot,
           this,
           &EventsController::Shot);
 }
@@ -188,13 +189,15 @@ void EventsController::DeleteTrench() {
   trench_controller_->SetTrenchFixed(false);
 }
 
+#include <iostream>
 void EventsController::Shot() {
-  auto new_music_player = new QMediaPlayer(this);
   auto* audioOutput = new QAudioOutput(this);
-  new_music_player->setAudioOutput(audioOutput);
-  new_music_player->setSource(QUrl("qrc:singleshot_voice.mp3"));
+  player_->setAudioOutput(audioOutput);
+  // QFile file1("qrc:Resources/Music/singleshot_voice.mp3");
+  player_->setSource(QUrl("qrc:Resources/Music/singleshot_voice.mp3"));
+  // std::cerr << Settings::GetMusicVolume() << " - shot volume\n";
   audioOutput->setVolume(Settings::GetMusicVolume() /
       static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
-  new_music_player->setLoops(1);
-  new_music_player->play();
+  player_->setLoops(1);
+  player_->play();
 }

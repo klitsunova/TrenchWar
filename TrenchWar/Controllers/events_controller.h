@@ -66,6 +66,7 @@ class EventsController : public QWidget {
   std::unique_ptr<GameController> game_controller_;
   std::unique_ptr<NetworkView> network_view_;
   std::shared_ptr<NetworkController> network_controller_;
+  QMediaPlayer* player_;
 
   Stage game_stage = Stage::kPreparation;
 };

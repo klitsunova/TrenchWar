@@ -11,7 +11,6 @@ MainController::MainController(QWidget* parent)
 
   CreateAudioOutput();
 
-  std::cerr << "start\n";
   music_player_->setSource(QUrl("qrc:Resources/Music/gameplay_sound_1.mp3"));
   music_player_->play();
 }
@@ -41,10 +40,6 @@ void MainController::ConnectUI() {
           &MenuController::FullScreenValueChanged,
           this,
           &MainController::ChangeScreenValue);
-  connect(events_controller_,
-          &EventsController::Shot,
-          this,
-          &MainController::MakeShotSound);
 }
 
 void MainController::StartGame() {
@@ -83,6 +78,10 @@ void MainController::ConnectEventsControllerUI() {
           &EventsController::ReturnToMainMenu,
           this,
           &MainController::ReturnToMenu);
+  connect(events_controller_,
+          &EventsController::Shot,
+          this,
+          &MainController::MakeShotSound);
   // connect(events_controller_,
   //         &EventsController::HideMainMenu,
   //         menu_controller_,
