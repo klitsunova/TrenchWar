@@ -461,7 +461,7 @@ void World::FireTower() {
     auto& tower = towers_[i];
     Cell& cell =
         cells_[tower->GetPosition().y()][tower->GetPosition().x()];
-    for (const auto& soldier: cell.soldiers) {
+    for (const auto& soldier : cell.soldiers) {
       tower->TakeDamage(soldier->GetTowerDamage());
     }
     if (tower->IsDestroyed()) {
