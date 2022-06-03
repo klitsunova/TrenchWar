@@ -22,7 +22,7 @@ Server::Server() : ip_(this),
 void Server::ShowIp() {
   QString ip_addresses;
   QList<QHostAddress> addresses = QNetworkInterface::allAddresses();
-  for (const auto& address: addresses) {
+  for (const auto& address : addresses) {
     ip_addresses += address.toString();
     ip_addresses += '\n';
   }
@@ -66,7 +66,7 @@ void Server::DisconnectClient() {
 }
 
 void Server::ReceiveClientData() {
-  for (auto& player: players_) {
+  for (auto& player : players_) {
     if (player->Socket()->bytesAvailable()) {
       QByteArray arr = player->Socket()->readAll();
       QDataStream data_stream(&arr, QIODevice::ReadOnly);
@@ -127,7 +127,7 @@ void Server::SendStartSignal(const QVariant& q_variant) {
 }
 
 void Server::SendGameStateToAllPlayers() {
-  for (auto& player: players_) {
+  for (auto& player : players_) {
     if (player->GetSide() == Side::kDefender) {
       Network::WriteData(player->Socket(),
                          QVariant::fromValue(attacker_data_),
@@ -141,7 +141,7 @@ void Server::SendGameStateToAllPlayers() {
 }
 
 bool Server::IsAllPrepared() {
-  for (const auto& player: players_) {
+  for (const auto& player : players_) {
     if (!player->IsPrepared()) {
       return false;
     }

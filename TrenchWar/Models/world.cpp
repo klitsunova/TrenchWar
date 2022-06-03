@@ -51,7 +51,8 @@ void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
   auto* audioOutput = new QAudioOutput(this);
   player->setAudioOutput(audioOutput);
   audioOutput->setVolume(Settings::GetMusicVolume() /
-                         static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
+                         static_cast<double>(Settings::kMaxVolume
+                                             - Settings::kMinVolume));
   player->setSource(QUrl("qrc:Resources/Music/singleshot_voice.mp3"));
   player->play();
   assert(bullet.get() != nullptr);
@@ -458,7 +459,8 @@ void World::FireTower() {
   std::shared_ptr<Tower> temp = nullptr;
   for (int i = 0; i < towers_.size(); ++i) {
     auto& tower = towers_[i];
-    Cell& cell = cells_[tower->GetPosition().y()][tower->GetPosition().x()];
+    Cell& cell =
+        cells_[tower->GetPosition().y()][tower->GetPosition().x()];
     for (const auto& soldier: cell.soldiers) {
       tower->TakeDamage(soldier->GetTowerDamage());
     }
@@ -476,7 +478,7 @@ void World::FireTower() {
 
 void World::UpdateCountAttackers() {
   count_attackers_ = 0;
-  for (const auto& soldier: soldiers_) {
+  for (const auto& soldier : soldiers_) {
     if (soldier->GetSide() == Side::kAttacker) {
       count_attackers_++;
     }
@@ -485,7 +487,7 @@ void World::UpdateCountAttackers() {
 
 void World::LoadBotData(Side side) {
   if (!bot_soldier_buffer_.empty()) {
-    for (const auto& point: bot_soldier_buffer_) {
+    for (const auto& point : bot_soldier_buffer_) {
       AddSoldier(point, side);
     }
   }

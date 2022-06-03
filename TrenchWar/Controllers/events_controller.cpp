@@ -248,7 +248,7 @@ void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
   switch (mode) {
     case BuyMode::kTrench: {
       if ((view_->GetStore()->SpendMoney(name))) {
-        for (const auto& changed_cell: trench_controller_->GetChangedCells()) {
+        for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
           world_->GetCell(changed_cell.first).is_trench = true;
         }
         trench_controller_->ClearChangedCells();
@@ -267,9 +267,13 @@ void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
         int window_height = view_->GetMap()->geometry().height() - 1;
 
         QPoint game_point;
-        game_point.setX(world_->GetSize().width() * (location.x() - view_->GetMap()->mapToGlobal(QPoint(0, 0)).x())
+        game_point.setX(world_->GetSize().width()
+                        * (location.x()
+                           - view_->GetMap()->mapToGlobal(QPoint(0, 0)).x())
                         / window_width);
-        game_point.setY(world_->GetSize().height() * (location.y() - view_->GetMap()->mapToGlobal(QPoint(0, 0)).y())
+        game_point.setY(world_->GetSize().height()
+                        * (location.y()
+                           - view_->GetMap()->mapToGlobal(QPoint(0, 0)).y())
                         / window_height);
 
         world_->AddSoldier(game_point, player_side_);
@@ -327,11 +331,13 @@ void EventsController::CheckGameEnding() {
     game_finish_window_->Show(GameFinishWindow::States::kDraw);
   }
 
-  if ((attackers == 0 && player_side_ == Side::kDefender) || (towers == 0 && player_side_ == Side::kAttacker)) {
+  if ((attackers == 0 && player_side_ == Side::kDefender)
+      || (towers == 0 && player_side_ == Side::kAttacker)) {
     game_finish_window_->Show(GameFinishWindow::States::kWin);
   }
 
-  if ((attackers == 0 && player_side_ == Side::kAttacker) || (towers == 0 && player_side_ == Side::kDefender)) {
+  if ((attackers == 0 && player_side_ == Side::kAttacker)
+      || (towers == 0 && player_side_ == Side::kDefender)) {
     game_finish_window_->Show(GameFinishWindow::States::kLose);
   }
 }
