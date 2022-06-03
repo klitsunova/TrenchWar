@@ -8,8 +8,10 @@
 #include "Network/network_view.h"
 
 EventsController::EventsController(QWidget* parent, Mode mode) : mode_(mode),
-                                   game_finish_window_(new GameFinishWindow()),
-                                   player_(new QMediaPlayer(this)) {
+                                                                 game_finish_window_(
+                                                                     new GameFinishWindow()),
+                                                                 player_(new QMediaPlayer(
+                                                                     this)) {
   setParent(parent);
   std::random_device rd;
   std::uniform_int_distribution<int> distribution(0, 1);
@@ -149,8 +151,8 @@ void EventsController::StartActiveStage() {
     }
   } else {
     Side bot_side = (player_side_ == Side::kAttacker)
-        ? Side::kDefender
-        : Side::kAttacker;
+                    ? Side::kDefender
+                    : Side::kAttacker;
     world_->LoadBotData(bot_side);
   }
   DeleteTrench();
@@ -233,7 +235,8 @@ void EventsController::Shot() {
       static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
   player_->setLoops(1);
   player_->play();
-  
+}
+
 void EventsController::CheckGameEnding() {
   int attackers = world_->GetCountAttackers();
   int towers = world_->GetCountTowers();

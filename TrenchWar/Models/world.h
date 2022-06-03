@@ -57,7 +57,7 @@ class World : public QObject {
   void MakeShots();
 
   void FireTower();
-  
+
   void UpdateCountAttackers();
   int GetCountAttackers() const;
   int GetCountTowers() const;

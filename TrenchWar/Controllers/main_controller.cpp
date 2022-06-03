@@ -117,7 +117,8 @@ void MainController::CreateAudioOutput() {
   music_player_->setAudioOutput(audioOutput);
   music_player_->setLoops(QMediaPlayer::Infinite);
   music_player_->play();
-  
+}
+
 void MainController::HideMenu() {
   menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
