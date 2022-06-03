@@ -8,7 +8,7 @@
 #include <QLabel>
 #include <QWidget>
 
-#include "helpers/modes.h"
+#include "helpers/enum_helpers.h"
 #include "helpers/store.h"
 #include "Models/Tools/pixmap_loader.h"
 #include "Models/world.h"

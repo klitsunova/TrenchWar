@@ -15,13 +15,14 @@ find_package(Qt6 COMPONENTS
         Core
         Gui
         Widgets
+        Network
         REQUIRED)
 
 set(MODELS
         Models/world.cpp
         Models/GameObjects/game_object.cpp
         Models/GameObjects/soldier.cpp
-        Models/GameObjects/terrain_object.cpp
+        Models/GameObjects/tower.cpp
         Models/Tools/pixmap_loader.cpp
         Models/Tools/settings.cpp
         Models/weapon.cpp
@@ -46,18 +47,39 @@ set(CONTROLLERS
         Controllers/trench_controller.cpp
         )
 
+set(NETWORK
+        Network/player_model.cpp
+        Network/helpers.cpp
+        Network/network_controller.cpp
+        Network/network_view.cpp
+        Network/player_view.cpp
+        )
+
+set(SERVER
+        Server/main.cpp
+        Server/server.cpp
+        )
+
 set(SOURCES
         main.cpp
         ${MODELS}
         ${VIEWS}
-        ${CONTROLLERS})
+        ${CONTROLLERS}
+        ${NETWORK}
+        )
+
+set(LIBRARIES
+        Qt::Core
+        Qt::Gui
+        Qt::Widgets
+        Qt6::Network
+        )
+
 
 qt6_add_big_resources(RESOURCES resources.qrc)
 
 add_executable(TrenchWar ${SOURCES} ${RESOURCES})
+add_executable(TrenchWarServer ${SERVER} ${NETWORK} ${MODELS})
 
-target_link_libraries(TrenchWar
-        Qt::Core
-        Qt::Gui
-        Qt::Widgets
-        )
+target_link_libraries(TrenchWar ${LIBRARIES})
+target_link_libraries(TrenchWarServer ${LIBRARIES})

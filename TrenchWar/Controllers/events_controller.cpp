@@ -1,26 +1,41 @@
 #include <iostream>
 #include "events_controller.h"
 
-EventsController::EventsController(QWidget* parent) {
+#include <random>
+
+#include <QMessageBox>
+
+#include "Models/Tools/settings.h"
+#include "Network/network_view.h"
+
+EventsController::EventsController(QWidget* parent, GameMode mode) : game_mode_(mode) {
   setParent(parent);
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt");
-  view_ = std::make_unique<GameView>(this, world_);
-  trench_controller_ = std::make_unique<TrenchController>(this,
-                                                          world_,
-                                                          view_->GetMap());
-  timer_ = std::make_unique<QBasicTimer>();
-  game_controller_ = std::make_unique<GameController>(this, world_);
-  game_controller_->SetWorldObjects();
-  ConnectUI();
-  view_->show();
+  std::random_device rd;
+  std::uniform_int_distribution<int> distribution(0, 1);
+  player_side_ = static_cast<Side>(distribution(rd));
+  if (game_mode_ == GameMode::kNetwork) {
+    network_view_ = std::make_unique<NetworkView>(this);
+    network_view_->show();
+    connect(network_view_.get(),
+            &NetworkView::StartGame,
+            this,
+            &EventsController::StartPreparationStage);
+    connect(network_view_.get(),
+            &NetworkView::ReturnToMainMenu,
+            this,
+            &EventsController::ReturnToMainMenu);
+  } else {
+    StartPreparationStage();
+  }
 }
 
 void EventsController::timerEvent(QTimerEvent*) {
   world_->MoveSoldiers();
   world_->MakeShots();
   world_->MoveBullets();
-  world_->Update();
+  world_->FireTower();
   view_->UpdateMap();
+  world_->Update();
 }
 
 void EventsController::StartTimer() {
@@ -43,7 +58,7 @@ void EventsController::ConnectUI() {
   connect(view_.get(),
           &GameView::StartGame,
           this,
-          &EventsController::Start);
+          &EventsController::SetPreparedStatus);
   connect(view_.get(),
           &GameView::ConfirmButtonPressed,
           this,
@@ -71,13 +86,76 @@ void EventsController::ConnectUI() {
 }
 
 void EventsController::HideGame() {
-  view_->hide();
+  if (network_view_) {
+    network_view_->hide();
+  }
+  if (view_) {
+    view_->hide();
+  }
 }
 
-void EventsController::Start(BuyMode mode) {
-  CancelPurchase(mode);
+void EventsController::StartPreparationStage() {
+  emit HideMainMenu();
+  world_ = std::make_shared<World>(":Resources/Maps/map2.txt",
+                                   game_mode_,
+                                   player_side_);
+  view_ = std::make_unique<GameView>(this, world_);
+  trench_controller_ = std::make_unique<TrenchController>(this,
+                                                          world_,
+                                                          view_->GetMap());
+  timer_ = std::make_unique<QBasicTimer>();
+  game_controller_ = std::make_unique<GameController>(this, world_);
+
+  if (game_mode_ == GameMode::kNetwork) {
+    network_view_->hide();
+    network_controller_ = network_view_->GetNetworkController();
+    player_side_ = network_view_->GetPlayerSide();
+    connect(network_controller_.get(),
+            &NetworkController::GotSignalForActiveStage,
+            this,
+            &EventsController::StartActiveStage);
+    // temporary code
+    game_controller_->SetWorldObjects(player_side_);
+  }
+
+  ConnectUI();
+  view_->SetFullScreen(Settings::Instance()->IsFullScreen());
+  view_->show();
+}
+
+void EventsController::SetPreparedStatus() {
+  if (game_mode_ == GameMode::kBot) {
+    StartActiveStage();
+    return;
+  }
+  if (player_side_ == Side::kAttacker) {
+    network_controller_->SetAttackersData(game_controller_->GetAttackersData());
+  } else {
+    network_controller_->SetDefendersData(game_controller_->GetDefendersData());
+  }
+  network_controller_->SendData();
+}
+
+void EventsController::StartActiveStage() {
+  CancelPurchase(buy_mode_);
   view_->Start();
   view_->GetStore()->setVisible(false);
+  if (game_mode_ == GameMode::kNetwork) {
+    if (player_side_ == Side::kAttacker) {
+      game_controller_->UpdateDefenders(
+          network_controller_->GetDefendersData());
+    } else {
+      game_controller_->UpdateAttackers(
+          network_controller_->GetAttackersData());
+    }
+  } else {
+    Side bot_side = (player_side_ == Side::kAttacker)
+        ? Side::kDefender
+        : Side::kAttacker;
+    world_->LoadBotData(bot_side);
+  }
+  // DeleteTrench();
+  // view_->HideReadyButton();
   game_stage = Stage::kActive;
   StartTimer();
 }
@@ -87,16 +165,19 @@ EventsController::Stage EventsController::GetGameStage() const {
 }
 
 void EventsController::SetFullScreen(bool is_fullscreen) {
-  view_->SetFullScreen(is_fullscreen);
+  if (view_) {
+    view_->SetFullScreen(is_fullscreen);
+  }
 }
 
 void EventsController::MapPressHandler(QMouseEvent* event) {
-  switch (mode_) {
+  switch (buy_mode_) {
     case BuyMode::kUnits: {
       break;
     }
     case BuyMode::kTrench: {
-      if (!trench_controller_->IsTrenchFixed()
+      if (player_side_ == Side::kDefender
+          && !trench_controller_->IsTrenchFixed()
           && game_stage == Stage::kPreparation) {
         trench_controller_->SetMouseClicked(true);
         trench_controller_->SetFirstPoint(event->pos());
@@ -107,8 +188,8 @@ void EventsController::MapPressHandler(QMouseEvent* event) {
 }
 
 void EventsController::MapReleaseHandler(QMouseEvent* event) {
-  std::cout << static_cast<int>(mode_) << std::endl;
-  switch (mode_) {
+  std::cout << static_cast<int>(buy_mode_) << std::endl;
+  switch (buy_mode_) {
     case BuyMode::kUnits: {
       break;
     }
@@ -130,7 +211,8 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
       int cost = trench_controller_->GetTrenchLength();
       view_->GetStore()->ShowCost(cost);
 
-      if (!trench_controller_->IsTrenchFixed()) {
+      if (player_side_ == Side::kAttacker
+          && !trench_controller_->IsTrenchFixed()) {
         trench_controller_->SetSaveCellsState();
         world_->TrenchUpdate();
         view_->UpdateMap();
@@ -141,11 +223,10 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
       break;
     }
   }
-
 }
 
 void EventsController::MapDoubleClickHandler(QMouseEvent* event) {
-  switch (mode_) {
+  switch (buy_mode_) {
     case BuyMode::kUnits: {
       view_->SetStoreDialog(event);
       break;
@@ -216,7 +297,7 @@ void EventsController::CancelPurchase(BuyMode mode, QString name) {
 }
 
 void EventsController::ChangeMode(BuyMode mode) {
-  mode_ = mode;
+  buy_mode_ = mode;
   switch (mode) {
     case BuyMode::kUnits: {
       CancelPurchase(BuyMode::kTrench);

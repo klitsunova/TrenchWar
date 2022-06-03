@@ -45,7 +45,7 @@ void MapView::DrawObject(QPainter* painter, const QPoint& pos,
   QPoint bottom_point = QPoint(screen_point.x() + size.width() / 2,
                                screen_point.y() + size.height() / 2);
   painter->drawPixmap(QRect(top_point, bottom_point),
-                     picture);
+                      picture);
   painter->restore();
 }
 
@@ -54,15 +54,15 @@ void MapView::paintEvent(QPaintEvent*) {
   QPainter painter;
   painter.begin(&buffer);
   painter.save();
-  const std::vector<std::shared_ptr<TerrainObject>>& terrain_objects =
-      world_->GetTerrainObjects();
+  const std::vector<std::shared_ptr<Tower>>& towers =
+      world_->GetTowers();
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
 
   painter.drawPixmap(QRect(0, 0,
                            window_width + 1, window_height + 1),
                      world_->GetPixmap());
-  for (const auto& object : terrain_objects) {
+  for (const auto& object : towers) {
     DrawObject(&painter, object->GetPosition(),
                object->GetSize(), object->GetPixmap());
   }
@@ -78,7 +78,7 @@ void MapView::paintEvent(QPaintEvent*) {
   const std::vector<std::shared_ptr<Bullet>>& bullets =
       world_->GetBullets();
   for (const auto& bullet : bullets) {
-    if (bullet->IsUsed()) continue;
+    assert(!bullet->IsUsed());
     DrawObject(&painter, bullet->GetPosition(),
                bullet->GetSize(), bullet->GetPixmap());
   }

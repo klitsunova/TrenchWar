@@ -7,7 +7,7 @@
 #include <QCloseEvent>
 #include <QShortcut>
 
-#include "helpers/modes.h"
+#include "helpers/enum_helpers.h"
 #include "Models/world.h"
 #include "Views/Game/map_view.h"
 #include "Views/Game/store_view.h"

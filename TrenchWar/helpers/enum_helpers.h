@@ -9,3 +9,8 @@ enum class BuyMode {
   kTrench,
   kUnits
 };
+
+enum class GameMode {
+  kNetwork,
+  kBot,
+};

@@ -5,10 +5,10 @@
 
 #include <memory>
 
-#include "helpers/modes.h"
+#include "helpers/enum_helpers.h"
 #include "helpers/sizes.h"
-#include "Models/Tools/pixmap_loader.h"
 #include "Models/GameObjects/game_object.h"
+#include "Models/Tools/pixmap_loader.h"
 
 class Bullet : public GameObject {
  public:
@@ -22,6 +22,8 @@ class Bullet : public GameObject {
   const QPoint& GetToPosition() const;
 
   int GetDamage() const;
+
+  int GetProgress() const;
 
   Side GetSide() const;
 

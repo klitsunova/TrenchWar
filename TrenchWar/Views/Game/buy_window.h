@@ -8,7 +8,7 @@
 #include <map>
 
 #include "helpers/store.h"
-#include "helpers/modes.h"
+#include "helpers/enum_helpers.h"
 
 class BuyWindow : public QDialog {
   Q_OBJECT

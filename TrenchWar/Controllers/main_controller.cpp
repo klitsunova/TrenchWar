@@ -9,9 +9,13 @@ MainController::MainController(QWidget* parent)
 
 void MainController::ConnectUI() {
   connect(menu_controller_,
-          &MenuController::StartGame,
+          &MenuController::StartNetworkGame,
           this,
-          &MainController::StartGame);
+          &MainController::StartNetworkGame);
+  connect(menu_controller_,
+          &MenuController::StartBotGame,
+          this,
+          &MainController::StartBotGame);
   connect(menu_controller_,
           &MenuController::ResumeGame,
           this,
@@ -34,11 +38,16 @@ void MainController::ConnectUI() {
           &MainController::ChangeScreenValue);
 }
 
-void MainController::StartGame() {
+void MainController::StartNetworkGame() {
+  menu_controller_->SetGameStarted();
+  events_controller_ = new EventsController(this, GameMode::kNetwork);
+  ConnectEventsControllerUI();
+}
+
+void MainController::StartBotGame() {
   menu_controller_->HideMenu();
   menu_controller_->SetGameStarted();
-  events_controller_ = new EventsController(this);
-  events_controller_->SetFullScreen(Settings::Instance()->IsFullScreen());
+  events_controller_ = new EventsController(this, GameMode::kBot);
   ConnectEventsControllerUI();
 }
 
@@ -68,12 +77,19 @@ void MainController::ConnectEventsControllerUI() {
           &EventsController::ShowPauseMenu,
           this,
           &MainController::PauseGame);
+  connect(events_controller_,
+          &EventsController::ReturnToMainMenu,
+          this,
+          &MainController::ReturnToMenu);
+  connect(events_controller_,
+          &EventsController::HideMainMenu,
+          menu_controller_,
+          &MenuController::HideMenu);
 }
 
 void MainController::Exit() {
   QApplication::exit(0);
 }
-
 
 // TODO(Zolokinos)
 void MainController::ChangeMusic() {}
@@ -82,4 +98,9 @@ void MainController::ChangeScreenValue() {
   if (events_controller_ != nullptr) {
     events_controller_->SetFullScreen(settings_->IsFullScreen());
   }
+}
+
+void MainController::HideMenu() {
+  menu_controller_->HideMenu();
+  menu_controller_->SetGameStarted();
 }

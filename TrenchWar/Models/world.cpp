@@ -4,10 +4,9 @@
 
 #include "world.h"
 
-World::World(const QString& path) {
-  LoadMap(path);
+World::World(const QString& path, GameMode mode, Side side) {
+  LoadMap(path, mode, side);
   picture_ = DrawWorld();
-  AddTerrainObject();
 }
 
 void World::AddSoldier(Side side) {
@@ -30,13 +29,16 @@ void World::AddSoldier(const QPoint& position, Side side) {
   cell.soldiers.insert(new_object);
 }
 
-void World::AddTerrainObject() {
-  auto new_object = std::make_shared<TerrainObject>();
+void World::AddTower() {
+  auto new_object = std::make_shared<Tower>();
   new_object->SetRandomPosition(size_);
-  QPoint pos = new_object->GetPosition();
-  auto& cell = cells_[pos.y()][pos.x()];
-  cell.terrain_objects.push_back(new_object);
-  terrain_objects_.push_back(new_object);
+  towers_.push_back(new_object);
+}
+
+void World::AddTower(const QPoint& position) {
+  auto new_object = std::make_shared<Tower>();
+  new_object->SetPosition(position);
+  towers_.push_back(new_object);
 }
 
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
@@ -48,9 +50,9 @@ const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
   return soldiers_;
 }
 
-const std::vector<std::shared_ptr<TerrainObject>>&
-World::GetTerrainObjects() const {
-  return terrain_objects_;
+const std::vector<std::shared_ptr<Tower>>&
+World::GetTowers() const {
+  return towers_;
 }
 
 const std::vector<std::shared_ptr<Bullet>>& World::GetBullets() const {
@@ -82,6 +84,15 @@ void World::Update() {
     UpdateGroundDistances();
   }
   is_need_update_towers_ = false;
+  if (dead_soldiers_ * 2 > soldiers_.size()) {
+    std::sort(soldiers_.begin(), soldiers_.end(),
+              [&](std::shared_ptr<Soldier> soldier1,
+                  std::shared_ptr<Soldier> soldier2) {
+                return soldier1->GetHitPoints() > soldier2->GetHitPoints();
+              });
+    soldiers_.resize(soldiers_.size() - dead_soldiers_);
+    dead_soldiers_ = 0;
+  }
 }
 
 void World::MoveSoldiers() {
@@ -204,7 +215,7 @@ void World::MoveSoldiers() {
   }
 }
 
-void World::LoadMap(const QString& path) {
+void World::LoadMap(const QString& path, GameMode mode, Side side) {
   QFile file(path);
 
   if (!file.open(QIODevice::ReadOnly)) {
@@ -214,8 +225,8 @@ void World::LoadMap(const QString& path) {
   std::vector<std::pair<int64_t, int>> color_and_value;
 
   QString size = in.readLine();
-  int size_t = size.toInt();
-  for (int i = 0; i < size_t; i++) {
+  int size_int = size.toInt();
+  for (int i = 0; i < size_int; i++) {
     int64_t color;
     int value;
     in >> color >> value;
@@ -234,6 +245,27 @@ void World::LoadMap(const QString& path) {
       in >> color_index;
       cells_[i][j].landscape = Landscape(color_and_value[color_index].first,
                                          color_and_value[color_index].second);
+    }
+  }
+  in.readLine();
+  in.readLine();
+
+  size = in.readLine();
+  size_int = size.toInt();
+
+  for (int i = 0; i < size_int; i++) {
+    int x;
+    int y;
+    QString type;
+    in >> x >> y >> type;
+    if (type == "kTerrainObject") {
+      AddTower(QPoint(x, y));
+    } else if (
+        (type == "kDefender" && side == Side::kDefender)
+        || (type == "kAttacker" && side == Side::kAttacker)) {
+      AddSoldier(QPoint(x, y), side);
+    } else {
+      bot_soldier_buffer_.emplace_back(x, y);
     }
   }
 
@@ -282,7 +314,7 @@ void World::UpdateGroundDistances() {
                       decltype(cmp)>
       latest_at_ground(cmp);
 
-  for (auto& object : terrain_objects_) {
+  for (auto& object : towers_) {
     int x = object->GetPosition().x();
     int y = object->GetPosition().y();
     cells_[y][x].ground_distance = 0;
@@ -295,7 +327,7 @@ void World::UpdateGroundDistances() {
           return;
         }
         if (cells_[y][x].ground_distance > dist
-            + cells_[y][x].landscape.move_lag) {
+                + cells_[y][x].landscape.move_lag) {
           cells_[y][x].ground_distance = dist + cells_[y][x].landscape.move_lag;
           latest_at_ground.push(std::make_pair(x, y));
         }
@@ -323,16 +355,24 @@ void World::UpdateGroundDistances() {
 void World::MoveBullets() {
   // TODO(AZYAVCHIKOV) temporary code
   int bullet_radius = 5;
-  // int bullet_radius = 3;
-  // int repeat = 4;
   int repeat = 1;
 
   for (int i = 0; i < bullets_.size(); ++i) {
     for (int j = 0; j < repeat; ++j) {
-      if (bullets_[i]->IsUsed()) continue;
+      assert(!bullets_[i]->IsUsed());
       bullets_[i]->Move();
+      // DamageArea(bullets_[i]->GetPosition().x(),
+      // bullets_[i]->GetPosition().y(),
+      //            weapons::kBulletRadius, i);
       DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
                  bullet_radius, i);
+      if (bullets_[i]->IsUsed()) {
+        int last = bullets_.size() - 1;
+        std::swap(bullets_[i], bullets_[last]);
+        bullets_.erase(bullets_.begin() + last);
+        --i;
+        break;
+      }
     }
   }
 }
@@ -352,10 +392,15 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
       auto& container = cells_[i][j].soldiers;
       for (auto k = container.begin(); k != container.end(); k++) {
         if ((*k)->GetSide() == bullet->GetSide()) continue;
-        (*k)->TakeDamage(bullet->GetDamage());
+        int damage = bullet->GetDamage();
+        if (cells_[i][j].is_trench) {
+          damage = static_cast<int>(damage * weapons::kTrenchEffect);
+        }
+        (*k)->TakeDamage(damage);
         bullet->MakeUsed();
         if ((*k)->IsDead()) {
           cells_[i][j].soldiers.erase(k);
+          ++dead_soldiers_;
         }
         return;
       }
@@ -380,14 +425,15 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
     const std::shared_ptr<Soldier>& soldier) const {
   int nearest_index = -1;
   int64_t dist = INT64_MAX, new_dist;
-  QPoint to, from;
+  QPoint to;
+  QPoint from = soldier->GetPosition();
 
   for (int i = 0; i < soldiers_.size(); ++i) {
     if (soldiers_[i]->IsDead()) continue;
     if (soldiers_[i]->GetSide() == soldier->GetSide()) continue;
     to = soldiers_[i]->GetPosition();
-    new_dist = (from.x() - to.x()) * (from.x() - to.x()) +
-        (from.y() - to.y()) * (from.y() - to.y());
+    new_dist = (from.x() - to.x()) * (from.x() - to.x())
+        + (from.y() - to.y()) * (from.y() - to.y());
     if (new_dist < dist) {
       dist = new_dist;
       nearest_index = i;
@@ -400,6 +446,32 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
 
 void World::TrenchUpdate() {
   picture_ = DrawWorld();
+}
+
+void World::FireTower() {
+  std::shared_ptr<Tower> temp = nullptr;
+  for (int i = 0; i < towers_.size(); ++i) {
+    auto& tower = towers_[i];
+    Cell& cell = cells_[tower->GetPosition().y()][tower->GetPosition().x()];
+    for (const auto& soldier : cell.soldiers) {
+      tower->TakeDamage(soldier->GetTowerDamage());
+    }
+    if (tower->IsDestroyed()) {
+      int last = towers_.size() - 1;
+      std::swap(towers_[i], towers_[last]);
+      towers_.erase(towers_.begin() + last);
+      --i;
+      is_need_update_towers_ = true;
+    }
+  }
+}
+
+void World::LoadBotData(Side side) {
+  if (!bot_soldier_buffer_.empty()) {
+    for (const auto& point : bot_soldier_buffer_) {
+      AddSoldier(point, side);
+    }
+  }
 }
 
 World::Landscape::Landscape(const QColor& q_color, int speed) {

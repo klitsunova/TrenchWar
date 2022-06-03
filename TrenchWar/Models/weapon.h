@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#include "equipment.h"
 #include "Models/GameObjects/bullet.h"
-#include "helpers/modes.h"
+#include "equipment.h"
+#include "helpers/enum_helpers.h"
 #include "helpers/weapons.h"
 
 class Weapon : public Equipment {

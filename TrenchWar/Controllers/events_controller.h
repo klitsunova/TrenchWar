@@ -11,8 +11,9 @@
 
 #include "Controllers/game_controller.h"
 #include "Controllers/trench_controller.h"
+#include "Network/network_view.h"
 #include "Views/Game/game_view.h"
-#include "helpers/modes.h"
+#include "helpers/enum_helpers.h"
 #include "helpers/styles.h"
 
 class EventsController : public QWidget {
@@ -24,10 +25,14 @@ class EventsController : public QWidget {
     kActive,
   };
 
-  explicit EventsController(QWidget* parent = nullptr);
+  explicit EventsController(QWidget* parent = nullptr,
+                            GameMode mode = GameMode::kNetwork);
   ~EventsController() override = default;
 
-  void Start(BuyMode mode);
+  void StartPreparationStage();
+  void SetPreparedStatus();
+  void StartActiveStage();
+
   void HideGame();
   void SetFullScreen(bool is_fullscreen);
 
@@ -47,18 +52,24 @@ class EventsController : public QWidget {
 
  signals:
   void ShowPauseMenu();
+  void ReturnToMainMenu();
+  void HideMainMenu();
 
  private:
   static constexpr int kTimerInterval{30};
 
   void ConnectUI();
 
+  GameMode game_mode_;
   std::shared_ptr<World> world_;
   std::unique_ptr<TrenchController> trench_controller_;
   std::unique_ptr<GameView> view_;
   std::unique_ptr<QBasicTimer> timer_;
   std::unique_ptr<GameController> game_controller_;
+  std::unique_ptr<NetworkView> network_view_;
+  std::shared_ptr<NetworkController> network_controller_;
 
   Stage game_stage = Stage::kPreparation;
-  BuyMode mode_;
+  BuyMode buy_mode_;
+  Side player_side_;
 };

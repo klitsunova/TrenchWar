@@ -112,6 +112,15 @@ const QString kCheckBox =
 
     "QCheckBox::indicator::checked:pressed {"
     "image: url(:/Resources/Images/CheckedPressed.png);}";
+
+const QString kLineEdit =
+    "QLineEdit {"
+    "border: 2px solid black;"
+    "background-color: #DFDAC1;"
+    "border-radius: 10px;"
+    "padding: 0 8px;"
+    "font: 15px;"
+    "selection-background-color: darkgray; }";
 }  // namespace styles
 
 namespace colors {
