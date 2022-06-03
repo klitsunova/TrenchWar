@@ -25,7 +25,7 @@ void GameFinishWindow::SetStyles() {
 
 void GameFinishWindow::SetLayout() {
   layout_->setSpacing(interval_sizes::kSpacing);
-  layout_->addWidget(text_label_, 0, 0);
+  layout_->addWidget(text_label_, 0, 0, Qt::AlignCenter);
   auto* button_layout = new QHBoxLayout;
   button_layout->addWidget(menu_button_);
   layout_->addLayout(button_layout, 1, 0);
