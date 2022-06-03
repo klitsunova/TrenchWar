@@ -44,6 +44,7 @@ void World::AddTower(const QPoint& position) {
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
   assert(bullet.get() != nullptr);
   bullets_.push_back(bullet);
+  emit Shot();
 }
 
 const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {

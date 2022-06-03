@@ -19,7 +19,9 @@
 #include "helpers/enum_helpers.h"
 #include "helpers/sizes.h"
 
-class World {
+class World : public QObject {
+  Q_OBJECT
+
  private:
   struct Cell;
 
@@ -59,6 +61,9 @@ class World {
   void UpdateCountAttackers();
   int GetCountAttackers() const;
   int GetCountTowers() const;
+
+ signals:
+  void Shot();
 
  private:
   int count_attackers_;
