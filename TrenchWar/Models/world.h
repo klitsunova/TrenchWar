@@ -19,7 +19,8 @@
 #include "helpers/sides.h"
 #include "helpers/sizes.h"
 
-class World {
+class World : public QObject{
+  Q_OBJECT
  private:
   struct Cell;
 

@@ -69,6 +69,11 @@ void EventsController::ConnectUI() {
           &MapView::MousePressedHandler,
           this,
           &EventsController::MapPressHandler);
+  assert(world_.get() != nullptr);
+  connect(world_.get(),
+          &World::AddBullet,
+          this,
+          &EventsController::Shot);
 }
 
 void EventsController::HideGame() {
@@ -181,4 +186,15 @@ void EventsController::DeleteTrench() {
   trench_controller_->ClearChangedCells();
   view_->GetStore()->HideTrenchButtons();
   trench_controller_->SetTrenchFixed(false);
+}
+
+void EventsController::Shot() {
+  auto new_music_player = new QMediaPlayer(this);
+  auto* audioOutput = new QAudioOutput(this);
+  new_music_player->setAudioOutput(audioOutput);
+  new_music_player->setSource(QUrl("qrc:singleshot_voice.mp3"));
+  audioOutput->setVolume(Settings::GetMusicVolume() /
+      static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
+  new_music_player->setLoops(1);
+  new_music_player->play();
 }

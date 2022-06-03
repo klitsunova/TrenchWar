@@ -4,8 +4,10 @@
 #include <utility>
 #include <vector>
 
+#include <QAudioOutput>
 #include <QBasicTimer>
 #include <QKeyEvent>
+#include <QMediaPlayer>
 #include <QShortcut>
 #include <QWidget>
 
@@ -16,7 +18,7 @@
 #include "helpers/styles.h"
 
 class EventsController : public QWidget {
-  Q_OBJECT
+ Q_OBJECT
 
  public:
   enum class Stage {
@@ -44,6 +46,8 @@ class EventsController : public QWidget {
 
   void MapPressHandler(QMouseEvent* event);
   void MapReleaseHandler(QMouseEvent* event);
+
+  void Shot();
 
  signals:
   void ShowPauseMenu();

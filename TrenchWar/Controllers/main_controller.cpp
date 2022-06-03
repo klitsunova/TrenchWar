@@ -1,4 +1,5 @@
 #include "main_controller.h"
+#include <iostream>
 
 MainController::MainController(QWidget* parent)
     : QWidget(parent),
@@ -10,6 +11,7 @@ MainController::MainController(QWidget* parent)
 
   CreateAudioOutput();
 
+  std::cerr << "start\n";
   music_player_->setSource(QUrl("qrc:Resources/Music/gameplay_sound_1.mp3"));
   music_player_->play();
 }
@@ -39,6 +41,10 @@ void MainController::ConnectUI() {
           &MenuController::FullScreenValueChanged,
           this,
           &MainController::ChangeScreenValue);
+  connect(events_controller_,
+          &EventsController::Shot,
+          this,
+          &MainController::MakeShotSound);
 }
 
 void MainController::StartGame() {
@@ -77,10 +83,10 @@ void MainController::ConnectEventsControllerUI() {
           &EventsController::ReturnToMainMenu,
           this,
           &MainController::ReturnToMenu);
-  connect(events_controller_,
-          &EventsController::HideMainMenu,
-          menu_controller_,
-          &MenuController::HideMenu);
+  // connect(events_controller_,
+  //         &EventsController::HideMainMenu,
+  //         menu_controller_,
+  //         &MenuController::HideMenu);
 }
 
 void MainController::Exit() {
@@ -88,6 +94,7 @@ void MainController::Exit() {
 }
 
 void MainController::ChangeMusicVolume() {
+  std::cerr << "change volume:" << Settings::GetMusicVolume() << "\n";
   music_player_->audioOutput()->setVolume(Settings::GetMusicVolume() /
       static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
 }
@@ -105,4 +112,15 @@ void MainController::CreateAudioOutput() {
   music_player_->setAudioOutput(audioOutput);
   music_player_->setLoops(QMediaPlayer::Infinite);
   music_player_->play();
+}
+
+void MainController::MakeShotSound() {
+  // auto new_music_player = new QMediaPlayer(this);
+  // auto* audioOutput = new QAudioOutput(this);
+  // new_music_player->setAudioOutput(audioOutput);
+  // new_music_player->setSource(QUrl("qrc:singleshot_voice.mp3"));
+  // audioOutput->setVolume(Settings::GetMusicVolume() /
+  //     static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
+  // new_music_player->setLoops(1);
+  // new_music_player->play();
 }
