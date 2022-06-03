@@ -77,6 +77,7 @@ void EventsController::HideGame() {
 void EventsController::Start(BuyMode mode) {
   CancelPurchase(mode);
   view_->Start();
+  view_->GetStore()->setVisible(false);
   game_stage = Stage::kActive;
   StartTimer();
 }
