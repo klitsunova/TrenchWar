@@ -3,9 +3,13 @@
 #include <QLabel>
 #include <QPainter>
 #include <QStyle>
+
+#include <helpers/fonts.h>
+#include <helpers/styles.h>
+#include "helpers/sizes.h"
+
 #include <utility>
 
-#include "helpers/sizes.h"
 
 GameView::GameView(QWidget* parent, const std::shared_ptr<World>& world)
     : layout_(new QVBoxLayout(this)),

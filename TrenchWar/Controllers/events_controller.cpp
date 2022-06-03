@@ -7,7 +7,8 @@
 #include "Models/Tools/settings.h"
 #include "Network/network_view.h"
 
-EventsController::EventsController(QWidget* parent, Mode mode) : mode_(mode) {
+EventsController::EventsController(QWidget* parent, Mode mode) : mode_(mode),
+                                   game_finish_window_(new GameFinishWindow()) {
   setParent(parent);
   std::random_device rd;
   std::uniform_int_distribution<int> distribution(0, 1);
@@ -35,6 +36,7 @@ void EventsController::timerEvent(QTimerEvent*) {
   world_->FireTower();
   view_->UpdateMap();
   world_->Update();
+  CheckGameEnding();
 }
 
 void EventsController::StartTimer() {
@@ -74,6 +76,10 @@ void EventsController::ConnectUI() {
           &MapView::MousePressedHandler,
           this,
           &EventsController::MapPressHandler);
+  connect(game_finish_window_,
+          &GameFinishWindow::ToMenu,
+          this,
+          &EventsController::CloseFinishWindow);
 }
 
 void EventsController::HideGame() {
@@ -145,6 +151,7 @@ void EventsController::StartActiveStage() {
   DeleteTrench();
   view_->HideReadyButton();
   game_stage = Stage::kActive;
+  world_->UpdateCountAttackers();
   StartTimer();
 }
 
@@ -211,4 +218,32 @@ void EventsController::DeleteTrench() {
   trench_controller_->ClearChangedCells();
   view_->GetStore()->HideTrenchButtons();
   trench_controller_->SetTrenchFixed(false);
+}
+
+void EventsController::CheckGameEnding() {
+  int attackers = world_->GetCountAttackers();
+  int towers = world_->GetCountTowers();
+
+  if (attackers == 0 || towers == 0) {
+    PauseTimer();
+  }
+
+  if (attackers == 0 && towers == 0) {
+    game_finish_window_->Show(GameFinishWindow::States::kDraw);
+  }
+
+  if ((attackers == 0 && player_side_ == Side::kDefender) ||
+      (towers == 0 && player_side_ == Side::kAttacker)) {
+    game_finish_window_->Show(GameFinishWindow::States::kWin);
+  }
+
+  if ((attackers == 0 && player_side_ == Side::kAttacker) ||
+      (towers == 0 && player_side_ == Side::kDefender)) {
+    game_finish_window_->Show(GameFinishWindow::States::kLose);
+  }
+}
+
+void EventsController::CloseFinishWindow() {
+  game_finish_window_->hide();
+  ReturnToMainMenu();
 }
