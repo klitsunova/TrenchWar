@@ -100,6 +100,7 @@ void EventsController::ConnectUI() {
 
 void EventsController::HideGame() {
   if (network_view_) {
+    network_view_->Disconnect();
     network_view_->hide();
   }
   if (view_) {

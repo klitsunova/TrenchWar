@@ -1,11 +1,11 @@
+#include <iostream>
 #include <random>
 #include <utility>
-#include <iostream>
 
 #include "world.h"
 
-#include <QAudioOutput>
 #include "Models/Tools/settings.h"
+#include <QAudioOutput>
 
 World::World(const QString& path, GameMode mode, Side side) {
   LoadMap(path, mode, side);
@@ -260,11 +260,10 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
     in >> x >> y >> type;
     if (type == "kTerrainObject") {
       AddTower(QPoint(x, y));
-    } else if (
-        (type == "kDefender" && side == Side::kDefender)
-        || (type == "kAttacker" && side == Side::kAttacker)) {
-      AddSoldier(QPoint(x, y), side);
-    } else {
+    }
+    if (mode == GameMode::kBot &&
+        ((type == "kDefender" && side == Side::kAttacker) ||
+         (type == "kAttacker" && side == Side::kDefender))) {
       bot_soldier_buffer_.emplace_back(x, y);
     }
   }
@@ -452,7 +451,7 @@ void World::FireTower() {
   for (int i = 0; i < towers_.size(); ++i) {
     auto& tower = towers_[i];
     Cell& cell = cells_[tower->GetPosition().y()][tower->GetPosition().x()];
-    for (const auto& soldier : cell.soldiers) {
+    for (const auto& soldier: cell.soldiers) {
       tower->TakeDamage(soldier->GetTowerDamage());
     }
     if (tower->IsDestroyed()) {
@@ -469,7 +468,7 @@ void World::FireTower() {
 
 void World::UpdateCountAttackers() {
   count_attackers_ = 0;
-  for (const auto& soldier : soldiers_) {
+  for (const auto& soldier: soldiers_) {
     if (soldier->GetSide() == Side::kAttacker) {
       count_attackers_++;
     }
@@ -478,18 +477,18 @@ void World::UpdateCountAttackers() {
 
 void World::LoadBotData(Side side) {
   if (!bot_soldier_buffer_.empty()) {
-    for (const auto& point : bot_soldier_buffer_) {
+    for (const auto& point: bot_soldier_buffer_) {
       AddSoldier(point, side);
     }
   }
 }
 
 int World::GetCountAttackers() const {
-    return count_attackers_;
+  return count_attackers_;
 }
 
 int World::GetCountTowers() const {
-    return towers_.size();
+  return towers_.size();
 }
 
 World::Landscape::Landscape(const QColor& q_color, int speed) {
