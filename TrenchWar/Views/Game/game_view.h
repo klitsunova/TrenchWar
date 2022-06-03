@@ -2,10 +2,11 @@
 
 #include <memory>
 
+#include <QCloseEvent>
+#include <QMessageBox>
+#include <QShortcut>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <QCloseEvent>
-#include <QShortcut>
 
 #include "Models/world.h"
 #include "Views/Game/map_view.h"

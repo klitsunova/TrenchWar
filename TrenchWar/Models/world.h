@@ -56,7 +56,12 @@ class World {
 
   void FireTower();
 
+  void UpdateCountAttackers();
+  int GetCountAttackers() const;
+  int GetCountTowers() const;
+
  private:
+  int count_attackers_;
   struct Landscape {
     Landscape(const QColor& q_color, int speed);
     QColor color = Qt::white;
