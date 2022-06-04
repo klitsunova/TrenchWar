@@ -1,0 +1,28 @@
+<RCC>
+    <qresource>
+        <file>Resources/Images/Soldier1.png</file>
+        <file>Resources/Images/Soldier2.png</file>
+        <file>Resources/Images/Soldier3.png</file>
+        <file>Resources/Images/Soldier4.png</file>
+        <file>Resources/Images/Tower1.png</file>
+        <file>Resources/Images/Tower2.png</file>
+        <file>Resources/Images/Bullet1.png</file>
+        <file>Resources/Maps/map1.txt</file>
+        <file>Resources/Maps/map2.txt</file>
+        <file>Resources/Maps/map3.txt</file>
+        <file>Resources/Maps/labirint.txt</file>
+        <file>Resources/Maps/map_test.txt</file>
+        <file>Resources/Images/MenuBackground.jpg</file>
+        <file>Resources/Images/MenuTitle.png</file>
+        <file>Resources/Images/CheckedCommon.png</file>
+        <file>Resources/Images/UncheckedCommon.png</file>
+        <file>Resources/Images/CheckedHovered.png</file>
+        <file>Resources/Images/UncheckedHovered.png</file>
+        <file>Resources/Images/CheckedPressed.png</file>
+        <file>Resources/Images/UncheckedPressed.png</file>
+        <file>Resources/Images/Dollar.png</file>
+        <file>Resources/Music/gameplay_sound_1.mp3</file>
+        <file>Resources/Music/gameplay_sound_2.mp3</file>
+        <file>Resources/Music/singleshot_voice.mp3</file>
+    </qresource>
+</RCC>
