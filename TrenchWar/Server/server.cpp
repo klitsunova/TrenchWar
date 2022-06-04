@@ -5,9 +5,11 @@
 #include <QFile>
 #include <QNetworkInterface>
 #include <QTcpSocket>
+#include <QIcon>
 
 Server::Server() : ip_(this),
                    server_(this) {
+  setWindowIcon(QIcon(":Resources/Images/Tower2.png"));
   server_.listen(QHostAddress::Any, Network::kPort);
   resize(300, 100);
   connect(&server_,
@@ -33,7 +35,7 @@ void Server::ConnectClient() {
   players_.back()->SetId(players_.size() - 1);
   if (players_.back()->GetId() == 0) {
     players_.back()->SetSide(static_cast<Side>(std::rand() % 2));
-  } else if (players_.front()->GetSide() == Side::kDefender)  {
+  } else if (players_.front()->GetSide() == Side::kDefender) {
     players_.back()->SetSide(Side::kAttacker);
   } else {
     players_.back()->SetSide(Side::kDefender);

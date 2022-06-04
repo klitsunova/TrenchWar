@@ -12,6 +12,7 @@ MenuView::MenuView(
                        title_(PixmapLoader::GetMenuTitle()) {
   setParent(parent);
   setWindowTitle("Menu");
+  setWindowIcon(QIcon(":Resources/Images/Soldier1.png"));
   title_label_->setPixmap(*title_);
   SetStyles();
   SetLayout();

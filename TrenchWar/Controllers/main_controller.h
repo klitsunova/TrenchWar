@@ -26,6 +26,7 @@ class MainController : public QWidget {
   void ChangeMusicVolume();
   void ChangeScreenValue();
   void HideMenu();
+  void PlayNetworkGameMusic();
 
  private:
   void ConnectUI();

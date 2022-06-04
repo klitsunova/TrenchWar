@@ -43,5 +43,5 @@ class Weapon : public Equipment {
   int range_;
   int reload_time_;
   double hit_chance_;
-  int reload_lag_{0};
+  int reload_lag_{50};
 };

@@ -1,5 +1,5 @@
-#include <iostream>
 #include "events_controller.h"
+#include <iostream>
 
 #include <random>
 
@@ -10,9 +10,7 @@
 
 EventsController::EventsController(QWidget* parent, GameMode mode)
     : game_mode_(mode),
-      game_finish_window_(new GameFinishWindow()),
-      player_(new QMediaPlayer(this)) {
-
+      game_finish_window_(new GameFinishWindow()) {
   setParent(parent);
   std::random_device rd;
   std::uniform_int_distribution<int> distribution(0, 1);
@@ -88,10 +86,6 @@ void EventsController::ConnectUI() {
           &StoreView::ModeChanged,
           this,
           &EventsController::ChangeMode);
-  connect(world_.get(),
-          &World::Shot,
-          this,
-          &EventsController::Shot);
   connect(game_finish_window_,
           &GameFinishWindow::ToMenu,
           this,
@@ -100,6 +94,7 @@ void EventsController::ConnectUI() {
 
 void EventsController::HideGame() {
   if (network_view_) {
+    network_view_->Disconnect();
     network_view_->hide();
   }
   if (view_) {
@@ -117,7 +112,7 @@ void EventsController::StartPreparationStage() {
       std::make_unique<TrenchController>(this, world_, view_->GetMap());
   timer_ = std::make_unique<QBasicTimer>();
   game_controller_ = std::make_unique<GameController>(this, world_);
-
+  emit PlayGameMusic();
   if (game_mode_ == GameMode::kNetwork) {
     network_view_->hide();
     network_controller_ = network_view_->GetNetworkController();
@@ -127,7 +122,10 @@ void EventsController::StartPreparationStage() {
             this,
             &EventsController::StartActiveStage);
   }
-
+  QString side = (player_side_ == Side::kAttacker)
+      ? "attacker"
+      : "defender";
+  view_->SetStoreSideLabel("You are " + side);
   ConnectUI();
   view_->SetFullScreen(Settings::IsFullScreen());
   view_->show();
@@ -160,8 +158,8 @@ void EventsController::StartActiveStage() {
     }
   } else {
     Side bot_side = (player_side_ == Side::kAttacker)
-                    ? Side::kDefender
-                    : Side::kAttacker;
+        ? Side::kDefender
+        : Side::kAttacker;
     world_->LoadBotData(bot_side);
   }
   CancelPurchase(buy_mode_);
@@ -269,14 +267,16 @@ void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
         int window_height = view_->GetMap()->geometry().height() - 1;
 
         QPoint game_point;
-        game_point.setX(world_->GetSize().width() * (location.x()
-            - view_->GetMap()->mapToGlobal(QPoint(0, 0)).x())
-                            / window_width);
-        game_point.setY(world_->GetSize().height() * (location.y()
-            - view_->GetMap()->mapToGlobal(QPoint(0, 0)).y())
-                            / window_height);
+        game_point.setX(world_->GetSize().width()
+                        * (location.x()
+                           - view_->GetMap()->mapToGlobal(QPoint(0, 0)).x())
+                        / window_width);
+        game_point.setY(world_->GetSize().height()
+                        * (location.y()
+                           - view_->GetMap()->mapToGlobal(QPoint(0, 0)).y())
+                        / window_height);
 
-        world_->AddSoldier(game_point, Side::kAttacker);
+        world_->AddSoldier(game_point, player_side_);
         world_->Update();
         view_->UpdateMap();
       }
@@ -319,11 +319,6 @@ void EventsController::ChangeMode(BuyMode mode) {
   }
 }
 
-void EventsController::Shot() {
-  player_->setLoops(1);
-  player_->play();
-}
-
 void EventsController::CheckGameEnding() {
   int attackers = world_->GetCountAttackers();
   int towers = world_->GetCountTowers();
@@ -336,13 +331,13 @@ void EventsController::CheckGameEnding() {
     game_finish_window_->Show(GameFinishWindow::States::kDraw);
   }
 
-  if ((attackers == 0 && player_side_ == Side::kDefender) ||
-      (towers == 0 && player_side_ == Side::kAttacker)) {
+  if ((attackers == 0 && player_side_ == Side::kDefender)
+      || (towers == 0 && player_side_ == Side::kAttacker)) {
     game_finish_window_->Show(GameFinishWindow::States::kWin);
   }
 
-  if ((attackers == 0 && player_side_ == Side::kAttacker) ||
-      (towers == 0 && player_side_ == Side::kDefender)) {
+  if ((attackers == 0 && player_side_ == Side::kAttacker)
+      || (towers == 0 && player_side_ == Side::kDefender)) {
     game_finish_window_->Show(GameFinishWindow::States::kLose);
   }
 }

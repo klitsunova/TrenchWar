@@ -10,10 +10,12 @@
 
 #include "helpers/sizes.h"
 #include "helpers/styles.h"
+#include "helpers/fonts.h"
 
 StoreView::StoreView(QWidget* parent)
     : QWidget(parent),
       layout_(new QHBoxLayout(this)),
+      side_label_(new QLabel(this)),
       ready_button_(new QPushButton("Ready", this)),
       confirm_button_(new QPushButton("Confirm", this)),
       cancel_button_(new QPushButton("Cancel", this)),
@@ -55,6 +57,8 @@ void StoreView::SetStyles() {
   confirm_button_->setStyleSheet(styles::kPushButton);
   cancel_button_->setMinimumSize(element_sizes::kTrenchBuild);
   cancel_button_->setStyleSheet(styles::kPushButton);
+
+  side_label_->setFont(fonts::kDialogLabelBold);
 
   purchase_modes_->button(
                      static_cast<int>(BuyMode::kTrench))
@@ -124,6 +128,8 @@ void StoreView::SetLayout() {
   layout_->addWidget(money_widget_area_to_spend_, 0);
   layout_->addStretch(1);
 
+  layout_->addWidget(side_label_, 0);
+  layout_->addStretch(1);
   QVBoxLayout* mode_layout = new QVBoxLayout();
   mode_layout->addWidget(
       purchase_modes_->button(static_cast<int>(BuyMode::kTrench)), 0);
@@ -204,4 +210,8 @@ void StoreView::ShowCost(int cost) {
 
 void StoreView::ClearToSpendMoneyLabel() {
   money_label_to_spend_->setText(QString::number(0));
+}
+
+void StoreView::SetSideLabel(const QString& value) {
+  side_label_->setText(value);
 }

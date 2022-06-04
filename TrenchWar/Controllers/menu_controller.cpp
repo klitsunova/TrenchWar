@@ -78,11 +78,13 @@ void MenuController::ConnectExitWindowUI() {
 }
 
 void MenuController::ShowMenu() {
-  menu_->setGeometry(QStyle::alignedRect(
-      Qt::LeftToRight,
-      Qt::AlignCenter,
-      window_sizes::kMenu,
-      QApplication::primaryScreen()->availableGeometry()));
+  if (!Settings::IsFullScreen()) {
+    menu_->setGeometry(QStyle::alignedRect(
+        Qt::LeftToRight,
+        Qt::AlignCenter,
+        window_sizes::kMenu,
+        QApplication::primaryScreen()->availableGeometry()));
+  }
   SetFullScreen(menu_);
 }
 

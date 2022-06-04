@@ -15,6 +15,7 @@ GameView::GameView(QWidget* parent, const std::shared_ptr<World>& world)
       map_(new MapView(this, world)),
       store_(new StoreView(this)),
       pause_(new QShortcut(Qt::Key_Escape, this)) {
+  setWindowIcon(QIcon(":Resources/Images/Soldier1.png"));
   layout_->addWidget(map_, 1);
   layout_->addWidget(store_, 0);
   SetStyle();
@@ -88,4 +89,8 @@ StoreView* GameView::GetStore() const {
 
 void GameView::SetStoreDialog(QMouseEvent* event) {
   map_->SetStoreDialog(event);
+}
+
+void GameView::SetStoreSideLabel(const QString& value) {
+  store_->SetSideLabel(value);
 }
