@@ -102,7 +102,7 @@ class World : public QObject {
 
   QPixmap DrawWorld() const;
 
-  void GenerateNewDistances(const QPoint& pos);
+  void GenerateNewDistances(QPoint pos);
 
   void DamageArea(int x, int y, int radius, int bullet_index);
 
