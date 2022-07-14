@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <limits>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -23,7 +24,7 @@
 #include <QMediaPlayer>
 
 class World : public QObject {
-  Q_OBJECT
+ Q_OBJECT
 
  private:
   struct Cell;
@@ -83,7 +84,6 @@ class World : public QObject {
     bool used;
     // int64_t ground_distance;
   };
-
 
   QSize size_;
   QPixmap picture_;
