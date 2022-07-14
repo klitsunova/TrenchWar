@@ -51,8 +51,7 @@ void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
   auto* audioOutput = new QAudioOutput(this);
   player->setAudioOutput(audioOutput);
   audioOutput->setVolume(Settings::GetMusicVolume() /
-      static_cast<double>(Settings::kMaxVolume
-          - Settings::kMinVolume));
+      static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
   player->setSource(QUrl("qrc:Resources/Music/singleshot_voice.mp3"));
   player->play();
   assert(bullet.get() != nullptr);
@@ -277,7 +276,7 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
     }
     if (mode == GameMode::kBot &&
         ((type == "kDefender" && side == Side::kAttacker) ||
-            (type == "kAttacker" && side == Side::kDefender))) {
+        (type == "kAttacker" && side == Side::kDefender))) {
       bot_soldier_buffer_.emplace_back(x, y);
     }
   }
@@ -310,9 +309,10 @@ QPixmap World::DrawWorld() const {
 }
 
 void World::GenerateNewDistances(const QPoint& pos) {
-  distances_mutex_.lock();
+  std::lock_guard<std::mutex> lock(distances_mutex_);
   distances_.emplace_back(cells_.size(),
-                          std::vector<int>(cells_[0].size(), INT32_MAX));
+                          std::vector<int>(cells_[0].size(),
+                                           std::numeric_limits<int>::max()));
   for (int i = 0; i < cells_.size(); ++i) {
     for (int j = 0; j < cells_[i].size(); ++j) {
       cells_[i][j].used = false;
@@ -360,7 +360,6 @@ void World::GenerateNewDistances(const QPoint& pos) {
     cells_[y][x].used = true;
     latest_at_ground.pop();
   }
-  distances_mutex_.unlock();
 }
 
 void World::MoveBullets() {
