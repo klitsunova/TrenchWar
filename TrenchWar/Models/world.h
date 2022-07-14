@@ -24,7 +24,7 @@
 #include <QMediaPlayer>
 
 class World : public QObject {
- Q_OBJECT
+  Q_OBJECT
 
  private:
   struct Cell;
