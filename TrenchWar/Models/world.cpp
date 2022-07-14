@@ -35,21 +35,15 @@ void World::AddSoldier(const QPoint& position, Side side) {
 void World::AddTower() {
   auto new_object = std::make_shared<Tower>();
   new_object->SetRandomPosition(size_);
-  towers_.push_back(new_object);
-  std::thread thread([&](QPoint pos) {
-    GenerateNewDistances(pos);
-  }, new_object->GetPosition());
-  distance_loading_threads_.push(std::move(thread));
+  AddTower(new_object->GetPosition());
 }
 
 void World::AddTower(const QPoint& position) {
   auto new_object = std::make_shared<Tower>();
   new_object->SetPosition(position);
   towers_.push_back(new_object);
-  std::thread thread([&](QPoint pos) {
-    GenerateNewDistances(pos);
-  }, new_object->GetPosition());
-  distance_loading_threads_.push(std::move(thread));
+  distance_loading_threads_.emplace(&World::GenerateNewDistances, this,
+                                    std::ref(new_object->GetPosition()));
 }
 
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
@@ -315,7 +309,7 @@ QPixmap World::DrawWorld() const {
   return picture;
 }
 
-void World::GenerateNewDistances(QPoint pos) {
+void World::GenerateNewDistances(const QPoint& pos) {
   distances_mutex_.lock();
   distances_.emplace_back(cells_.size(),
                           std::vector<int>(cells_[0].size(), INT32_MAX));
