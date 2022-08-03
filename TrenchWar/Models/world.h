@@ -5,11 +5,14 @@
 
 #include <algorithm>
 #include <functional>
+#include <limits>
 #include <memory>
+#include <mutex>
 #include <queue>
 #include <set>
 #include <stack>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "GameObjects/soldier.h"
@@ -82,11 +85,12 @@ class World : public QObject {
     // int64_t ground_distance;
   };
 
-
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
   std::vector<std::vector<std::vector<int>>> distances_;
+  std::mutex distances_mutex_;
+  std::queue<std::thread> distance_loading_threads_;
   std::vector<std::shared_ptr<Soldier>> soldiers_;
   std::vector<std::shared_ptr<Bullet>> bullets_;
   std::vector<std::shared_ptr<Tower>> towers_;

@@ -35,24 +35,23 @@ void World::AddSoldier(const QPoint& position, Side side) {
 void World::AddTower() {
   auto new_object = std::make_shared<Tower>();
   new_object->SetRandomPosition(size_);
-  towers_.push_back(new_object);
-  GenerateNewDistances(new_object->GetPosition());
+  AddTower(new_object->GetPosition());
 }
 
 void World::AddTower(const QPoint& position) {
   auto new_object = std::make_shared<Tower>();
   new_object->SetPosition(position);
   towers_.push_back(new_object);
-  GenerateNewDistances(new_object->GetPosition());
+  distance_loading_threads_.emplace(&World::GenerateNewDistances, this,
+                                    std::ref(new_object->GetPosition()));
 }
 
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
-  auto *player = new QMediaPlayer(this);
+  auto* player = new QMediaPlayer(this);
   auto* audioOutput = new QAudioOutput(this);
   player->setAudioOutput(audioOutput);
   audioOutput->setVolume(Settings::GetMusicVolume() /
-                         static_cast<double>(Settings::kMaxVolume
-                                             - Settings::kMinVolume));
+      static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
   player->setSource(QUrl("qrc:Resources/Music/singleshot_voice.mp3"));
   player->play();
   assert(bullet.get() != nullptr);
@@ -105,6 +104,11 @@ void World::Update() {
 }
 
 void World::MoveSoldiers() {
+  while (!distance_loading_threads_.empty()) {
+    distance_loading_threads_.front().join();
+    distance_loading_threads_.pop();
+  }
+
   if (towers_.empty()) return;
 
   auto Lag = [&](int x, int y) {
@@ -272,7 +276,7 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
     }
     if (mode == GameMode::kBot &&
         ((type == "kDefender" && side == Side::kAttacker) ||
-         (type == "kAttacker" && side == Side::kDefender))) {
+        (type == "kAttacker" && side == Side::kDefender))) {
       bot_soldier_buffer_.emplace_back(x, y);
     }
   }
@@ -305,10 +309,12 @@ QPixmap World::DrawWorld() const {
 }
 
 void World::GenerateNewDistances(const QPoint& pos) {
+  std::lock_guard<std::mutex> lock(distances_mutex_);
   distances_.emplace_back(cells_.size(),
-                          std::vector<int>(cells_[0].size(), INT32_MAX));
-  for (int i = 0; i < cells_.size(); ++i) {
-    for (int j = 0; j < cells_[i].size(); ++j) {
+                          std::vector<int>(cells_[0].size(),
+                                           std::numeric_limits<int>::max()));
+  for (size_t  i = 0; i < cells_.size(); ++i) {
+    for (size_t  j = 0; j < cells_[i].size(); ++j) {
       cells_[i][j].used = false;
     }
   }

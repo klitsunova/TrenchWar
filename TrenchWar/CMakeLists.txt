@@ -77,6 +77,7 @@ set(LIBRARIES
         Qt::Widgets
         Qt6::Multimedia
         Qt6::Network
+        pthread
         )
 
 
