@@ -313,8 +313,8 @@ void World::GenerateNewDistances(const QPoint& pos) {
   distances_.emplace_back(cells_.size(),
                           std::vector<int>(cells_[0].size(),
                                            std::numeric_limits<int>::max()));
-  for (int i = 0; i < cells_.size(); ++i) {
-    for (int j = 0; j < cells_[i].size(); ++j) {
+  for (size_t  i = 0; i < cells_.size(); ++i) {
+    for (size_t  j = 0; j < cells_[i].size(); ++j) {
       cells_[i][j].used = false;
     }
   }
