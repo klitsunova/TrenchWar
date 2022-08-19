@@ -509,7 +509,7 @@ void MapGenerator::SaveButtonClicked() {
     auto& object = game_objects_[i];
 
     QJsonObject obj;
-    obj.insert("X",QJsonValue::fromVariant(object.pos.x()));
+    obj.insert("X", QJsonValue::fromVariant(object.pos.x()));
     obj.insert("Y", QJsonValue::fromVariant(object.pos.y()));
 
     if (object.type == Object::Type::kAttacker) {
