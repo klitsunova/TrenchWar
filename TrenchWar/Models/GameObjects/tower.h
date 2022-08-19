@@ -6,7 +6,6 @@
 
 class Tower : public GameObject {
  public:
-  Tower();
   explicit Tower(const QPoint& point);
 
   void TakeDamage(int multiply);

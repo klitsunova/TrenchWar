@@ -25,6 +25,7 @@ set(MODELS
         Models/GameObjects/soldier.cpp
         Models/GameObjects/tower.cpp
         Models/Tools/pixmap_loader.cpp
+        Models/Tools/random_generator.cpp
         Models/Tools/settings.cpp
         Models/weapon.cpp
         Models/GameObjects/bullet.cpp

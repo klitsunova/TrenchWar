@@ -48,7 +48,7 @@ class World : public QObject {
   void TrenchUpdate();
 
   void AddSoldier(Side side);
-  void AddSoldier(const QPoint& position, Side side);
+  void AddSoldier(Side side, const QPoint& position);
   void AddTower();
   void AddTower(const QPoint& position);
   void AddBullet(const std::shared_ptr<Bullet>& bullet);
@@ -82,7 +82,6 @@ class World : public QObject {
     bool is_trench;
     std::set<std::shared_ptr<Soldier>> soldiers;
     bool used;
-    // int64_t ground_distance;
   };
 
   QSize size_;

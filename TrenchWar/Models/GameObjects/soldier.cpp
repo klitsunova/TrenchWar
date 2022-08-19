@@ -1,13 +1,6 @@
 #include "soldier.h"
 
-Soldier::Soldier(Side side)
-    : GameObject() {
-  picture_ = PixmapLoader::GetSoldier();
-  side_ = side;
-  weapons_.emplace_back(Weapon(Weapon::WeaponType::Rifle));
-}
-
-Soldier::Soldier(const QPoint& point, Side side)
+Soldier::Soldier(Side side, const QPoint& point)
     : GameObject(point) {
   picture_ = PixmapLoader::GetSoldier();
   side_ = side;
@@ -17,7 +10,6 @@ Soldier::Soldier(const QPoint& point, Side side)
 Soldier::Health Soldier::GetHitPoints() const {
   return hit_points_;
 }
-
 
 Side Soldier::GetSide() const {
   return side_;
