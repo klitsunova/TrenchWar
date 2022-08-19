@@ -489,7 +489,6 @@ void MapGenerator::SaveButtonClicked() {
   record_object.insert("Colors and speed",
                        QJsonValue::fromVariant(colors_and_speed));
 
-  QJsonArray map_array;
   std::stringstream map_string;
 
   for (int i = 0; i < map_.size(); ++i) {
