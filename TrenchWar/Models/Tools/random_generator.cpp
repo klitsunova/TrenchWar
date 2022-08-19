@@ -1,9 +1,6 @@
 #include "random_generator.h"
 
-QPoint RandomGenerator::GetRandomPoint(const QRect& field) {
-  assert(field.top() <= field.bottom());
-  assert(field.left() <= field.right());
-
+QPoint utils::RandomGenerator::GetRandomPoint(const QRect& field) {
   std::random_device rd;
   std::uniform_int_distribution<int>
       width_distribution(field.left(), field.right());
