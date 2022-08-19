@@ -14,18 +14,14 @@ World::World(const QString& path, GameMode mode, Side side) {
 }
 
 void World::AddSoldier(Side side) {
-  auto new_object = std::make_shared<Soldier>(side);
-  new_object->SetRandomPosition(size_);
-  auto& cell =
-      cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
-  soldiers_.push_back(new_object);
-  cell.soldiers.insert(new_object);
+  // TODO (AZUAVCHIKOV) need generation in all map
+  AddSoldier(side, RandomGenerator::GetRandomPoint(QRect(0, 0, 0, 0)));
 }
 
-void World::AddSoldier(const QPoint& position, Side side) {
+void World::AddSoldier(Side side, const QPoint& position) {
   assert(position.y() >= 0 && position.y() < cells_.size());
   assert(position.x() >= 0 && position.x() < cells_[position.y()].size());
-  auto new_object = std::make_shared<Soldier>(position, side);
+  auto new_object = std::make_shared<Soldier>(side, position);
   auto& cell =
       cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
   soldiers_.push_back(new_object);
@@ -33,14 +29,12 @@ void World::AddSoldier(const QPoint& position, Side side) {
 }
 
 void World::AddTower() {
-  auto new_object = std::make_shared<Tower>();
-  new_object->SetRandomPosition(size_);
-  AddTower(new_object->GetPosition());
+  // TODO (AZUAVCHIKOV) need generation in all map
+  AddTower(RandomGenerator::GetRandomPoint(QRect(0, 0, 0, 0)));
 }
 
 void World::AddTower(const QPoint& position) {
-  auto new_object = std::make_shared<Tower>();
-  new_object->SetPosition(position);
+  auto new_object = std::make_shared<Tower>(position);
   towers_.push_back(new_object);
   distance_loading_threads_.emplace(&World::GenerateNewDistances, this,
                                     std::ref(new_object->GetPosition()));
@@ -313,8 +307,8 @@ void World::GenerateNewDistances(const QPoint& pos) {
   distances_.emplace_back(cells_.size(),
                           std::vector<int>(cells_[0].size(),
                                            std::numeric_limits<int>::max()));
-  for (size_t  i = 0; i < cells_.size(); ++i) {
-    for (size_t  j = 0; j < cells_[i].size(); ++j) {
+  for (size_t i = 0; i < cells_.size(); ++i) {
+    for (size_t j = 0; j < cells_[i].size(); ++j) {
       cells_[i][j].used = false;
     }
   }
@@ -494,7 +488,7 @@ void World::UpdateCountAttackers() {
 void World::LoadBotData(Side side) {
   if (!bot_soldier_buffer_.empty()) {
     for (const auto& point : bot_soldier_buffer_) {
-      AddSoldier(point, side);
+      AddSoldier(side, point);
     }
   }
 }

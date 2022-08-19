@@ -276,7 +276,7 @@ void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
                            - view_->GetMap()->mapToGlobal(QPoint(0, 0)).y())
                         / window_height);
 
-        world_->AddSoldier(game_point, player_side_);
+        world_->AddSoldier(player_side_, game_point);
         world_->Update();
         view_->UpdateMap();
       }

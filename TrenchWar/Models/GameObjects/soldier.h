@@ -15,8 +15,7 @@ class Soldier : public GameObject {
   using Health = int;
 
  public:
-  explicit Soldier(Side);
-  explicit Soldier(const QPoint&, Side);
+  explicit Soldier(Side, const QPoint&);
 
   ~Soldier() override = default;
 
