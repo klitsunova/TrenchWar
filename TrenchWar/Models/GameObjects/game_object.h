@@ -11,10 +11,10 @@
 #include <utility>
 
 #include "Models/Tools/pixmap_loader.h"
+#include "Models/Tools/random_generator.h"
 
 class GameObject {
  public:
-  GameObject();
   explicit GameObject(const QPoint&);
 
   virtual ~GameObject() = default;
@@ -22,7 +22,7 @@ class GameObject {
   const QPoint& GetPosition() const;
 
   void SetPosition(const QPoint&);
-  void SetRandomPosition(const QSize&);
+  void SetRandomPosition(const QRect&);
 
   const QPixmap& GetPixmap() const;
 

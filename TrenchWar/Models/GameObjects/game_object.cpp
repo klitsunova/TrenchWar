@@ -2,19 +2,6 @@
 
 #include <random>
 
-namespace {
-
-int GetRandomNumber() {
-  static std::random_device rd;
-  static std::mt19937 mt(rd());
-  static std::uniform_real_distribution<double> dist(0.0, 100.0);
-  return dist(mt);
-}
-
-}  // namespace
-
-GameObject::GameObject() {}
-
 GameObject::GameObject(const QPoint& position)
     : position_(position) {}
 
@@ -26,12 +13,8 @@ void GameObject::SetPosition(const QPoint& position) {
   position_ = position;
 }
 
-void GameObject::SetRandomPosition(const QSize& size) {
-  std::random_device rd;
-  std::uniform_int_distribution<int> width_distribution(0, size.width() - 1);
-  std::uniform_int_distribution<int> height_distribution(0, size.height() - 1);
-  position_ = QPoint(width_distribution(rd),
-                     height_distribution(rd));
+void GameObject::SetRandomPosition(const QRect& field) {
+  position_ = utils::RandomGenerator::GetRandomPoint(field);
 }
 
 const QPixmap& GameObject::GetPixmap() const {
