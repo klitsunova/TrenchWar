@@ -9,4 +9,4 @@ QPoint RandomGenerator::GetRandomPoint(const QRect& field) {
       height_distribution(field.top(), field.bottom());
   return {width_distribution(rd), height_distribution(rd)};
 }
-}
+}  // namespace utils
