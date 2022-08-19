@@ -67,20 +67,22 @@ void MapView::paintEvent(QPaintEvent*) {
                object->GetSize(), object->GetPixmap());
   }
 
-  const std::vector<std::shared_ptr<Soldier>>& soldiers =
-      world_->GetSoldiers();
-  for (const auto& soldier : soldiers) {
-    if (soldier->IsDead()) continue;
-    DrawObject(&painter, soldier->GetPosition(),
-               soldier->GetSize(), soldier->GetPixmap());
-  }
+  if (are_objects_visible_) {
+    const std::vector<std::shared_ptr<Soldier>>& soldiers =
+        world_->GetSoldiers();
+    for (const auto& soldier : soldiers) {
+      if (soldier->IsDead()) continue;
+      DrawObject(&painter, soldier->GetPosition(),
+                 soldier->GetSize(), soldier->GetPixmap());
+    }
 
-  const std::vector<std::shared_ptr<Bullet>>& bullets =
-      world_->GetBullets();
-  for (const auto& bullet : bullets) {
-    assert(!bullet->IsUsed());
-    DrawObject(&painter, bullet->GetPosition(),
-               bullet->GetSize(), bullet->GetPixmap());
+    const std::vector<std::shared_ptr<Bullet>>& bullets =
+        world_->GetBullets();
+    for (const auto& bullet : bullets) {
+      assert(!bullet->IsUsed());
+      DrawObject(&painter, bullet->GetPosition(),
+                 bullet->GetSize(), bullet->GetPixmap());
+    }
   }
 
   painter.restore();
@@ -108,6 +110,10 @@ void MapView::SetStoreDialog(QMouseEvent* event) {
   QPoint position = event->globalPosition().toPoint();
   buy_window_->move(position);
   buy_window_->SetWindowLocation(position);
+}
+
+void MapView::SetObjectsVisibility(bool are_objects_visible) {
+  are_objects_visible_ = are_objects_visible;
 }
 
 void MapView::ConnectUI() {
