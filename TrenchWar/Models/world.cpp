@@ -14,8 +14,8 @@ World::World(const QString& path, GameMode mode, Side side) {
 }
 
 void World::AddSoldier(Side side) {
-  // TODO (AZUAVCHIKOV) need generation in all map
-  AddSoldier(side, RandomGenerator::GetRandomPoint(QRect(0, 0, 0, 0)));
+  QRect field({0, 0}, size_);
+  AddSoldier(side, RandomGenerator::GetRandomPoint(QRect(field)));
 }
 
 void World::AddSoldier(Side side, const QPoint& position) {
@@ -29,8 +29,8 @@ void World::AddSoldier(Side side, const QPoint& position) {
 }
 
 void World::AddTower() {
-  // TODO (AZUAVCHIKOV) need generation in all map
-  AddTower(RandomGenerator::GetRandomPoint(QRect(0, 0, 0, 0)));
+  QRect field({0, 0}, size_);
+  AddTower(RandomGenerator::GetRandomPoint(QRect(field)));
 }
 
 void World::AddTower(const QPoint& position) {
