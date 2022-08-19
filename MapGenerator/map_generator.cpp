@@ -1,6 +1,7 @@
-#include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QJsonObject>
+
 #include "map_generator.h"
 
 MapGenerator::MapGenerator(QWidget* parent)
