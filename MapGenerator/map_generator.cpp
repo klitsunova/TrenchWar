@@ -477,7 +477,7 @@ void MapGenerator::SaveButtonClicked() {
     QJsonObject obj_color_speed;
     obj_color_speed.insert("Color",
        QJsonValue::fromVariant(
-           static_cast<long long>(using_colors_[i].color.rgb())));
+           QVariant::fromValue(using_colors_[i].color.rgb())));
 
     obj_color_speed.insert("Speed",
                            QJsonValue::fromVariant
