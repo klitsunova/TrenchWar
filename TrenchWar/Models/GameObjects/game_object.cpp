@@ -14,7 +14,7 @@ void GameObject::SetPosition(const QPoint& position) {
 }
 
 void GameObject::SetRandomPosition(const QRect& field) {
-  position_ = RandomGenerator::GetRandomPoint(field);
+  position_ = utils::RandomGenerator::GetRandomPoint(field);
 }
 
 const QPixmap& GameObject::GetPixmap() const {

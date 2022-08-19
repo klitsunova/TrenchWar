@@ -15,7 +15,7 @@ World::World(const QString& path, GameMode mode, Side side) {
 
 void World::AddSoldier(Side side) {
   QRect field({0, 0}, size_);
-  AddSoldier(side, RandomGenerator::GetRandomPoint(QRect(field)));
+  AddSoldier(side, utils::RandomGenerator::GetRandomPoint(QRect(field)));
 }
 
 void World::AddSoldier(Side side, const QPoint& position) {
@@ -30,7 +30,7 @@ void World::AddSoldier(Side side, const QPoint& position) {
 
 void World::AddTower() {
   QRect field({0, 0}, size_);
-  AddTower(RandomGenerator::GetRandomPoint(QRect(field)));
+  AddTower(utils::RandomGenerator::GetRandomPoint(QRect(field)));
 }
 
 void World::AddTower(const QPoint& position) {
