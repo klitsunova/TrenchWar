@@ -522,12 +522,13 @@ void MapGenerator::SaveButtonClicked() {
   }
   record_object.insert("Attackers", QJsonValue::fromVariant(attackers));
   record_object.insert("Defenders", QJsonValue::fromVariant(defenders));
-  record_object.insert("Terrain objects", QJsonValue::fromVariant(terrain_objects));
+  record_object.insert("Terrain objects",
+                       QJsonValue::fromVariant(terrain_objects));
 
   QJsonDocument doc(record_object);
   QString text  = doc.toJson(QJsonDocument::Indented);
 
-  QTextStream stream( &file );
+  QTextStream stream(&file);
   stream << text;
   file.close();
 }
