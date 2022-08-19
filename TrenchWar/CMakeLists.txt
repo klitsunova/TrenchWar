@@ -6,8 +6,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+#set(CMAKE_PREFIX_PATH "~/Qt/6.2.3/gcc_64/lib/cmake")
+#set(CMAKE_PREFIX_PATH "~/Qt/6.3.0/mingw_64/lib/cmake")
 set(CMAKE_PREFIX_PATH "~/Qt/6.3.1/gcc_64/lib/cmake")
-#set(CMAKE_PREFIX_PATH "~/Qt/6.3.1/mingw_64/lib/cmake")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
