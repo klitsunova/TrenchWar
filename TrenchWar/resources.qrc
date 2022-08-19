@@ -12,6 +12,7 @@
         <file>Resources/Maps/map3.txt</file>
         <file>Resources/Maps/labirint.txt</file>
         <file>Resources/Maps/map_test.txt</file>
+        <file>Resources/Maps/map123.json</file>
         <file>Resources/Images/MenuBackground.jpg</file>
         <file>Resources/Images/MenuTitle.png</file>
         <file>Resources/Images/CheckedCommon.png</file>
@@ -24,5 +25,6 @@
         <file>Resources/Music/gameplay_sound_1.mp3</file>
         <file>Resources/Music/gameplay_sound_2.mp3</file>
         <file>Resources/Music/singleshot_voice.mp3</file>
+        <file>Resources/cost.json</file>
     </qresource>
 </RCC>

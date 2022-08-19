@@ -1,6 +1,8 @@
-#include <QHBoxLayout>
+#include <QFile>
 #include <QJsonArray>
+#include <QJsonDocument>
 #include <QJsonObject>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPixmap>
 
@@ -37,15 +39,29 @@ void BuyWindow::SetStyles() {
 }
 
 void BuyWindow::SetList() {
-  auto* item = new QListWidgetItem;
-  item->setText("Soldier");
-  QPixmap pixmap(":Resources/Images/Soldier1.png");
-  QIcon icon;
-  icon.addPixmap(pixmap);
-  item->setIcon(icon);
-  list_->addItem(item);
-  // TODO(Zolokinos) Tempo code
-  price_list_["Soldier"] = 50;
+  QString text;
+  QFile file;
+  file.setFileName(":Resources/cost.json");
+  file.open(QIODevice::ReadOnly | QIODevice::Text);
+  text = file.readAll();
+
+  QJsonDocument doc =  QJsonDocument::fromJson(text.toUtf8());
+  QJsonObject obj  = doc.object();
+
+  QJsonArray pos = obj["Positions"].toArray();
+
+  for (auto && position: pos) {
+    auto* item = new QListWidgetItem;
+    QJsonObject element = position.toObject();
+    item->setText(element["name"].toString());
+    QPixmap pixmap(element["filename"].toString());
+    QIcon icon;
+    icon.addPixmap(pixmap);
+    item->setIcon(icon);
+    list_->addItem(item);
+    price_list_[element["name"].toString()] = element["cost"].toInt();
+  }
+  file.close();
 }
 
 void BuyWindow::SetLayout() {
