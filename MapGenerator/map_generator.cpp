@@ -463,8 +463,8 @@ void MapGenerator::SaveButtonClicked() {
   QJsonObject record_object;
   QJsonObject map_obj;
 
-  map_obj.insert("Length",static_cast<int>(map_.size()));
-  map_obj.insert("Width", static_cast<int>(map_[0].size()));
+  map_obj.insert("Length", static_cast<int>(map_.size()));
+  map_obj.insert("Width",  static_cast<int>(map_[0].size()));
 
   record_object.insert("Size", map_obj);
 
