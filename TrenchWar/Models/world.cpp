@@ -52,16 +52,15 @@ void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
   bullets_.push_back(bullet);
 }
 
-const std::vector<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
+const std::list<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
   return soldiers_;
 }
 
-const std::vector<std::shared_ptr<Tower>>&
-World::GetTowers() const {
+const std::list<std::shared_ptr<Tower>>& World::GetTowers() const {
   return towers_;
 }
 
-const std::vector<std::shared_ptr<Bullet>>& World::GetBullets() const {
+const std::list<std::shared_ptr<Bullet>>& World::GetBullets() const {
   return bullets_;
 }
 
@@ -85,18 +84,6 @@ const QPixmap& World::GetPixmap() {
   return picture_;
 }
 
-void World::Update() {
-  if (dead_soldiers_ * 2 > soldiers_.size()) {
-    std::sort(soldiers_.begin(), soldiers_.end(),
-              [&](std::shared_ptr<Soldier> soldier1,
-                  std::shared_ptr<Soldier> soldier2) {
-                return soldier1->GetHitPoints() > soldier2->GetHitPoints();
-              });
-    soldiers_.resize(soldiers_.size() - dead_soldiers_);
-    dead_soldiers_ = 0;
-  }
-}
-
 void World::MoveSoldiers() {
   while (!distance_loading_threads_.empty()) {
     distance_loading_threads_.front().join();
@@ -111,19 +98,19 @@ void World::MoveSoldiers() {
 
   auto Distance = [&](int x, int y) {
     int result = INT32_MAX;
-    for (int i = 0; i < distances_.size(); ++i) {
-      result = std::min(result, distances_[i][y][x]);
+    for (auto& distance : distances_) {
+      result = std::min(result, distance[y][x]);
     }
     return result;
   };
 
-  auto MoveIf = [&](int soldier_index, int& current_dist,
+  auto MoveIf = [&](const std::shared_ptr<Soldier>& soldier, int& current_dist,
                     int to_x, int to_y, int lag = 0) {
     int new_dist = Distance(to_x, to_y) + lag;
     if (current_dist > new_dist) {
       current_dist = new_dist;
-      soldiers_[soldier_index]->SetPosition(QPoint(to_x, to_y));
-      soldiers_[soldier_index]->SetTimeLag(Lag(to_x, to_y) + lag);
+      soldier->SetPosition(QPoint(to_x, to_y));
+      soldier->SetTimeLag(Lag(to_x, to_y) + lag);
     }
   };
 
@@ -138,36 +125,36 @@ void World::MoveSoldiers() {
     MoveDown
   };
 
-  auto IssueCommand = [&](int soldier_index,
+  auto IssueCommand = [&](const std::shared_ptr<Soldier>& soldier,
                           int from_x, int from_y,
                           int& current_dist, Command command) {
     switch (command) {
       case Command::MoveLeft: {
         if (from_x == 0) return;
 
-        return MoveIf(soldier_index, current_dist, from_x - 1, from_y);
+        return MoveIf(soldier, current_dist, from_x - 1, from_y);
       }
       case Command::MoveRight: {
         if (from_x == cells_[from_y].size() - 1) return;
 
-        return MoveIf(soldier_index, current_dist, from_x + 1, from_y);
+        return MoveIf(soldier, current_dist, from_x + 1, from_y);
       }
       case Command::MoveUp: {
         if (from_y == 0) return;
 
-        return MoveIf(soldier_index, current_dist, from_x, from_y - 1);
+        return MoveIf(soldier, current_dist, from_x, from_y - 1);
       }
       case Command::MoveDown: {
         if (from_y == cells_.size() - 1) return;
 
-        return MoveIf(soldier_index, current_dist, from_x, from_y + 1);
+        return MoveIf(soldier, current_dist, from_x, from_y + 1);
       }
       case Command::MoveLeftDown: {
         if (from_x == 0 || from_y == cells_.size() - 1) return;
 
         int lag = std::min(Lag(from_x - 1, from_y),
                            Lag(from_x, from_y + 1));
-        return MoveIf(soldier_index, current_dist,
+        return MoveIf(soldier, current_dist,
                       from_x - 1, from_y + 1, lag);
       }
       case Command::MoveLeftUp: {
@@ -175,7 +162,7 @@ void World::MoveSoldiers() {
 
         int lag = std::min(Lag(from_x - 1, from_y),
                            Lag(from_x, from_y - 1));
-        return MoveIf(soldier_index, current_dist,
+        return MoveIf(soldier, current_dist,
                       from_x - 1, from_y - 1, lag);
       }
       case Command::MoveRightUp: {
@@ -183,7 +170,7 @@ void World::MoveSoldiers() {
 
         int lag = std::min(Lag(from_x + 1, from_y),
                            Lag(from_x, from_y - 1));
-        return MoveIf(soldier_index, current_dist,
+        return MoveIf(soldier, current_dist,
                       from_x + 1, from_y - 1, lag);
       }
       case Command::MoveRightDown: {
@@ -193,7 +180,7 @@ void World::MoveSoldiers() {
 
         int lag = std::min(Lag(from_x + 1, from_y),
                            Lag(from_x, from_y + 1));
-        return MoveIf(soldier_index, current_dist,
+        return MoveIf(soldier, current_dist,
                       from_x + 1, from_y + 1, lag);
       }
     }
@@ -203,22 +190,22 @@ void World::MoveSoldiers() {
                                  Command::MoveRightUp, Command::MoveRightDown,
                                  Command::MoveLeft, Command::MoveRight,
                                  Command::MoveUp, Command::MoveDown});
-  for (int i = 0; i < soldiers_.size(); ++i) {
-    if (soldiers_[i]->GetSide() == Side::kDefender) continue;
-    if (soldiers_[i]->IsDead()) continue;
-    soldiers_[i]->MakeTick();
-    if (soldiers_[i]->GetTimeLag() > 0) continue;
-    int x = soldiers_[i]->GetPosition().x();
-    int y = soldiers_[i]->GetPosition().y();
+  for (auto soldier = soldiers_.begin(); soldier != soldiers_.end();
+       ++soldier) {
+    if ((*soldier)->GetSide() == Side::kDefender) continue;
+    (*soldier)->MakeTick();
+    if ((*soldier)->GetTimeLag() > 0) continue;
+    int x = (*soldier)->GetPosition().x();
+    int y = (*soldier)->GetPosition().y();
     int distance = Distance(x, y);
     if (distance == 0) continue;
-    cells_[y][x].soldiers.erase(soldiers_[i]);
-    for (int j = 0; j < commands.size(); ++j) {
-      IssueCommand(i, x, y, distance, commands[j]);
+    cells_[y][x].soldiers.erase(*soldier);
+    for (auto& command : commands) {
+      IssueCommand((*soldier), x, y, distance, command);
     }
-    x = soldiers_[i]->GetPosition().x();
-    y = soldiers_[i]->GetPosition().y();
-    cells_[y][x].soldiers.insert(soldiers_[i]);
+    x = (*soldier)->GetPosition().x();
+    y = (*soldier)->GetPosition().y();
+    cells_[y][x].soldiers.insert(*soldier);
   }
 }
 
@@ -312,7 +299,7 @@ void World::GenerateNewDistances(const QPoint& pos) {
       cell.used = false;
     }
   }
-  auto& container = distances_[distances_.size() - 1];
+  auto& container = distances_.back();
 
   auto cmp =
       [&](std::pair<int, int> left, std::pair<int, int> right) {
@@ -361,27 +348,34 @@ void World::MoveBullets() {
   int bullet_radius = 5;
   int repeat = 1;
 
-  for (int i = 0; i < bullets_.size(); ++i) {
+  for (auto bullet = bullets_.begin(); bullet != bullets_.end();) {
+    auto bullet_for_possible_delete = bullet;
+    ++bullet;
     for (int j = 0; j < repeat; ++j) {
-      assert(!bullets_[i]->IsUsed());
-      bullets_[i]->Move();
-      // DamageArea(bullets_[i]->GetPosition().x(),
-      // bullets_[i]->GetPosition().y(),
-      //            weapons::kBulletRadius, i);
-      DamageArea(bullets_[i]->GetPosition().x(), bullets_[i]->GetPosition().y(),
-                 bullet_radius, i);
-      if (bullets_[i]->IsUsed()) {
-        int last = bullets_.size() - 1;
-        std::swap(bullets_[i], bullets_[last]);
-        bullets_.erase(bullets_.begin() + last);
-        --i;
+      (*bullet_for_possible_delete)->Move();
+      DamageArea((*bullet_for_possible_delete)->GetPosition().x(),
+                 (*bullet_for_possible_delete)->GetPosition().y(),
+                 bullet_radius,
+                 (*bullet_for_possible_delete));
+      if ((*bullet_for_possible_delete)->IsUsed()) {
+        bullets_.erase(bullet_for_possible_delete);
         break;
       }
     }
   }
+
+  // TODO (AZUAVCHIKOV) not best solution
+  for (auto soldier = soldiers_.begin(); soldier != soldiers_.end();) {
+    auto soldier_for_possible_delete = soldier;
+    ++soldier;
+    if ((*soldier_for_possible_delete)->IsDead()) {
+      soldiers_.erase(soldier_for_possible_delete);
+    }
+  }
 }
 
-void World::DamageArea(int x, int y, int radius, int bullet_index) {
+void World::DamageArea(int x, int y, int radius,
+                       const std::shared_ptr<Bullet>& bullet) {
   QPoint top(0, 0);
   top.setX(std::max(top.x(), x - radius));
   top.setY(std::max(top.y(), y - radius));
@@ -389,25 +383,23 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
   bottom.setX(std::min(bottom.x(), x + radius));
   bottom.setY(std::min(bottom.y(), y + radius));
 
-  auto& bullet = bullets_[bullet_index];
-
   for (int i = top.y(); i <= bottom.y(); ++i) {
     for (int j = top.x(); j <= bottom.x(); ++j) {
       auto& container = cells_[i][j].soldiers;
-      for (auto k = container.begin(); k != container.end(); k++) {
-        if ((*k)->GetSide() == bullet->GetSide()) continue;
+      for (auto soldier = container.begin(); soldier != container.end();
+           soldier++) {
+        if ((*soldier)->GetSide() == bullet->GetSide()) continue;
         int damage = bullet->GetDamage();
         if (cells_[i][j].is_trench) {
           damage = static_cast<int>(damage * weapons::kTrenchEffect);
         }
-        (*k)->TakeDamage(damage);
+        (*soldier)->TakeDamage(damage);
         bullet->MakeUsed();
-        if ((*k)->IsDead()) {
-          if ((*k)->GetSide() == Side::kAttacker) {
+        if ((*soldier)->IsDead()) {
+          if ((*soldier)->GetSide() == Side::kAttacker) {
             count_attackers_--;
           }
-          cells_[i][j].soldiers.erase(k);
-          ++dead_soldiers_;
+          cells_[i][j].soldiers.erase(soldier);
         }
         return;
       }
@@ -416,12 +408,11 @@ void World::DamageArea(int x, int y, int radius, int bullet_index) {
 }
 
 void World::MakeShots() {
-  for (int i = 0; i < soldiers_.size(); ++i) {
-    if (soldiers_[i]->IsDead()) continue;
-    auto nearest = FindNearest(soldiers_[i]);
+  for (auto& soldier : soldiers_) {
+    auto nearest = FindNearest(soldier);
     if (!nearest.has_value()) continue;
-    auto bullet = soldiers_[i]->Fire(soldiers_[i]->GetPosition(),
-                                     nearest.value()->GetPosition());
+    auto bullet = soldier->Fire(soldier->GetPosition(),
+                                nearest.value()->GetPosition());
     if (bullet.has_value()) {
       AddBullet(bullet.value());
     }
@@ -429,26 +420,24 @@ void World::MakeShots() {
 }
 
 std::optional<std::shared_ptr<Soldier>> World::FindNearest(
-    const std::shared_ptr<Soldier>& soldier) const {
-  int nearest_index = -1;
+    const std::shared_ptr<Soldier>& current_soldier) const {
+  std::optional<std::shared_ptr<Soldier>> nearest_soldier;
   int64_t dist = INT64_MAX, new_dist;
   QPoint to;
-  QPoint from = soldier->GetPosition();
+  QPoint from = current_soldier->GetPosition();
 
-  for (int i = 0; i < soldiers_.size(); ++i) {
-    if (soldiers_[i]->IsDead()) continue;
-    if (soldiers_[i]->GetSide() == soldier->GetSide()) continue;
-    to = soldiers_[i]->GetPosition();
+  for (auto& soldier : soldiers_) {
+    if (current_soldier->GetSide() == soldier->GetSide()) continue;
+    to = soldier->GetPosition();
     new_dist = (from.x() - to.x()) * (from.x() - to.x())
         + (from.y() - to.y()) * (from.y() - to.y());
     if (new_dist < dist) {
       dist = new_dist;
-      nearest_index = i;
+      nearest_soldier = soldier;
     }
   }
-  if (nearest_index == -1) return std::nullopt;
 
-  return soldiers_[nearest_index];
+  return nearest_soldier;
 }
 
 void World::TrenchUpdate() {
@@ -456,21 +445,22 @@ void World::TrenchUpdate() {
 }
 
 void World::FireTower() {
-  std::shared_ptr<Tower> temp = nullptr;
-  for (int i = 0; i < towers_.size(); ++i) {
-    auto& tower = towers_[i];
+  auto tower = towers_.begin();
+  auto distance = distances_.begin();
+  for (; tower != towers_.end();) {
     Cell& cell =
-        cells_[tower->GetPosition().y()][tower->GetPosition().x()];
+        cells_[(*tower)->GetPosition().y()][(*tower)->GetPosition().x()];
     for (const auto& soldier : cell.soldiers) {
-      tower->TakeDamage(soldier->GetTowerDamage());
+      (*tower)->TakeDamage(soldier->GetTowerDamage());
     }
-    if (tower->IsDestroyed()) {
-      int last = towers_.size() - 1;
-      std::swap(towers_[i], towers_[last]);
-      towers_.erase(towers_.begin() + last);
-      distances_[i] = std::move(distances_[last]);
-      distances_.erase(distances_.begin() + last);
-      --i;
+    auto tower_for_possible_delete = tower;
+    auto distance_for_possible_delete = distance;
+    ++tower;
+    ++distance;
+    if ((*tower_for_possible_delete)->IsDestroyed()) {
+      towers_.erase(tower_for_possible_delete);
+      distances_.erase(distance_for_possible_delete);
+      // maybe unused
       is_need_update_towers_ = true;
     }
   }

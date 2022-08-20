@@ -34,9 +34,9 @@ class World : public QObject {
 
   ~World() = default;
 
-  const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
-  const std::vector<std::shared_ptr<Tower>>& GetTowers() const;
-  const std::vector<std::shared_ptr<Bullet>>& GetBullets() const;
+  const std::list<std::shared_ptr<Soldier>>& GetSoldiers() const;
+  const std::list<std::shared_ptr<Tower>>& GetTowers() const;
+  const std::list<std::shared_ptr<Bullet>>& GetBullets() const;
 
   const QSize& GetSize() const;
 
@@ -44,7 +44,6 @@ class World : public QObject {
   Cell& GetCell(const QPoint&);
 
   const QPixmap& GetPixmap();
-  void Update();
   void TrenchUpdate();
 
   void AddSoldier(Side side);
@@ -87,15 +86,14 @@ class World : public QObject {
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
-  std::vector<std::vector<std::vector<int>>> distances_;
+  std::list<std::vector<std::vector<int>>> distances_;
   std::mutex distances_mutex_;
   std::queue<std::thread> distance_loading_threads_;
-  std::vector<std::shared_ptr<Soldier>> soldiers_;
-  std::vector<std::shared_ptr<Bullet>> bullets_;
-  std::vector<std::shared_ptr<Tower>> towers_;
+  std::list<std::shared_ptr<Soldier>> soldiers_;
+  std::list<std::shared_ptr<Bullet>> bullets_;
+  std::list<std::shared_ptr<Tower>> towers_;
   std::vector<QPoint> bot_soldier_buffer_;
   bool is_need_update_towers_{true};
-  int dead_soldiers_{0};
 
   void LoadMap(const QString& path, GameMode mode, Side side);
 
@@ -103,7 +101,7 @@ class World : public QObject {
 
   void GenerateNewDistances(const QPoint& pos);
 
-  void DamageArea(int x, int y, int radius, int bullet_index);
+  void DamageArea(int x, int y, int radius, const std::shared_ptr<Bullet>&);
 
   std::optional<std::shared_ptr<Soldier>> FindNearest(
       const std::shared_ptr<Soldier>& soldier) const;

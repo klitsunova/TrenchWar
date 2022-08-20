@@ -37,7 +37,6 @@ void EventsController::timerEvent(QTimerEvent*) {
   world_->MoveBullets();
   world_->FireTower();
   view_->UpdateMap();
-  world_->Update();
   CheckGameEnding();
 }
 
@@ -277,7 +276,6 @@ void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
                         / window_height);
 
         world_->AddSoldier(player_side_, game_point);
-        world_->Update();
         view_->UpdateMap();
       }
       break;
