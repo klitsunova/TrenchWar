@@ -36,7 +36,12 @@ void World::AddTower() {
 void World::AddTower(const QPoint& position) {
   auto new_object = std::make_shared<Tower>(position);
   towers_.push_back(new_object);
-  distance_loading_threads_.emplace(&World::GenerateNewDistances, this,
+  distances_.emplace_back(cells_.size(),
+                          std::vector<int>(cells_[0].size(),
+                                           std::numeric_limits<int>::max()));
+  distance_loading_threads_.emplace(&World::GenerateNewDistances,
+                                    this,
+                                    --distances_.end(),
                                     std::ref(new_object->GetPosition()));
 }
 
@@ -289,17 +294,16 @@ QPixmap World::DrawWorld() const {
   return picture;
 }
 
-void World::GenerateNewDistances(const QPoint& pos) {
+void World::GenerateNewDistances(
+    std::list<std::vector<std::vector<int>>>::iterator distances_map,
+    const QPoint& pos) {
   std::lock_guard<std::mutex> lock(distances_mutex_);
-  distances_.emplace_back(cells_.size(),
-                          std::vector<int>(cells_[0].size(),
-                                           std::numeric_limits<int>::max()));
   for (auto& cell_line : cells_) {
     for (auto& cell : cell_line) {
       cell.used = false;
     }
   }
-  auto& container = distances_.back();
+  auto& container = *distances_map;
 
   auto cmp =
       [&](std::pair<int, int> left, std::pair<int, int> right) {

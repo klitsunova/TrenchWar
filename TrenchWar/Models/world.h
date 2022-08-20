@@ -99,7 +99,10 @@ class World : public QObject {
 
   QPixmap DrawWorld() const;
 
-  void GenerateNewDistances(const QPoint& pos);
+  void GenerateNewDistances(std::list<std::vector<std::vector<int>>>::iterator
+                            distances_map,
+                            const QPoint& pos
+  );
 
   void DamageArea(int x, int y, int radius, const std::shared_ptr<Bullet>&);
 
