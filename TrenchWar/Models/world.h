@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <functional>
 #include <limits>
+#include <list>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -101,8 +102,7 @@ class World : public QObject {
 
   void GenerateNewDistances(std::list<std::vector<std::vector<int>>>::iterator
                             distances_map,
-                            const QPoint& pos
-  );
+                            const QPoint& pos);
 
   void DamageArea(int x, int y, int radius, const std::shared_ptr<Bullet>&);
 

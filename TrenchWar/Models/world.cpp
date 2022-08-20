@@ -368,7 +368,7 @@ void World::MoveBullets() {
     }
   }
 
-  // TODO (AZUAVCHIKOV) not best solution
+  // TODO(AZUAVCHIKOV) not best solution
   for (auto soldier = soldiers_.begin(); soldier != soldiers_.end();) {
     auto soldier_for_possible_delete = soldier;
     ++soldier;
