@@ -54,9 +54,8 @@ void BuyWindow::SetList() {
     auto* item = new QListWidgetItem;
     QJsonObject element = position.toObject();
     item->setText(element["name"].toString());
-    QPixmap pixmap(element["filename"].toString());
     QIcon icon;
-    icon.addPixmap(pixmap);
+    icon.addPixmap(*PixmapLoader::GetPixmap(element["filename"].toString()));
     item->setIcon(icon);
     list_->addItem(item);
     price_list_[element["name"].toString()] = element["cost"].toInt();
