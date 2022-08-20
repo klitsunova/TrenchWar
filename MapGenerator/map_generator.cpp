@@ -464,7 +464,7 @@ void MapGenerator::SaveButtonClicked() {
   QJsonObject map_obj;
 
   map_obj.insert("Length",static_cast<int>(map_.size()));
-  map_obj.insert("Width",static_cast<int>(map_[0].size()));
+  map_obj.insert("Width", static_cast<int>(map_[0].size()));
 
   record_object.insert("Size", map_obj);
 
@@ -483,7 +483,7 @@ void MapGenerator::SaveButtonClicked() {
     colors_and_speed.push_back(obj_color_speed);
   }
 
-  record_object.insert("Colors and speed",colors_and_speed);
+  record_object.insert("Colors and speed", colors_and_speed);
 
   QString map_string;
 
@@ -519,7 +519,7 @@ void MapGenerator::SaveButtonClicked() {
 
   record_object.insert("Attackers", attackers);
   record_object.insert("Defenders", defenders);
-  record_object.insert("Terrain objects",terrain_objects);
+  record_object.insert("Terrain objects", terrain_objects);
 
   QJsonDocument doc(record_object);
   QString text  = doc.toJson(QJsonDocument::Indented);
