@@ -463,10 +463,8 @@ void MapGenerator::SaveButtonClicked() {
   QJsonObject record_object;
   QJsonObject map_obj;
 
-  map_obj.insert("Length",
-                 QJsonValue::fromVariant(static_cast<int>(map_.size())));
-  map_obj.insert("Width",
-                 QJsonValue::fromVariant(static_cast<int>(map_[0].size())));
+  map_obj.insert("Length",static_cast<int>(map_.size()));
+  map_obj.insert("Width",static_cast<int>(map_[0].size()));
 
   record_object.insert("Size", map_obj);
 
@@ -480,26 +478,24 @@ void MapGenerator::SaveButtonClicked() {
            QVariant::fromValue(using_colors_[i].color.rgb())));
 
     obj_color_speed.insert("Speed",
-                           QJsonValue::fromVariant
-                           (using_colors_[i].speed_characteristic));
+                           using_colors_[i].speed_characteristic);
 
     colors_and_speed.push_back(obj_color_speed);
   }
 
-  record_object.insert("Colors and speed",
-                       QJsonValue::fromVariant(colors_and_speed));
+  record_object.insert("Colors and speed",colors_and_speed);
 
-  std::stringstream map_string;
+  QString map_string;
 
   for (int i = 0; i < map_.size(); ++i) {
     for (int j = 0; j < map_[i].size(); ++j) {
-      map_string << map_[i][j].using_color << " ";
+      map_string +=  QString::number(map_[i][j].using_color);
+      map_string += " ";
     }
-    map_string << "\n";
+    map_string += "\n";
   }
 
-  record_object.insert("Map", QJsonValue::fromVariant
-  (QString::fromStdString(map_string.str())));
+  record_object.insert("Map", map_string);
 
   QJsonArray attackers;
   QJsonArray defenders;
@@ -509,21 +505,21 @@ void MapGenerator::SaveButtonClicked() {
     auto& object = game_objects_[i];
 
     QJsonObject obj;
-    obj.insert("X", QJsonValue::fromVariant(object.pos.x()));
-    obj.insert("Y", QJsonValue::fromVariant(object.pos.y()));
+    obj.insert("X", object.pos.x());
+    obj.insert("Y", object.pos.y());
 
     if (object.type == Object::Type::kAttacker) {
-      attackers.push_back(QJsonValue::fromVariant(obj));
+      attackers.push_back(obj);
     } else if (object.type == Object::Type::kDefender) {
-      defenders.push_back(QJsonValue::fromVariant(obj));
+      defenders.push_back(obj);
     } else if (object.type == Object::Type::kTerrainObject) {
-      terrain_objects.push_back(QJsonValue::fromVariant(obj));
+      terrain_objects.push_back(obj);
     }
   }
-  record_object.insert("Attackers", QJsonValue::fromVariant(attackers));
-  record_object.insert("Defenders", QJsonValue::fromVariant(defenders));
-  record_object.insert("Terrain objects",
-                       QJsonValue::fromVariant(terrain_objects));
+
+  record_object.insert("Attackers", attackers);
+  record_object.insert("Defenders", defenders);
+  record_object.insert("Terrain objects",terrain_objects);
 
   QJsonDocument doc(record_object);
   QString text  = doc.toJson(QJsonDocument::Indented);

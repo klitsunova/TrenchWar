@@ -235,20 +235,20 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
   QJsonObject obj  = doc.object();
 
-  QJsonObject j_size  = obj.value("Size").toObject();
+  QJsonObject size  = obj.value("Size").toObject();
   int height, width;
-  height = j_size["Length"].toInt();
-  width = j_size["Width"].toInt();
+  height = size["Length"].toInt();
+  width = size["Width"].toInt();
   size_ = QSize(height, width);
 
-  QJsonArray j_color_value = obj["Colors and speed"].toArray();
+  QJsonArray color_speed_value = obj["Colors and speed"].toArray();
   std::vector<std::pair<int64_t, int>> color_and_value;
 
   int64_t color;
   int speed;
-  for (int i = 0; i < j_color_value.size(); i++) {
-    color = j_color_value.at(i).toObject()["Color"].toInteger();
-    speed = j_color_value.at(i).toObject()["Speed"].toInt();
+  for (int i = 0; i < color_speed_value.size(); i++) {
+    color = color_speed_value.at(i).toObject()["Color"].toInteger();
+    speed = color_speed_value.at(i).toObject()["Speed"].toInt();
     color_and_value.emplace_back(color, speed);
   }
 
@@ -256,11 +256,13 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   cells_.resize(height,
                 std::vector<Cell>(width));
 
-  std::stringstream st(obj["Map"].toString().toStdString());
+  QString map_string(obj["Map"].toString());
+  QTextStream map_stream(&map_string);
+
   for (int i = 0; i < height; ++i) {
     for (int j = 0; j < width; ++j) {
       int color_index;
-      st >> color_index;
+      map_stream >> color_index;
       cells_[i][j].landscape = Landscape(color_and_value[color_index].first,
                                          color_and_value[color_index].second);
     }

@@ -48,9 +48,9 @@ void BuyWindow::SetList() {
   QJsonDocument doc =  QJsonDocument::fromJson(text.toUtf8());
   QJsonObject obj  = doc.object();
 
-  QJsonArray pos = obj["Positions"].toArray();
+  QJsonArray positions = obj["Positions"].toArray();
 
-  for (auto && position : pos) {
+  for (auto && position : positions) {
     auto* item = new QListWidgetItem;
     QJsonObject element = position.toObject();
     item->setText(element["name"].toString());
