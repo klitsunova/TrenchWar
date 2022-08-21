@@ -272,12 +272,12 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   QJsonArray defenders = obj["Defenders"].toArray();
   QJsonArray terrain_objects = obj["Terrain objects"].toArray();
 
-  auto add_soldier = [&](const QJsonArray& array) {
+  auto add_soldier = [buffer = &bot_soldier_buffer_](const QJsonArray& array) {
     int x, y;
-    for (const auto & i : array) {
-      x = i.toObject()["X"].toInt();
-      y = i.toObject()["Y"].toInt();
-      bot_soldier_buffer_.emplace_back(x, y);
+    for (const auto& element: array) {
+      x = element.toObject()["X"].toInt();
+      y = element.toObject()["Y"].toInt();
+      buffer->emplace_back(x, y);
     }
   };
 
