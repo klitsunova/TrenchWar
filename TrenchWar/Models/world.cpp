@@ -274,7 +274,7 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
 
   auto add_soldier = [buffer = &bot_soldier_buffer_](const QJsonArray& array) {
     int x, y;
-    for (const auto& element: array) {
+    for (const auto& element : array) {
       x = element.toObject()["X"].toInt();
       y = element.toObject()["Y"].toInt();
       buffer->emplace_back(x, y);
