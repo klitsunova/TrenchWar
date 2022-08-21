@@ -8,13 +8,16 @@ set(CMAKE_AUTOUIC ON)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     # using Clang
-    set(CMAKE_PREFIX_PATH "~/Qt/6.3.0/mingw_64/lib/cmake")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # using GCC
-    set(CMAKE_PREFIX_PATH "~/Qt/6.2.3/gcc_64/lib/cmake")
+    if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        set(CMAKE_PREFIX_PATH "~/Qt/6.2.3/gcc_64/lib/cmake")
+    elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        set(CMAKE_PREFIX_PATH "~/Qt/6.3.0/mingw_64/lib/cmake")
+    endif ()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     # using Visual Studio C++
-endif()
+endif ()
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
