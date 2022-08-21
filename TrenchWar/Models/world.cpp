@@ -246,7 +246,7 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
 
   int64_t color;
   int speed;
-  for (auto&& color_speed_value: color_speed_values) {
+  for (auto&& color_speed_value : color_speed_values) {
     color = color_speed_value.toObject()["Color"].toInteger();
     speed = color_speed_value.toObject()["Speed"].toInt();
     color_and_value.emplace_back(color, speed);
