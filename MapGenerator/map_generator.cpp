@@ -1,8 +1,8 @@
+#include "map_generator.h"
+
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-
-#include "map_generator.h"
 
 MapGenerator::MapGenerator(QWidget* parent)
     : QWidget(parent),
@@ -467,8 +467,6 @@ void MapGenerator::SaveButtonClicked() {
   map_obj.insert("Width",  static_cast<int>(map_[0].size()));
 
   record_object.insert("Size", map_obj);
-
-
 
   QJsonArray colors_and_speed;
   for (int i = 0; i < using_colors_.size(); ++i) {

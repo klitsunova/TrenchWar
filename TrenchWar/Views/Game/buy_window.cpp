@@ -51,7 +51,7 @@ void BuyWindow::SetList() {
   QJsonArray positions = obj["Positions"].toArray();
 
   for (auto && position : positions) {
-    auto* item = new QListWidgetItem;
+    auto* item = new QListWidgetItem(list_);
     QJsonObject element = position.toObject();
     item->setText(element["name"].toString());
     QIcon icon;

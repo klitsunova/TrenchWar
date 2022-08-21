@@ -1,10 +1,10 @@
-#include <iostream>
 #include <random>
 #include <utility>
 
 #include "world.h"
 
 #include "Models/Tools/settings.h"
+
 #include <QAudioOutput>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -236,19 +236,19 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   QJsonObject obj  = doc.object();
 
   QJsonObject size  = obj.value("Size").toObject();
-  int height, width;
-  height = size["Length"].toInt();
-  width = size["Width"].toInt();
+  int height = size["Length"].toInt();
+  int width = size["Width"].toInt();
+
   size_ = QSize(height, width);
 
-  QJsonArray color_speed_value = obj["Colors and speed"].toArray();
+  QJsonArray color_speed_values = obj["Colors and speed"].toArray();
   std::vector<std::pair<int64_t, int>> color_and_value;
 
   int64_t color;
   int speed;
-  for (int i = 0; i < color_speed_value.size(); i++) {
-    color = color_speed_value.at(i).toObject()["Color"].toInteger();
-    speed = color_speed_value.at(i).toObject()["Speed"].toInt();
+  for (auto&& color_speed_value: color_speed_values) {
+    color = color_speed_value.toObject()["Color"].toInteger();
+    speed = color_speed_value.toObject()["Speed"].toInt();
     color_and_value.emplace_back(color, speed);
   }
 
@@ -282,7 +282,6 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   };
 
   if (mode == GameMode::kBot) {
-    int x, y;
     if (side == Side::kDefender) {
       add_soldier(attackers);
     } else {
@@ -290,10 +289,9 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
     }
   }
 
-  int x, y;
-  for (auto && terrain_object : terrain_objects) {
-    x = terrain_object.toObject()["X"].toInt();
-    y = terrain_object.toObject()["Y"].toInt();
+  for (auto&& terrain_object : terrain_objects) {
+    int x = terrain_object.toObject()["X"].toInt();
+    int y = terrain_object.toObject()["Y"].toInt();
     AddTower(QPoint(x, y));
   }
 
