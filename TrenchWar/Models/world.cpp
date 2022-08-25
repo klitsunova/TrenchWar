@@ -41,7 +41,7 @@ void World::AddTower(const QPoint& position) {
                                            std::numeric_limits<int>::max()));
   distance_loading_threads_.emplace(&World::GenerateNewDistances,
                                     this,
-                                    std::ref(distances_.back()),
+                                    distances_.size() - 1,
                                     std::ref(new_object->GetPosition()));
 }
 
@@ -297,9 +297,8 @@ QPixmap World::DrawWorld() const {
   return picture;
 }
 
-std::vector<std::vector<int>> World::GenerateNewDistances(
-    int distances_map_index,
-    const QPoint& pos) {
+void World::GenerateNewDistances(int distances_map_index,
+                                 const QPoint& pos) {
   std::lock_guard<std::mutex> lock(distances_mutex_);
   for (auto& cell_line : cells_) {
     for (auto& cell : cell_line) {
