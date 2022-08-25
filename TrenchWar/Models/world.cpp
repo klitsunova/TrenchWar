@@ -297,14 +297,20 @@ QPixmap World::DrawWorld() const {
   return picture;
 }
 
-void World::GenerateNewDistances(std::vector<std::vector<int>>& distances_map,
-                                 const QPoint& pos) {
+std::vector<std::vector<int>> World::GenerateNewDistances(
+    int distances_map_index,
+    const QPoint& pos) {
   std::lock_guard<std::mutex> lock(distances_mutex_);
   for (auto& cell_line : cells_) {
     for (auto& cell : cell_line) {
       cell.used = false;
     }
   }
+  auto distances_map_iterator = distances_.begin();
+  for (int index = 0; index < distances_map_index; ++index) {
+    ++distances_map_iterator;
+  }
+  auto& distances_map = *distances_map_iterator;
 
   auto cmp =
       [&](std::pair<int, int> left, std::pair<int, int> right) {
