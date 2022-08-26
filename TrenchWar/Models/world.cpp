@@ -359,17 +359,17 @@ void World::MoveBullets() {
   int repeat = 1;
 
   for (auto bullet = bullets_.begin(); bullet != bullets_.end();) {
-    auto bullets_for_possible_delete_iterator = bullet;
-    auto bullet_for_possible_delete = *bullet;
+    auto maybe_deleted_bullet_iterator = bullet;
+    auto maybe_deleted_bullet = *bullet;
     ++bullet;
     for (int j = 0; j < repeat; ++j) {
-      bullet_for_possible_delete->Move();
-      DamageArea(bullet_for_possible_delete->GetPosition().x(),
-                 bullet_for_possible_delete->GetPosition().y(),
+      maybe_deleted_bullet->Move();
+      DamageArea(maybe_deleted_bullet->GetPosition().x(),
+                 maybe_deleted_bullet->GetPosition().y(),
                  bullet_radius,
-                 bullet_for_possible_delete);
-      if (bullet_for_possible_delete->IsUsed()) {
-        bullets_.erase(bullets_for_possible_delete_iterator);
+                 maybe_deleted_bullet);
+      if (maybe_deleted_bullet->IsUsed()) {
+        bullets_.erase(maybe_deleted_bullet_iterator);
         break;
       }
     }
@@ -377,10 +377,10 @@ void World::MoveBullets() {
 
   // TODO(AZUAVCHIKOV) not best solution
   for (auto soldier = soldiers_.begin(); soldier != soldiers_.end();) {
-    auto soldier_for_possible_delete = soldier;
+    auto maybe_deleted_soldier = soldier;
     ++soldier;
-    if ((*soldier_for_possible_delete)->IsDead()) {
-      soldiers_.erase(soldier_for_possible_delete);
+    if ((*maybe_deleted_soldier)->IsDead()) {
+      soldiers_.erase(maybe_deleted_soldier);
     }
   }
 }
@@ -460,7 +460,7 @@ void World::TrenchUpdate() {
 void World::FireTower() {
   auto tower = towers_.begin();
   auto distance = distances_.begin();
-  for (; tower != towers_.end();) {
+  while (tower != towers_.end()) {
     Cell& cell =
         cells_[(*tower)->GetPosition().y()][(*tower)->GetPosition().x()];
     for (const auto& soldier : cell.soldiers) {
