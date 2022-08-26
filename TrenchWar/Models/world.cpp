@@ -458,21 +458,22 @@ void World::TrenchUpdate() {
 }
 
 void World::FireTower() {
-  auto tower = towers_.begin();
-  auto distance = distances_.begin();
-  while (tower != towers_.end()) {
+  auto tower_iterator = towers_.begin();
+  auto distance_iterator = distances_.begin();
+  while (tower_iterator != towers_.end()) {
+    auto& tower = *tower_iterator;
     Cell& cell =
-        cells_[(*tower)->GetPosition().y()][(*tower)->GetPosition().x()];
+        cells_[tower->GetPosition().y()][tower->GetPosition().x()];
     for (const auto& soldier : cell.soldiers) {
-      (*tower)->TakeDamage(soldier->GetTowerDamage());
+      tower->TakeDamage(soldier->GetTowerDamage());
     }
-    auto tower_for_possible_delete = tower;
-    auto distance_for_possible_delete = distance;
-    ++tower;
-    ++distance;
-    if ((*tower_for_possible_delete)->IsDestroyed()) {
-      towers_.erase(tower_for_possible_delete);
-      distances_.erase(distance_for_possible_delete);
+    auto maybe_deleted_tower = tower_iterator;
+    auto maybe_deleted_distance = distance_iterator;
+    ++tower_iterator;
+    ++distance_iterator;
+    if ((*maybe_deleted_tower)->IsDestroyed()) {
+      towers_.erase(maybe_deleted_tower);
+      distances_.erase(maybe_deleted_distance);
     }
   }
 }
