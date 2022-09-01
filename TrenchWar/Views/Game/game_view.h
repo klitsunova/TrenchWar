@@ -32,6 +32,8 @@ class GameView : public QWidget {
   void SetStoreDialog(QMouseEvent* event);
   void SetStoreSideLabel(const QString& value);
 
+  void SetObjectsVisibility(bool are_objects_visible);
+
   void SetFullScreen(bool is_fullscreen);
   void SetStyle();
 
