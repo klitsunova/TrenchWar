@@ -32,11 +32,22 @@ EventsController::EventsController(QWidget* parent, GameMode mode)
 }
 
 void EventsController::timerEvent(QTimerEvent*) {
+  // draw map with only towers
+  view_->SetObjectsVisibility(false);
+  view_->UpdateMap();
+
   world_->MoveSoldiers();
   world_->MakeShots();
   world_->MoveBullets();
   world_->FireTower();
+
+  // draw map with towers, soldiers and bullets
+  view_->SetObjectsVisibility(true);
   view_->UpdateMap();
+
+  // this function cleans dead soldiers if there are a lot of them
+  world_->Update();
+
   CheckGameEnding();
 }
 

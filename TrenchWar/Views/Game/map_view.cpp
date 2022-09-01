@@ -66,16 +66,18 @@ void MapView::paintEvent(QPaintEvent*) {
                object->GetSize(), object->GetPixmap());
   }
 
-  const auto& soldiers = world_->GetSoldiers();
-  for (const auto& soldier : soldiers) {
-    DrawObject(&painter, soldier->GetPosition(),
-               soldier->GetSize(), soldier->GetPixmap());
-  }
+  if (are_objects_visible_) {
+    const auto& soldiers = world_->GetSoldiers();
+    for (const auto& soldier : soldiers) {
+      DrawObject(&painter, soldier->GetPosition(),
+                 soldier->GetSize(), soldier->GetPixmap());
+    }
 
-  const auto& bullets = world_->GetBullets();
-  for (const auto& bullet : bullets) {
-    DrawObject(&painter, bullet->GetPosition(),
-               bullet->GetSize(), bullet->GetPixmap());
+    const auto& bullets = world_->GetBullets();
+    for (const auto& bullet : bullets) {
+      DrawObject(&painter, bullet->GetPosition(),
+                 bullet->GetSize(), bullet->GetPixmap());
+    }
   }
 
   painter.restore();
@@ -103,6 +105,10 @@ void MapView::SetStoreDialog(QMouseEvent* event) {
   QPoint position = event->globalPosition().toPoint();
   buy_window_->move(position);
   buy_window_->SetWindowLocation(position);
+}
+
+void MapView::SetObjectsVisibility(bool are_objects_visible) {
+  are_objects_visible_ = are_objects_visible;
 }
 
 void MapView::ConnectUI() {

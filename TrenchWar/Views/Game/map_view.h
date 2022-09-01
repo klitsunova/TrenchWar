@@ -25,6 +25,8 @@ class MapView : public QWidget {
 
   void SetStoreDialog(QMouseEvent* event);
 
+  void SetObjectsVisibility(bool);
+
   void paintEvent(QPaintEvent* event) override;
 
   void mousePressEvent(QMouseEvent* event) override;
@@ -42,6 +44,7 @@ class MapView : public QWidget {
   void ConnectUI();
 
   int scale_;
+  bool are_objects_visible_{true};
   std::shared_ptr<World> world_;
   BuyWindow* buy_window_;
 };
