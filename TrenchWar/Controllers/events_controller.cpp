@@ -45,9 +45,6 @@ void EventsController::timerEvent(QTimerEvent*) {
   view_->SetObjectsVisibility(true);
   view_->UpdateMap();
 
-  // this function cleans dead soldiers if there are a lot of them
-  world_->Update();
-
   CheckGameEnding();
 }
 
