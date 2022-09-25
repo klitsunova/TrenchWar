@@ -24,7 +24,7 @@ Responding for : (TODO)
     
     - designed MVC architecture for application, decomposed it on tasks;
     
-    - implemented core game logic: menues and controllers;
+    - implemented core game logic: menus and controllers;
     
     - added local network mode;
     
