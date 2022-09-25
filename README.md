@@ -20,8 +20,18 @@ The game is an educational project of the ESD team of students of the 5th group 
 Responding for : game engine and map generator
 + Домнин Даниил <a href = "https://github.com/DaniilDomnin">@DaniilDomnin</a>
 Responding for : (TODO)
-+ Клицунова Екатерина <a href = "https://github.com/klitsunova">@klitsunova</a>
-Responding for : (TODO)
++ Kateryna Klitsunova <a href = "https://github.com/klitsunova">@klitsunova</a>
+    
+    - designed MVC architecture for application, decomposed it on tasks;
+    
+    - implemented core game logic: menues and controllers;
+    
+    - added local network mode;
+    
+    - made code review and solved merge conflicts;
+    
+    - tested whole application with test cases.
+    
 + Рубин Дмитрий <a href = "https://github.com/Zolokinos">@Zolokinos</a>
 Responding for : (TODO)
 
