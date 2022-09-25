@@ -31,6 +31,8 @@ Curators-mentors-assistants-reviewers:
 + Vanya Khodor <a href = "https://github.com/dasfex">@dasfex</a>
 + Aleksey Ulyanov <a href = "https://github.com/mrboorger">@mrboorger</a>
 
+
+
 # TrenchWar
 TrenchWar - некоммерческая 2D-игра в жанре Tower Defense, написанная на C++ с использованием Qt framework (6.3.0+). Игра предназначена для ПК. 
 Целью является моделирование участия в военном конфликте. В игре есть две стороны: защита и атака, каждая из которых должна выставить солдат (а защитник - еще и окопы) на карту для выполнения своих задач: защита - не пропустить нападающего к башням, нападение - прорвать защиту. 
