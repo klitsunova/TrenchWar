@@ -17,7 +17,15 @@ The active development phase ended in June 2022.
 
 The game is an educational project of the ESD team of students of the 5th group of the 1st year of the Faculty of Applied Mathematics and Informatics of the Belarusian State University (2 semester 2021-2022):
 + Aliaksei Aziauchykau <a href = "https://github.com/AzyavchikovAlex">@AzyavchikovAlex</a>
-Responding for : game engine and map generator
+    
+    - wrote the engine for the game;
+    
+    - created an application for making new game maps;
+    
+    - added multithreading;
+    
+    - made code review and solved merge conflicts.
+    
 + Домнин Даниил <a href = "https://github.com/DaniilDomnin">@DaniilDomnin</a>
 Responding for : (TODO)
 + Kateryna Klitsunova <a href = "https://github.com/klitsunova">@klitsunova</a>
