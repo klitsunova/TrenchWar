@@ -27,7 +27,15 @@ The game is an educational project of the ESD team of students of the 5th group 
     - made code review and solved merge conflicts.
     
 + Домнин Даниил <a href = "https://github.com/DaniilDomnin">@DaniilDomnin</a>
-Responding for : (TODO)
+
+   - writing the main game mechanics
+   
+   - game data management
+   
+   - bug fixes
+   
+   - made code review and solved merge conflicts
+   
 + Kateryna Klitsunova <a href = "https://github.com/klitsunova">@klitsunova</a>
     
     - designed MVC architecture for application, decomposed it on tasks;
