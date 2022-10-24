@@ -20,7 +20,7 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 set(MODELS
-        Models/world.cpp
+        Models/GameObjects/bullet.cpp
         Models/GameObjects/game_object.cpp
         Models/GameObjects/soldier.cpp
         Models/GameObjects/tower.cpp
@@ -28,7 +28,11 @@ set(MODELS
         Models/Tools/random_generator.cpp
         Models/Tools/settings.cpp
         Models/weapon.cpp
-        Models/GameObjects/bullet.cpp
+        Models/World/world.cpp
+        Models/World/Cell.cpp
+        Models/World/Cell.h
+        Models/World/Landscape.cpp
+        Models/World/Landscape.h
         )
 
 set(VIEWS

@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "helpers/store.h"
-#include "Models/world.h"
+#include "Models/World/world.h"
 #include "Views/Game/map_view.h"
 
 class TrenchController : public QWidget {

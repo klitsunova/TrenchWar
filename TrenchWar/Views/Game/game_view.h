@@ -8,7 +8,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "Models/world.h"
+#include "Models/World/world.h"
 #include "Views/Game/map_view.h"
 #include "Views/Game/store_view.h"
 #include "helpers/enum_helpers.h"

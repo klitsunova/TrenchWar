@@ -5,7 +5,7 @@
 
 #include <memory>
 
-#include "Models/world.h"
+#include "Models/World/world.h"
 #include "Views/Game/buy_window.h"
 
 class MapView : public QWidget {

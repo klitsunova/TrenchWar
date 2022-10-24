@@ -61,8 +61,8 @@ void TrenchController::DrawAndSaveTrench(const QPoint& pos) {
     return;
   }
   changed_cells_.emplace_back(pos,
-                              world_->GetCell(pos).landscape.color);
-  world_->GetCell(pos).landscape.color = colors::kTrenchColor;
+                              world_->GetCell(pos).GetColor());
+  world_->GetCell(pos).MakeTrench();
 }
 
 QPoint TrenchController::GlobalToCellsCoordinates(const QPoint& point) const {
@@ -121,7 +121,7 @@ QPoint TrenchController::TakeShiftDirection(const QPoint& start_point,
 
 void TrenchController::SetSaveCellsState() {
   for (const auto& changed_cell : changed_cells_) {
-    world_->GetCell(changed_cell.first).landscape.color = changed_cell.second;
+    world_->GetCell(changed_cell.first).RemoveTrench();
   }
 }
 

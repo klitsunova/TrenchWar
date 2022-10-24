@@ -15,19 +15,17 @@
 #include <thread>
 #include <vector>
 
-#include "GameObjects/soldier.h"
-#include "GameObjects/tower.h"
+#include "Models/GameObjects/soldier.h"
+#include "Models/GameObjects/tower.h"
 #include "Models/GameObjects/bullet.h"
-#include "Tools/pixmap_loader.h"
+#include "Models/Tools/pixmap_loader.h"
+#include "Models/World/Cell.h"
 #include "helpers/enum_helpers.h"
 #include "helpers/sizes.h"
 #include <QMediaPlayer>
 
 class World : public QObject {
-  Q_OBJECT
-
- private:
-  struct Cell;
+ Q_OBJECT
 
  public:
   explicit World(const QString& path, GameMode mode, Side side);
@@ -70,20 +68,7 @@ class World : public QObject {
   void Shot();
 
  private:
-  int count_attackers_;
-  struct Landscape {
-    Landscape(const QColor& q_color, int speed);
-    QColor color = Qt::white;
-    int move_lag{0};
-  };
-
-  struct Cell {
-    Landscape landscape{Landscape(Qt::white, 0)};
-    bool is_trench;
-    std::set<std::shared_ptr<Soldier>> soldiers;
-    bool used;
-  };
-
+  int count_attackers_{0};
   QSize size_;
   QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
@@ -102,6 +87,11 @@ class World : public QObject {
   QPixmap DrawWorld() const;
 
   void GenerateNewDistances(const QPoint& pos);
+  int GetLag(const QPoint& position);
+  int GetDistance(const QPoint& position);
+
+  void RemoveSoldierFromCell(const std::shared_ptr<Soldier>& soldier);
+  void PutSoldierToCell(const std::shared_ptr<Soldier>& soldier);
 
   void DamageArea(int x, int y, int radius, int bullet_index);
 

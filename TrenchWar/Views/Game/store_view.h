@@ -9,7 +9,7 @@
 #include <QWidget>
 
 #include "Models/Tools/pixmap_loader.h"
-#include "Models/world.h"
+#include "Models/World/world.h"
 #include "helpers/enum_helpers.h"
 #include "helpers/store.h"
 
