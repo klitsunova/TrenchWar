@@ -25,7 +25,7 @@
 #include <QMediaPlayer>
 
 class World : public QObject {
- Q_OBJECT
+  Q_OBJECT
 
  public:
   explicit World(const QString& path, GameMode mode, Side side);
