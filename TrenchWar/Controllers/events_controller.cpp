@@ -111,7 +111,7 @@ void EventsController::HideGame() {
 
 void EventsController::StartPreparationStage() {
   emit HideMainMenu();
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt",
+  world_ = std::make_shared<World>(":Resources/Maps/map123.json",
                                    game_mode_,
                                    player_side_);
   view_ = std::make_unique<GameView>(this, world_);

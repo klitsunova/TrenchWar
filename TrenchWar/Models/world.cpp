@@ -1,11 +1,14 @@
-#include <iostream>
 #include <random>
 #include <utility>
 
 #include "world.h"
 
 #include "Models/Tools/settings.h"
+
 #include <QAudioOutput>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QMediaPlayer>
 
 World::World(const QString& path, GameMode mode, Side side) {
@@ -223,51 +226,68 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   if (!file.open(QIODevice::ReadOnly)) {
     qCritical("Cannot open file for reading");
   }
-  QTextStream in(&file);
+  QString text = file.readAll();
+  QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
+  QJsonObject obj  = doc.object();
+
+  QJsonObject size  = obj.value("Size").toObject();
+  int height = size["Length"].toInt();
+  int width = size["Width"].toInt();
+
+  size_ = QSize(height, width);
+
+  QJsonArray color_speed_values = obj["Colors and speed"].toArray();
   std::vector<std::pair<int64_t, int>> color_and_value;
 
-  QString size = in.readLine();
-  int size_int = size.toInt();
-  for (int i = 0; i < size_int; i++) {
-    int64_t color;
-    int value;
-    in >> color >> value;
-    color_and_value.emplace_back(color, value);
+  int64_t color;
+  int speed;
+  for (auto&& color_speed_value : color_speed_values) {
+    color = color_speed_value.toObject()["Color"].toInteger();
+    speed = color_speed_value.toObject()["Speed"].toInt();
+    color_and_value.emplace_back(color, speed);
   }
-  in.readLine();
 
-  int height, width;
-  in >> height >> width;
-  size_ = QSize(width, height);
+
   cells_.resize(height,
                 std::vector<Cell>(width));
+
+  QString map_string(obj["Map"].toString());
+  QTextStream map_stream(&map_string);
+
   for (int i = 0; i < height; ++i) {
     for (int j = 0; j < width; ++j) {
       int color_index;
-      in >> color_index;
+      map_stream >> color_index;
       cells_[i][j].landscape = Landscape(color_and_value[color_index].first,
                                          color_and_value[color_index].second);
     }
   }
-  in.readLine();
-  in.readLine();
 
-  size = in.readLine();
-  size_int = size.toInt();
+  QJsonArray attackers = obj["Attackers"].toArray();
+  QJsonArray defenders = obj["Defenders"].toArray();
+  QJsonArray terrain_objects = obj["Terrain objects"].toArray();
 
-  for (int i = 0; i < size_int; i++) {
-    int x;
-    int y;
-    QString type;
-    in >> x >> y >> type;
-    if (type == "kTerrainObject") {
-      AddTower(QPoint(x, y));
+  auto add_soldier = [buffer = &bot_soldier_buffer_](const QJsonArray& array) {
+    int x, y;
+    for (const auto& element : array) {
+      x = element.toObject()["X"].toInt();
+      y = element.toObject()["Y"].toInt();
+      buffer->emplace_back(x, y);
     }
-    if (mode == GameMode::kBot &&
-        ((type == "kDefender" && side == Side::kAttacker) ||
-            (type == "kAttacker" && side == Side::kDefender))) {
-      bot_soldier_buffer_.emplace_back(x, y);
+  };
+
+  if (mode == GameMode::kBot) {
+    if (side == Side::kDefender) {
+      add_soldier(attackers);
+    } else {
+      add_soldier(defenders);
     }
+  }
+
+  for (auto&& terrain_object : terrain_objects) {
+    int x = terrain_object.toObject()["X"].toInt();
+    int y = terrain_object.toObject()["Y"].toInt();
+    AddTower(QPoint(x, y));
   }
 
   file.close();
