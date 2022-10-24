@@ -208,9 +208,9 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   }
   QString text = file.readAll();
   QJsonDocument doc = QJsonDocument::fromJson(text.toUtf8());
-  QJsonObject obj  = doc.object();
+  QJsonObject obj = doc.object();
 
-  QJsonObject size  = obj.value("Size").toObject();
+  QJsonObject size = obj.value("Size").toObject();
   int height = size["Length"].toInt();
   int width = size["Width"].toInt();
 
@@ -227,7 +227,6 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
     color_and_value.emplace_back(color, speed);
   }
 
-
   cells_.resize(height,
                 std::vector<Cell>(width));
 
@@ -238,8 +237,8 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
     for (int j = 0; j < width; ++j) {
       int color_index;
       map_stream >> color_index;
-      cells_[i][j].landscape = Landscape(color_and_value[color_index].first,
-                                         color_and_value[color_index].second);
+      cells_[i][j] = Cell(color_and_value[color_index].first,
+                          color_and_value[color_index].second);
     }
   }
 
@@ -307,11 +306,9 @@ QPixmap World::DrawWorld() const {
 void World::GenerateNewDistances(int distances_map_index,
                                  const QPoint& pos) {
   std::lock_guard<std::mutex> lock(distances_mutex_);
-  for (auto& cell_line : cells_) {
-    for (auto& cell : cell_line) {
-      cell.used = false;
-    }
-  }
+  std::vector<std::vector<bool>>
+      used_cells(cells_.size(), std::vector<bool>(cells_[0].size(), false));
+
   auto distances_map_iterator = distances_.begin();
   for (int index = 0; index < distances_map_index; ++index) {
     ++distances_map_iterator;
@@ -332,11 +329,11 @@ void World::GenerateNewDistances(int distances_map_index,
 
   auto push_if =
       [&](int x, int y, int dist, bool condition = true) {
-        if (!condition || cells_[y][x].used) {
+        if (!condition || used_cells[y][x]) {
           return;
         }
-        if (distances_map[y][x] > dist + cells_[y][x].landscape.move_lag) {
-          distances_map[y][x] = dist + cells_[y][x].landscape.move_lag;
+        if (distances_map[y][x] > dist + cells_[y][x].GetTimeLag()) {
+          distances_map[y][x] = dist + cells_[y][x].GetTimeLag();
           latest_at_ground.push(std::make_pair(x, y));
         }
       };
@@ -355,7 +352,7 @@ void World::GenerateNewDistances(int distances_map_index,
     // lower neighbor
     push_if(x, y + 1, current_dist, (y != cells_.size() - 1));
 
-    cells_[y][x].used = true;
+    used_cells[y][x] = true;
     latest_at_ground.pop();
   }
 }
@@ -421,7 +418,7 @@ void World::DamageArea(int x, int y, int radius,
 
   for (int i = top.y(); i <= bottom.y(); ++i) {
     for (int j = top.x(); j <= bottom.x(); ++j) {
-      auto& container = cells_[i][j].soldiers;
+      auto& container = cells_[i][j].GetSoldiers();
       for (auto soldier_iterator = container.begin();
            soldier_iterator != container.end();
            soldier_iterator++) {
@@ -437,7 +434,7 @@ void World::DamageArea(int x, int y, int radius,
           if (soldier->GetSide() == Side::kAttacker) {
             count_attackers_--;
           }
-          cells_[i][j].soldiers.erase(soldier_iterator);
+          cells_[i][j].InsertSoldier(soldier_iterator.operator*());
         }
         return;
       }

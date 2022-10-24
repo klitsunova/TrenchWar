@@ -88,6 +88,8 @@ class World : public QObject {
 
   int GetLag(const QPoint& position);
   int GetDistance(const QPoint& position);
+  void PutSoldierToCell(const std::shared_ptr<Soldier>& soldier);
+  void RemoveSoldierFromCell(const std::shared_ptr<Soldier>& soldier);
   void GenerateNewDistances(int distances_map_index,
                             const QPoint& pos);
 

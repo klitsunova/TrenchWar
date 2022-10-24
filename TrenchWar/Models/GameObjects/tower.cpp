@@ -6,11 +6,8 @@ Tower::Tower(const QPoint& point)
   picture_ = PixmapLoader::GetTower();
 }
 
-void Tower::TakeDamage(int multiply) {
-  health -= weapons::kTowerDamage * multiply;
-  if (health < 0) {
-    health = 0;
-  }
+void Tower::TakeDamage(int damage) {
+  health = std::max(0, health - damage);
 }
 
 bool Tower::IsDestroyed() const {
