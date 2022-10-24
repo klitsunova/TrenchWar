@@ -33,7 +33,7 @@ class TrenchController : public QWidget {
 
   int GetTrenchLength();
 
-  const std::vector<std::pair<QPoint, QColor>>& GetChangedCells() const;
+  const std::vector<QPoint>& GetChangedCells() const;
 
  private:
   void DrawAndSaveTrench(const QPoint& pos);
@@ -43,7 +43,7 @@ class TrenchController : public QWidget {
   QPoint TakeShiftDirection(const QPoint& start_point,
                             const QPoint& end_point) const;
 
-  std::vector<std::pair<QPoint, QColor>> changed_cells_;
+  std::vector<QPoint> changed_cells_;
   std::pair<QPoint, QPoint> start_and_end_trench_points_ =
       std::make_pair(QPoint(0, 0), QPoint(0, 0));
   bool is_trench_fixed_{false};

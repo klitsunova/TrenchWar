@@ -259,7 +259,7 @@ void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
     case BuyMode::kTrench: {
       if ((view_->GetStore()->SpendMoney(name))) {
         for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
-          world_->GetCell(changed_cell.first).MakeTrench();
+          world_->GetCell(changed_cell).MakeTrench();
         }
         trench_controller_->ClearChangedCells();
         view_->GetStore()->HideTrenchButtons();
