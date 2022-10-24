@@ -98,10 +98,7 @@ void World::Update() {
 }
 
 void World::MoveSoldiers() {
-  while (!distance_loading_threads_.empty()) {
-    distance_loading_threads_.front().join();
-    distance_loading_threads_.pop();
-  }
+  FinishLoadingMap();
 
   if (towers_.empty()) return;
 
@@ -264,6 +261,13 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   }
 
   file.close();
+}
+
+void World::FinishLoadingMap() {
+  while (!distance_loading_threads_.empty()) {
+    distance_loading_threads_.front().join();
+    distance_loading_threads_.pop();
+  }
 }
 
 QPixmap World::DrawWorld() const {
@@ -508,4 +512,8 @@ int World::GetCountTowers() const {
 }
 int World::GetLag(const QPoint& position) {
   return cells_[position.y()][position.x()].GetTimeLag();
+}
+
+World::~World() {
+  FinishLoadingMap();
 }

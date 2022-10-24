@@ -30,7 +30,7 @@ class World : public QObject {
  public:
   explicit World(const QString& path, GameMode mode, Side side);
 
-  ~World() = default;
+  ~World();
 
   const std::vector<std::shared_ptr<Soldier>>& GetSoldiers() const;
   const std::vector<std::shared_ptr<Tower>>& GetTowers() const;
@@ -83,6 +83,7 @@ class World : public QObject {
   int dead_soldiers_{0};
 
   void LoadMap(const QString& path, GameMode mode, Side side);
+  void FinishLoadingMap();
 
   QPixmap DrawWorld() const;
 
