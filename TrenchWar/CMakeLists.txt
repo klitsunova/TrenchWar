@@ -74,7 +74,7 @@ set(SOURCES
         ${VIEWS}
         ${CONTROLLERS}
         ${NETWORK}
-        )
+        Models/World/Map.cpp Models/World/Map.h)
 
 set(LIBRARIES
         Qt::Core
