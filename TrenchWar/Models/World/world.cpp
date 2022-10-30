@@ -397,14 +397,9 @@ void World::MoveBullets() {
     }
   }
 
-  // TODO(AZUAVCHIKOV) not best solution
-  for (auto soldier = soldiers_.begin(); soldier != soldiers_.end();) {
-    auto maybe_deleted_soldier = soldier;
-    ++soldier;
-    if ((*maybe_deleted_soldier)->IsDead()) {
-      soldiers_.erase(maybe_deleted_soldier);
-    }
-  }
+  std::erase_if(soldiers_, [](const std::shared_ptr<Soldier>& soldier) {
+    return soldier->IsDead();
+  });
 }
 
 void World::DamageArea(int x, int y, int radius,
