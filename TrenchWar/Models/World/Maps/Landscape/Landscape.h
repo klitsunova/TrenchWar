@@ -22,7 +22,7 @@ class Landscape {
   void RemoveTrench();
 
  protected:
-  LandscapeType landscape_type_;
+  LandscapeType landscape_type_{LandscapeType::STANDARD_LANDSCAPE};
   QColor color_;
   int move_lag_;
 };

@@ -13,11 +13,10 @@
 
 World::World(const QString& path, GameMode mode, Side side) {
   LoadMap(path, mode, side);
-  picture_ = DrawWorld();
 }
 
 void World::AddSoldier(Side side) {
-  QRect field({0, 0}, size_);
+  QRect field({0, 0}, GetSize());
   AddSoldier(side, utils::RandomGenerator::GetRandomPoint(QRect(field)));
 }
 
@@ -32,20 +31,14 @@ void World::AddSoldier(Side side, const QPoint& position) {
 }
 
 void World::AddTower() {
-  QRect field({0, 0}, size_);
+  QRect field({0, 0}, GetSize());
   AddTower(utils::RandomGenerator::GetRandomPoint(QRect(field)));
 }
 
 void World::AddTower(const QPoint& position) {
   auto new_object = std::make_shared<Tower>(position);
   towers_.push_back(new_object);
-  distances_.emplace_back(cells_.size(),
-                          std::vector<int>(cells_[0].size(),
-                                           std::numeric_limits<int>::max()));
-  distance_loading_threads_.emplace(&World::GenerateNewDistances,
-                                    this,
-                                    distances_.size() - 1,
-                                    std::ref(new_object->GetPosition()));
+  distances_map_.AddObject(new_object);
 }
 
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
@@ -73,28 +66,14 @@ const std::list<std::shared_ptr<Bullet>>& World::GetBullets() const {
 }
 
 const QSize& World::GetSize() const {
-  return size_;
-}
-
-const Cell& World::GetCell(const QPoint& point) const {
-  assert(point.y() >= 0 && point.y() < cells_.size());
-  assert(point.x() >= 0 && point.x() < cells_[point.y()].size());
-  return cells_[point.y()][point.x()];
-}
-
-Cell& World::GetCell(const QPoint& point) {
-  assert(point.y() >= 0 && point.y() < cells_.size());
-  assert(point.x() >= 0 && point.x() < cells_[point.y()].size());
-  return cells_[point.y()][point.x()];
+  return distances_map_.GetSize();
 }
 
 const QPixmap& World::GetPixmap() {
-  return picture_;
+  return distances_map_.GetPixmap();
 }
 
 void World::MoveSoldiers() {
-  FinishLoadingMap();
-
   if (towers_.empty()) return;
 
   auto MoveIf = [&](const std::shared_ptr<Soldier>& soldier,
@@ -214,7 +193,6 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   int height = size["Length"].toInt();
   int width = size["Width"].toInt();
 
-  size_ = QSize(height, width);
 
   QJsonArray color_speed_values = obj["Colors and speed"].toArray();
   std::vector<std::pair<int64_t, int>> color_and_value;
@@ -233,14 +211,20 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   QString map_string(obj["Map"].toString());
   QTextStream map_stream(&map_string);
 
+  std::vector<std::vector<Landscape>>
+      landscape_map(height, std::vector<Landscape>(width));
+
   for (int i = 0; i < height; ++i) {
     for (int j = 0; j < width; ++j) {
       int color_index;
       map_stream >> color_index;
+      landscape_map[i][j] = Landscape(color_and_value[color_index].first,
+                                      color_and_value[color_index].second);
       cells_[i][j] = Cell(color_and_value[color_index].first,
                           color_and_value[color_index].second);
     }
   }
+  distances_map_ = std::move(GroundDistancesMap(std::move(landscape_map)));
 
   QJsonArray attackers = obj["Attackers"].toArray();
   QJsonArray defenders = obj["Defenders"].toArray();
@@ -272,97 +256,8 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   file.close();
 }
 
-void World::FinishLoadingMap() {
-  while (!distance_loading_threads_.empty()) {
-    distance_loading_threads_.front().join();
-    distance_loading_threads_.pop();
-  }
-}
-
-QPixmap World::DrawWorld() const {
-  QPixmap picture(image_sizes::kWorldImage);
-  auto painter = QPainter(&picture);
-  painter.save();
-  int window_width = painter.window().width() - 1;
-  int window_height = painter.window().height() - 1;
-  for (int y = 0; y < cells_.size(); ++y) {
-    for (int x = 0; x < cells_[y].size(); ++x) {
-      int x_top = (window_width * x) / cells_[y].size();
-      int x_bottom = ((window_width * (x + 1)) / cells_[y].size());
-      int y_top = (window_height * y) / cells_.size();
-      int y_bottom = ((window_height * (y + 1)) / cells_.size());
-      QRect cell_rect(QPoint(x_top, y_top),
-                      QPoint(x_bottom, y_bottom));
-      QColor color = cells_[y][x].GetColor();
-      painter.setBrush(QBrush(color));
-      painter.setPen(QPen(QColor(color), 1));
-      painter.drawRect(cell_rect);
-    }
-  }
-  painter.restore();
-  return picture;
-}
-
-void World::GenerateNewDistances(int distances_map_index,
-                                 const QPoint& pos) {
-  std::lock_guard<std::mutex> lock(distances_mutex_);
-  std::vector<std::vector<bool>>
-      used_cells(cells_.size(), std::vector<bool>(cells_[0].size(), false));
-
-  auto distances_map_iterator = distances_.begin();
-  for (int index = 0; index < distances_map_index; ++index) {
-    ++distances_map_iterator;
-  }
-  auto& distances_map = *distances_map_iterator;
-
-  auto cmp =
-      [&](std::pair<int, int> left, std::pair<int, int> right) {
-        return distances_map[left.second][left.first]
-            > distances_map[right.second][right.first];
-      };
-  std::priority_queue<std::pair<int, int>,
-                      std::vector<std::pair<int, int>>,
-                      decltype(cmp)>
-      latest_at_ground(cmp);
-  distances_map[pos.y()][pos.x()] = 0;
-  latest_at_ground.push(std::make_pair(pos.x(), pos.y()));
-
-  auto push_if =
-      [&](int x, int y, int dist, bool condition = true) {
-        if (!condition || used_cells[y][x]) {
-          return;
-        }
-        if (distances_map[y][x] > dist + cells_[y][x].GetTimeLag()) {
-          distances_map[y][x] = dist + cells_[y][x].GetTimeLag();
-          latest_at_ground.push(std::make_pair(x, y));
-        }
-      };
-
-  while (!latest_at_ground.empty()) {
-    int x = latest_at_ground.top().first;
-    int y = latest_at_ground.top().second;
-    int current_dist = distances_map[y][x];
-
-    // left neighbor
-    push_if(x - 1, y, current_dist, (x != 0));
-    // right neighbor
-    push_if(x + 1, y, current_dist, (x != cells_[y].size() - 1));
-    // upper neighbor
-    push_if(x, y - 1, current_dist, (y != 0));
-    // lower neighbor
-    push_if(x, y + 1, current_dist, (y != cells_.size() - 1));
-
-    used_cells[y][x] = true;
-    latest_at_ground.pop();
-  }
-}
-
 int World::GetDistance(const QPoint& position) {
-  int result = std::numeric_limits<int>::max();
-  for (auto& distance : distances_) {
-    result = std::min(result, distance[position.y()][position.x()]);
-  }
-  return result;
+  return distances_map_.GetDistance(position);
 }
 
 void World::PutSoldierToCell(const std::shared_ptr<Soldier>& soldier) {
@@ -470,13 +365,8 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
   return nearest_soldier;
 }
 
-void World::TrenchUpdate() {
-  picture_ = DrawWorld();
-}
-
 void World::FireTower() {
   auto tower_iterator = towers_.begin();
-  auto distance_iterator = distances_.begin();
   while (tower_iterator != towers_.end()) {
     auto& tower = *tower_iterator;
     Cell& cell =
@@ -485,12 +375,10 @@ void World::FireTower() {
       tower->TakeDamage(soldier->GetTowerDamage());
     }
     auto maybe_deleted_tower = tower_iterator;
-    auto maybe_deleted_distance = distance_iterator;
     ++tower_iterator;
-    ++distance_iterator;
     if ((*maybe_deleted_tower)->IsDestroyed()) {
+      distances_map_.EraseObject(*maybe_deleted_tower);
       towers_.erase(maybe_deleted_tower);
-      distances_.erase(maybe_deleted_distance);
     }
   }
 }
@@ -520,9 +408,15 @@ int World::GetCountTowers() const {
   return towers_.size();
 }
 int World::GetLag(const QPoint& position) {
-  return cells_[position.y()][position.x()].GetTimeLag();
+  return distances_map_.GetLag(position);
 }
 
-World::~World() {
-  FinishLoadingMap();
+bool World::IsTrench(const QPoint& position) {
+  return distances_map_.IsTrench(position);
+}
+void World::MakeTrench(const QPoint& position) {
+  distances_map_.MakeTrench(position);
+}
+void World::RemoveTrench(const QPoint& position) {
+  distances_map_.RemoveTrench(position);
 }

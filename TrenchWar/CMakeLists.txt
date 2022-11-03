@@ -30,9 +30,10 @@ set(MODELS
         Models/weapon.cpp
         Models/World/world.cpp
         Models/World/Cell.cpp
-        Models/World/Cell.h
-        Models/World/Landscape.cpp
-        Models/World/Landscape.h
+        Models/World/Layer.cpp
+        Models/World/Maps/Landscape/Landscape.cpp
+        Models/World/Maps/GroundDistancesMap.cpp
+        Models/World/Maps/LandscapeMap.cpp
         )
 
 set(VIEWS
@@ -74,7 +75,7 @@ set(SOURCES
         ${VIEWS}
         ${CONTROLLERS}
         ${NETWORK}
-        Models/World/Map.cpp Models/World/Map.h)
+        )
 
 set(LIBRARIES
         Qt::Core

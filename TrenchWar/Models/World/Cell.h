@@ -4,7 +4,7 @@
 #include <set>
 
 #include "Models/GameObjects/soldier.h"
-#include "Models/World/Landscape.h"
+#include "Models/World/Maps/Landscape/Landscape.h"
 class Cell : public Landscape {
  public:
   explicit Cell(const QColor& color = Qt::white,

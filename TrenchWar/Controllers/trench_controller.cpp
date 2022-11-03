@@ -61,7 +61,7 @@ void TrenchController::DrawAndSaveTrench(const QPoint& pos) {
     return;
   }
   changed_cells_.emplace_back(pos);
-  world_->GetCell(pos).MakeTrench();
+  world_->MakeTrench(pos);
 }
 
 QPoint TrenchController::GlobalToCellsCoordinates(const QPoint& point) const {
@@ -120,7 +120,7 @@ QPoint TrenchController::TakeShiftDirection(const QPoint& start_point,
 
 void TrenchController::SetSaveCellsState() {
   for (const auto& changed_cell : changed_cells_) {
-    world_->GetCell(changed_cell).RemoveTrench();
+    world_->RemoveTrench(changed_cell);
   }
 }
 

@@ -34,7 +34,7 @@ void GameController::UpdateDefenders(const GameData& data) {
     world_->AddSoldier(Side::kDefender, position);
   }
   for (const auto& trench : data.trenches) {
-    world_->GetCell(QPoint(trench.first, trench.second)).MakeTrench();
+    world_->MakeTrench(QPoint(trench.first, trench.second));
   }
 }
 
@@ -60,7 +60,7 @@ GameData GameController::GetDefendersData() {
 
   for (int i = 0; i < world_->GetSize().width(); ++i) {
     for (int j = 0; j < world_->GetSize().height(); ++j) {
-      if (world_->GetCell(QPoint(i, j)).IsTrench()) {
+      if (world_->IsTrench(QPoint(i, j))) {
         new_data.trenches.emplace_back(i, j);
       }
     }

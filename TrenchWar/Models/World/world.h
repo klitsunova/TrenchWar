@@ -23,6 +23,7 @@
 #include "Models/World/Cell.h"
 #include "helpers/enum_helpers.h"
 #include "helpers/sizes.h"
+#include "Models/World/Maps/GroundDistancesMap.h"
 #include <QMediaPlayer>
 
 class World : public QObject {
@@ -31,7 +32,7 @@ class World : public QObject {
  public:
   explicit World(const QString& path, GameMode mode, Side side);
 
-  ~World();
+  ~World() = default;
 
   const std::list<std::shared_ptr<Soldier>>& GetSoldiers() const;
   const std::list<std::shared_ptr<Tower>>& GetTowers() const;
@@ -39,11 +40,11 @@ class World : public QObject {
 
   const QSize& GetSize() const;
 
-  const Cell& GetCell(const QPoint&) const;
-  Cell& GetCell(const QPoint&);
+  bool IsTrench(const QPoint& position);
+  void MakeTrench(const QPoint& position);
+  void RemoveTrench(const QPoint& position);
 
   const QPixmap& GetPixmap();
-  void TrenchUpdate();
 
   void AddSoldier(Side side);
   void AddSoldier(Side side, const QPoint& position);
@@ -69,29 +70,19 @@ class World : public QObject {
 
  private:
   int count_attackers_{0};
-  QSize size_;
-  QPixmap picture_;
   std::vector<std::vector<Cell>> cells_;
-  std::list<std::vector<std::vector<int>>> distances_;
-  std::mutex distances_mutex_;
-  std::queue<std::thread> distance_loading_threads_;
   std::list<std::shared_ptr<Soldier>> soldiers_;
   std::list<std::shared_ptr<Bullet>> bullets_;
   std::list<std::shared_ptr<Tower>> towers_;
   std::vector<QPoint> bot_soldier_buffer_;
-  bool is_need_update_towers_{true};
+  GroundDistancesMap distances_map_;
 
   void LoadMap(const QString& path, GameMode mode, Side side);
-  void FinishLoadingMap();
-
-  QPixmap DrawWorld() const;
 
   int GetLag(const QPoint& position);
   int GetDistance(const QPoint& position);
   void PutSoldierToCell(const std::shared_ptr<Soldier>& soldier);
   void RemoveSoldierFromCell(const std::shared_ptr<Soldier>& soldier);
-  void GenerateNewDistances(int distances_map_index,
-                            const QPoint& pos);
 
   void DamageArea(int x, int y, int radius, const std::shared_ptr<Bullet>&);
 
