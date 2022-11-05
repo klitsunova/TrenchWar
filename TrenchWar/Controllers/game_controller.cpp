@@ -43,7 +43,7 @@ GameData GameController::GetAttackersData() {
   for (const auto& soldier : world_->GetSoldiers()) {
     SoldierData data{soldier->GetPosition().x(),
                      soldier->GetPosition().y(),
-                     soldier->GetHitPoints()};
+                     soldier->GetHealth()};
     new_data.soldiers.push_back(data);
   }
   return new_data;
@@ -54,7 +54,7 @@ GameData GameController::GetDefendersData() {
   for (const auto& soldier : world_->GetSoldiers()) {
     SoldierData data{soldier->GetPosition().x(),
                      soldier->GetPosition().y(),
-                     soldier->GetHitPoints()};
+                     soldier->GetHealth()};
     new_data.soldiers.push_back(data);
   }
 

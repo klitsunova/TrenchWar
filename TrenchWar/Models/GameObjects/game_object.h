@@ -33,6 +33,11 @@ class GameObject {
   void SetTimeLag(int lag = 0);
   void MakeTick();
 
+  void TakeDamage(int damage);
+  // TODO remove
+  int GetHealth() const;
+  bool IsDead() const;
+
  protected:
   static constexpr int kStep{1};
   static constexpr QSize kStandardSize{QSize(45, 45)};
@@ -41,4 +46,5 @@ class GameObject {
   QPoint position_;
   std::shared_ptr<QPixmap> picture_;
   int time_lag_{0};
+  int health = 100;
 };

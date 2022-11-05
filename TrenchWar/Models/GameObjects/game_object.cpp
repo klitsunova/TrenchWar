@@ -41,3 +41,16 @@ void GameObject::SetTimeLag(int lag) {
 void GameObject::MakeTick() {
   time_lag_ = std::max(0, time_lag_ - 1);
 }
+
+void GameObject::TakeDamage(int damage) {
+  health = std::max(0, health - damage);
+}
+
+int GameObject::GetHealth() const {
+  return health;
+}
+
+bool GameObject::IsDead() const {
+  assert(health >= 0);
+  return health == 0;
+}

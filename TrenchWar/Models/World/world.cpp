@@ -376,7 +376,7 @@ void World::FireTower() {
     }
     auto maybe_deleted_tower = tower_iterator;
     ++tower_iterator;
-    if ((*maybe_deleted_tower)->IsDestroyed()) {
+    if ((*maybe_deleted_tower)->IsDead()) {
       distances_map_.EraseObject(*maybe_deleted_tower);
       towers_.erase(maybe_deleted_tower);
     }

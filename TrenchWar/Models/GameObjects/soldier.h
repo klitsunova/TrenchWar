@@ -12,15 +12,10 @@
 #include "tower.h"
 
 class Soldier : public GameObject {
-  using Health = int;
-
  public:
   explicit Soldier(Side, const QPoint&);
 
   ~Soldier() override = default;
-
-  Health GetHitPoints() const;
-  void SetHitPoints(Health);
 
   Side GetSide() const;
   int GetVisibilityRange() const;
@@ -33,13 +28,8 @@ class Soldier : public GameObject {
   std::optional<std::shared_ptr<Bullet>> Fire(const QPoint& from,
                                               const QPoint& to);
 
-  void TakeDamage(int damage);
-
-  bool IsDead() const;
-
  private:
   std::vector<Weapon> weapons_;
   int visibility_range_;
-  Health hit_points_ = 100;
   Side side_;
 };
