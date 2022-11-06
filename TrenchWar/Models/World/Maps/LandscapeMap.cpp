@@ -2,7 +2,8 @@
 
 #include <utility>
 
-LandscapeMap::LandscapeMap(const std::vector<std::vector<Landscape>>& landscapes)
+LandscapeMap::LandscapeMap(
+    const std::vector<std::vector<Landscape>>& landscapes)
     : landscapes_(landscapes) {
   assert(!landscapes_.empty());
   size_ = QSize(landscapes_[0].size(), landscapes_.size());

@@ -7,6 +7,7 @@
 #include <memory>
 #include <mutex>
 #include <queue>
+#include <vector>
 #include <thread>
 
 #include "Models/World/Maps/Landscape/Landscape.h"

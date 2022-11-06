@@ -9,7 +9,7 @@
 #include "Models/World/Maps/LandscapeMap.h"
 class Layer {
  public:
-  explicit Layer() = default;
+  Layer() = default;
   explicit Layer(const std::shared_ptr<GameObject>& object,
                  const LandscapeMap& landscape_map);
   ~Layer();
