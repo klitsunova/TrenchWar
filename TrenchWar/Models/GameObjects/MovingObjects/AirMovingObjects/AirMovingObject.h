@@ -6,7 +6,7 @@
 #include "Models/GameObjects/MovingObjects/MovingObject.h"
 class AirMovingObject : public MovingObject {
  public:
-  explicit AirMovingObject() = default;
+  AirMovingObject() = default;
   explicit AirMovingObject(Side side, const QPoint& from, const QPoint& to);
 
   void Move();

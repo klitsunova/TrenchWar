@@ -28,7 +28,7 @@ int Layer::GetDistance(const QPoint& pos) const {
 void Layer::DistanceGeneratingAlgorithm(const LandscapeMap& landscape_map) {
   for (auto& cells_colum : distances_) {
     for (auto& cell : cells_colum) {
-      cell = std::numeric_limits<int>::max();
+      cell = std::numeric_limits<int32_t>::max();
     }
   }
   std::vector<std::vector<bool>>

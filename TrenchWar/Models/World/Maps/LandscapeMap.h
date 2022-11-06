@@ -3,11 +3,13 @@
 #include <QSize>
 #include <QPainter>
 
+#include <vector>
+
 #include "helpers/sizes.h"
 #include "Models/World/Maps/Landscape/Landscape.h"
 class LandscapeMap {
  public:
-  explicit LandscapeMap() = default;
+  LandscapeMap() = default;
   explicit LandscapeMap(const std::vector<std::vector<Landscape>>& landscapes);
   explicit LandscapeMap(std::vector<std::vector<Landscape>>&& landscapes);
 

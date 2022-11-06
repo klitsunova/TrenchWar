@@ -1,9 +1,11 @@
 #pragma once
 
+#include <algorithm>
+
 #include "Models/GameObjects/game_object.h"
 class MovingObject : public GameObject {
  public:
-  explicit MovingObject() = default;
+  MovingObject() = default;
   explicit MovingObject(Side side, const QPoint& position);
 
   int GetTimeLag() const;

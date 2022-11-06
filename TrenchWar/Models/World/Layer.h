@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <thread>
+#include <limits>
 
 #include "Models/GameObjects/game_object.h"
 #include "Models/World/Maps/LandscapeMap.h"

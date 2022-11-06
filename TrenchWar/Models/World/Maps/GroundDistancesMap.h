@@ -1,13 +1,13 @@
 #pragma once
 #include <QPainter>
 
+#include <algorithm>
 #include <limits>
 #include <list>
 #include <memory>
 #include <mutex>
 #include <queue>
 #include <thread>
-#include <vector>
 
 #include "Models/World/Maps/Landscape/Landscape.h"
 #include "helpers/sizes.h"
@@ -17,8 +17,9 @@
 
 class GroundDistancesMap : public LandscapeMap {
  public:
-  explicit GroundDistancesMap();
-  explicit GroundDistancesMap(const std::vector<std::vector<Landscape>>& landscapes);
+  GroundDistancesMap();
+  explicit GroundDistancesMap(
+      const std::vector<std::vector<Landscape>>& landscapes);
   explicit GroundDistancesMap(std::vector<std::vector<Landscape>>&& landscapes);
 
   int GetDistance(const QPoint& position) const;
