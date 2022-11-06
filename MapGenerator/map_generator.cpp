@@ -1,5 +1,9 @@
 #include "map_generator.h"
 
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+
 MapGenerator::MapGenerator(QWidget* parent)
     : QWidget(parent),
       original_picture_shell_(new ImageSHell(this)),
@@ -442,7 +446,7 @@ void MapGenerator::SetSoldiersMenuVisible(bool visible) {
 void MapGenerator::SaveButtonClicked() {
   assert(!using_original_colors);
   assert(map_.size() > 0 && map_[0].size() > 0);
-  QString filter = tr("Text Files (*.txt)");
+  QString filter = tr("Text Files (*.json)");
   QString filename = QFileDialog::getOpenFileName(
       this,
       tr("File to save"),
@@ -455,31 +459,72 @@ void MapGenerator::SaveButtonClicked() {
   if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
     return;
   }
-  QTextStream fout(&file);
-  fout << using_colors_.size() << "\n";
+
+  QJsonObject record_object;
+  QJsonObject map_obj;
+
+  map_obj.insert("Length", static_cast<int>(map_.size()));
+  map_obj.insert("Width",  static_cast<int>(map_[0].size()));
+
+  record_object.insert("Size", map_obj);
+
+  QJsonArray colors_and_speed;
   for (int i = 0; i < using_colors_.size(); ++i) {
-    fout << using_colors_[i].color.rgb() << " "
-         << using_colors_[i].speed_characteristic << "\n";
+    QJsonObject obj_color_speed;
+    obj_color_speed.insert("Color",
+       QJsonValue::fromVariant(
+           QVariant::fromValue(using_colors_[i].color.rgb())));
+
+    obj_color_speed.insert("Speed",
+                           using_colors_[i].speed_characteristic);
+
+    colors_and_speed.push_back(obj_color_speed);
   }
-  fout << "\n" << map_.size() << " " << map_[0].size() << "\n";
+
+  record_object.insert("Colors and speed", colors_and_speed);
+
+  QString map_string;
+
   for (int i = 0; i < map_.size(); ++i) {
     for (int j = 0; j < map_[i].size(); ++j) {
-      fout << map_[i][j].using_color << " ";
+      map_string +=  QString::number(map_[i][j].using_color);
+      map_string += " ";
     }
-    fout << "\n";
+    map_string += "\n";
   }
-  fout << "\n" << game_objects_.size() << "\n";
+
+  record_object.insert("Map", map_string);
+
+  QJsonArray attackers;
+  QJsonArray defenders;
+  QJsonArray terrain_objects;
+
   for (int i = 0; i < game_objects_.size(); ++i) {
     auto& object = game_objects_[i];
-    fout << object.pos.x() << " " << object.pos.y() << " ";
+
+    QJsonObject obj;
+    obj.insert("X", object.pos.x());
+    obj.insert("Y", object.pos.y());
+
     if (object.type == Object::Type::kAttacker) {
-      fout << "kAttacker\n";
+      attackers.push_back(obj);
     } else if (object.type == Object::Type::kDefender) {
-      fout << "kDefender\n";
+      defenders.push_back(obj);
     } else if (object.type == Object::Type::kTerrainObject) {
-      fout << "kTerrainObject\n";
+      terrain_objects.push_back(obj);
     }
   }
+
+  record_object.insert("Attackers", attackers);
+  record_object.insert("Defenders", defenders);
+  record_object.insert("Terrain objects", terrain_objects);
+
+  QJsonDocument doc(record_object);
+  QString text  = doc.toJson(QJsonDocument::Indented);
+
+  QTextStream stream(&file);
+  stream << text;
+  file.close();
 }
 
 void MapGenerator::LoadButtonClicked() {
