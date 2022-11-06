@@ -20,7 +20,6 @@ class LandscapeMap {
   const QPixmap& GetPixmap();
 
   int GetLag(const QPoint& position) const;
-  virtual int GetDistance(const QPoint& position) = 0;
 
  private:
   void DrawMap();

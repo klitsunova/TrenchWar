@@ -20,9 +20,6 @@ class MapView : public QWidget {
   BuyWindow* GetBuyWindow();
   void SetScale(int scale);
 
-  void DrawObject(QPainter* painter, const QPoint& pos,
-                  const QSize& size, const QPixmap& picture);
-
   void SetStoreDialog(QMouseEvent* event);
 
   void SetObjectsVisibility(bool);

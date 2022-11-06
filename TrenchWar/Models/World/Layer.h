@@ -17,8 +17,6 @@ class Layer {
 
   int GetDistance(const QPoint& pos) const;
 
-  void GenerateNewDistances(const LandscapeMap& landscape_map);
-
  private:
   void DistanceGeneratingAlgorithm(const LandscapeMap& landscape_map);
   void FinishGeneratingDistances() const;
@@ -26,5 +24,4 @@ class Layer {
   std::vector<std::vector<int>> distances_;
   mutable std::optional<std::thread> distance_loading_thread_{std::nullopt};
   std::shared_ptr<GameObject> object_;
-  std::mutex distances_mutex_;
 };

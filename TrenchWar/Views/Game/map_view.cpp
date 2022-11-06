@@ -29,63 +29,10 @@ void MapView::SetScale(int scale) {
   scale_ = scale;
 }
 
-void MapView::DrawObject(QPainter* painter, const QPoint& pos,
-                         const QSize& size, const QPixmap& picture) {
-  painter->save();
-  int window_width = painter->window().width() - 1;
-  int window_height = painter->window().height() - 1;
-  QPoint screen_point;
-  screen_point.setX((window_width * (2 * pos.x() + 1))
-                    / (2 * world_->GetSize().width()));
-  screen_point.setY((window_height * (2 * pos.y() + 1))
-                    / (2 * world_->GetSize().height()));
-
-  QPoint top_point = QPoint(screen_point.x() - size.width() / 2,
-                            screen_point.y() - size.height() / 2);
-  QPoint bottom_point = QPoint(screen_point.x() + size.width() / 2,
-                               screen_point.y() + size.height() / 2);
-  painter->drawPixmap(QRect(top_point, bottom_point),
-                      picture);
-  painter->restore();
-}
-
 void MapView::paintEvent(QPaintEvent*) {
-  QPixmap buffer(this->size());
-  QPainter painter;
-  painter.begin(&buffer);
-  painter.save();
-  const auto& towers = world_->GetTowers();
-  int window_width = painter.window().width() - 1;
-  int window_height = painter.window().height() - 1;
-
-  painter.drawPixmap(QRect(0, 0,
-                           window_width + 1, window_height + 1),
-                     world_->GetPixmap());
-  for (const auto& object : towers) {
-    DrawObject(&painter, object->GetPosition(),
-               object->GetSize(), object->GetPixmap());
-  }
-
-  if (are_objects_visible_) {
-    const auto& soldiers = world_->GetSoldiers();
-    for (const auto& soldier : soldiers) {
-      DrawObject(&painter, soldier->GetPosition(),
-                 soldier->GetSize(), soldier->GetPixmap());
-    }
-
-    const auto& bullets = world_->GetBullets();
-    for (const auto& bullet : bullets) {
-      DrawObject(&painter, bullet->GetPosition(),
-                 bullet->GetSize(), bullet->GetPixmap());
-    }
-  }
-
-  painter.restore();
-  painter.end();
-
-  painter.begin(this);
-  painter.drawPixmap(this->rect(), buffer);
-  painter.end();
+  QPainter painter(this);
+  painter.drawPixmap(this->rect(),
+                     world_->GetPixmap(this->size(), are_objects_visible_));
 }
 
 void MapView::mousePressEvent(QMouseEvent* event) {

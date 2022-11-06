@@ -20,10 +20,10 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 set(MODELS
-        Models/GameObjects/bullet.cpp
+        Models/GameObjects/MovingObjects/AirMovingObjects/bullet.cpp
         Models/GameObjects/game_object.cpp
-        Models/GameObjects/soldier.cpp
-        Models/GameObjects/tower.cpp
+        Models/GameObjects/MovingObjects/GroundMovingObjects/soldier.cpp
+        Models/GameObjects/StableObjects/tower.cpp
         Models/Tools/pixmap_loader.cpp
         Models/Tools/random_generator.cpp
         Models/Tools/settings.cpp
@@ -75,7 +75,7 @@ set(SOURCES
         ${VIEWS}
         ${CONTROLLERS}
         ${NETWORK}
-        )
+        Models/GameObjects/MovingObjects/GroundMovingObjects/GroundMovingObject.cpp Models/GameObjects/MovingObjects/GroundMovingObjects/GroundMovingObject.h Models/GameObjects/MovingObjects/MovingObject.cpp Models/GameObjects/MovingObjects/MovingObject.h Models/GameObjects/MovingObjects/AirMovingObjects/AirMovingObject.cpp Models/GameObjects/MovingObjects/AirMovingObjects/AirMovingObject.h)
 
 set(LIBRARIES
         Qt::Core

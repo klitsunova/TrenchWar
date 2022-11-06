@@ -6,7 +6,7 @@
 
 #include <QWidget>
 
-#include "Models/GameObjects/soldier.h"
+#include "Models/GameObjects/MovingObjects/GroundMovingObjects/soldier.h"
 #include "Models/weapon.h"
 #include "Models/World/world.h"
 #include "Network/helpers.h"

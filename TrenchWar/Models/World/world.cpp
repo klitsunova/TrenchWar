@@ -24,7 +24,10 @@ void World::AddSoldier(Side side, const QPoint& position) {
   assert(position.y() >= 0 && position.y() < cells_.size());
   assert(position.x() >= 0 && position.x() < cells_[position.y()].size());
   auto new_object = std::make_shared<Soldier>(side, position);
-  auto& cell =
+  if (side == Side::kAttacker) {
+    ++count_attackers_;
+  }
+  Cell& cell =
       cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
   soldiers_.push_back(new_object);
   cell.InsertSoldier(new_object);
@@ -57,124 +60,66 @@ const std::list<std::shared_ptr<Soldier>>& World::GetSoldiers() const {
   return soldiers_;
 }
 
-const std::list<std::shared_ptr<Tower>>& World::GetTowers() const {
-  return towers_;
-}
-
-const std::list<std::shared_ptr<Bullet>>& World::GetBullets() const {
-  return bullets_;
-}
-
 const QSize& World::GetSize() const {
   return distances_map_.GetSize();
 }
 
-const QPixmap& World::GetPixmap() {
-  return distances_map_.GetPixmap();
+void World::DrawObject(QPainter* painter, const QPoint& pos,
+                       const QSize& size, const QPixmap& picture) {
+  painter->save();
+  int window_width = painter->window().width() - 1;
+  int window_height = painter->window().height() - 1;
+  QPoint screen_point;
+  screen_point.setX((window_width * (2 * pos.x() + 1))
+                        / (2 * GetSize().width()));
+  screen_point.setY((window_height * (2 * pos.y() + 1))
+                        / (2 * GetSize().height()));
+
+  QPoint top_point = QPoint(screen_point.x() - size.width() / 2,
+                            screen_point.y() - size.height() / 2);
+  QPoint bottom_point = QPoint(screen_point.x() + size.width() / 2,
+                               screen_point.y() + size.height() / 2);
+  painter->drawPixmap(QRect(top_point, bottom_point),
+                      picture);
+  painter->restore();
+}
+
+QPixmap World::GetPixmap(const QSize& size, bool are_objects_visible) {
+  QPixmap buffer(size);
+  QPainter painter(&buffer);
+  int window_width = painter.window().width() - 1;
+  int window_height = painter.window().height() - 1;
+
+  painter.drawPixmap(QRect(0, 0,
+                           window_width + 1, window_height + 1),
+                     distances_map_.GetPixmap());
+
+  for (const auto& object : towers_) {
+    DrawObject(&painter, object->GetPosition(),
+               object->GetSize(), object->GetPixmap());
+  }
+  if (are_objects_visible) {
+    for (const auto& soldier : soldiers_) {
+      DrawObject(&painter, soldier->GetPosition(),
+                 soldier->GetSize(), soldier->GetPixmap());
+    }
+
+    for (const auto& bullet : bullets_) {
+      DrawObject(&painter, bullet->GetPosition(),
+                 bullet->GetSize(), bullet->GetPixmap());
+    }
+  }
+  return buffer;
 }
 
 void World::MoveSoldiers() {
   if (towers_.empty()) return;
 
-  auto MoveIf = [&](const std::shared_ptr<Soldier>& soldier,
-                    int& current_dist,
-                    const QPoint& to, int lag = 0) {
-    int new_dist = GetDistance(to) + lag;
-    if (current_dist > new_dist) {
-      current_dist = new_dist;
-      soldier->SetPosition(to);
-      soldier->SetTimeLag(
-          cells_[to.y()][to.x()].GetTimeLag() + lag);
-    }
-  };
-
-  enum class Command {
-    MoveLeftDown,
-    MoveLeftUp,
-    MoveRightUp,
-    MoveRightDown,
-    MoveLeft,
-    MoveRight,
-    MoveUp,
-    MoveDown
-  };
-
-  auto IssueCommand = [&](const std::shared_ptr<Soldier>& soldier,
-                          const QPoint& from,
-                          int& current_dist, Command command) {
-    switch (command) {
-      case Command::MoveLeft: {
-        if (from.x() == 0) return;
-
-        return MoveIf(soldier, current_dist, QPoint(from.x() - 1, from.y()));
-      }
-      case Command::MoveRight: {
-        if (from.x() == cells_[from.y()].size() - 1) return;
-
-        return MoveIf(soldier, current_dist, QPoint(from.x() + 1, from.y()));
-      }
-      case Command::MoveUp: {
-        if (from.y() == 0) return;
-
-        return MoveIf(soldier, current_dist, QPoint(from.x(), from.y() - 1));
-      }
-      case Command::MoveDown: {
-        if (from.y() == cells_.size() - 1) return;
-
-        return MoveIf(soldier, current_dist, QPoint(from.x(), from.y() + 1));
-      }
-      case Command::MoveLeftDown: {
-        if (from.x() == 0 || from.y() == cells_.size() - 1) return;
-
-        int lag = std::min(GetLag(QPoint(from.x() - 1, from.y())),
-                           GetLag(QPoint(from.x(), from.y() + 1)));
-        return MoveIf(soldier, current_dist,
-                      QPoint(from.x() - 1, from.y() + 1), lag);
-      }
-      case Command::MoveLeftUp: {
-        if (from.x() == 0 || from.y() == 0) return;
-
-        int lag = std::min(GetLag(QPoint(from.x() - 1, from.y())),
-                           GetLag(QPoint(from.x(), from.y() - 1)));
-        return MoveIf(soldier, current_dist,
-                      QPoint(from.x() - 1, from.y() - 1), lag);
-      }
-      case Command::MoveRightUp: {
-        if (from.x() == cells_[from.y()].size() - 1 || from.y() == 0) return;
-
-        int lag = std::min(GetLag(QPoint(from.x() + 1, from.y())),
-                           GetLag(QPoint(from.x(), from.y() - 1)));
-        return MoveIf(soldier, current_dist,
-                      QPoint(from.x() + 1, from.y() - 1), lag);
-      }
-      case Command::MoveRightDown: {
-        if (from.x() == cells_[from.y()].size() - 1
-            || from.y() == cells_.size() - 1)
-          return;
-
-        int lag = std::min(GetLag(QPoint(from.x() + 1, from.y())),
-                           GetLag(QPoint(from.x(), from.y() + 1)));
-        return MoveIf(soldier, current_dist,
-                      QPoint(from.x() + 1, from.y() + 1), lag);
-      }
-    }
-  };
-
-  std::vector<Command> commands({Command::MoveLeftDown, Command::MoveLeftUp,
-                                 Command::MoveRightUp, Command::MoveRightDown,
-                                 Command::MoveLeft, Command::MoveRight,
-                                 Command::MoveUp, Command::MoveDown});
   for (auto soldier : soldiers_) {
     if (soldier->GetSide() == Side::kDefender) continue;
-    if (soldier->IsDead()) continue;
-    soldier->MakeTick();
-    if (soldier->GetTimeLag() > 0) continue;
-    int distance = GetDistance(soldier->GetPosition());
-    if (distance == 0) continue;
+    assert(!soldier->IsDead());
     RemoveSoldierFromCell(soldier);
-    for (auto& command : commands) {
-      IssueCommand(soldier, soldier->GetPosition(), distance, command);
-    }
+    soldier->Move(distances_map_);
     PutSoldierToCell(soldier);
   }
 }
@@ -192,7 +137,6 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   QJsonObject size = obj.value("Size").toObject();
   int height = size["Length"].toInt();
   int width = size["Width"].toInt();
-
 
   QJsonArray color_speed_values = obj["Colors and speed"].toArray();
   std::vector<std::pair<int64_t, int>> color_and_value;
@@ -220,8 +164,7 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
       map_stream >> color_index;
       landscape_map[i][j] = Landscape(color_and_value[color_index].first,
                                       color_and_value[color_index].second);
-      cells_[i][j] = Cell(color_and_value[color_index].first,
-                          color_and_value[color_index].second);
+      cells_[i][j] = Cell();
     }
   }
   distances_map_ = std::move(GroundDistancesMap(std::move(landscape_map)));
@@ -254,10 +197,6 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   }
 
   file.close();
-}
-
-int World::GetDistance(const QPoint& position) {
-  return distances_map_.GetDistance(position);
 }
 
 void World::PutSoldierToCell(const std::shared_ptr<Soldier>& soldier) {
@@ -315,7 +254,7 @@ void World::DamageArea(int x, int y, int radius,
         auto soldier = *soldier_iterator;
         if (soldier->GetSide() == bullet->GetSide()) continue;
         int damage = bullet->GetDamage();
-        if (cells_[i][j].IsTrench()) {
+        if (distances_map_.IsTrench(soldier->GetPosition())) {
           damage = static_cast<int>(damage * weapons::kTrenchEffect);
         }
         soldier->TakeDamage(damage);
@@ -324,7 +263,7 @@ void World::DamageArea(int x, int y, int radius,
           if (soldier->GetSide() == Side::kAttacker) {
             count_attackers_--;
           }
-          cells_[i][j].InsertSoldier(soldier_iterator.operator*());
+          cells_[i][j].EraseSoldier(soldier_iterator.operator*());
         }
         return;
       }
@@ -372,22 +311,15 @@ void World::FireTower() {
     Cell& cell =
         cells_[tower->GetPosition().y()][tower->GetPosition().x()];
     for (const auto& soldier : cell.GetSoldiers()) {
-      tower->TakeDamage(soldier->GetTowerDamage());
+      if (soldier->GetSide() != Side::kDefender) {
+        tower->TakeDamage(soldier->GetTowerDamage());
+      }
     }
     auto maybe_deleted_tower = tower_iterator;
     ++tower_iterator;
     if ((*maybe_deleted_tower)->IsDead()) {
-      distances_map_.EraseObject(*maybe_deleted_tower);
+      distances_map_.EraseDeadObjects();
       towers_.erase(maybe_deleted_tower);
-    }
-  }
-}
-
-void World::UpdateCountAttackers() {
-  count_attackers_ = 0;
-  for (const auto& soldier : soldiers_) {
-    if (soldier->GetSide() == Side::kAttacker) {
-      count_attackers_++;
     }
   }
 }
@@ -406,9 +338,6 @@ int World::GetCountAttackers() const {
 
 int World::GetCountTowers() const {
   return towers_.size();
-}
-int World::GetLag(const QPoint& position) {
-  return distances_map_.GetLag(position);
 }
 
 bool World::IsTrench(const QPoint& position) {

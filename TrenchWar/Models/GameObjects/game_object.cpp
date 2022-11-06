@@ -2,8 +2,8 @@
 
 #include <random>
 
-GameObject::GameObject(const QPoint& position)
-    : position_(position) {}
+GameObject::GameObject(Side side, const QPoint& position)
+    : position_(position), side_(side) {}
 
 const QPoint& GameObject::GetPosition() const {
   return position_;
@@ -29,28 +29,19 @@ void GameObject::SetSize(const QSize& size) {
   size_ = size;
 }
 
-int GameObject::GetTimeLag() const {
-  return time_lag_;
-}
-
-void GameObject::SetTimeLag(int lag) {
-  assert(lag >= 0);
-  time_lag_ = lag;
-}
-
-void GameObject::MakeTick() {
-  time_lag_ = std::max(0, time_lag_ - 1);
+Side GameObject::GetSide() const {
+  return side_;
 }
 
 void GameObject::TakeDamage(int damage) {
-  health = std::max(0, health - damage);
-}
-
-int GameObject::GetHealth() const {
-  return health;
+  health_ = std::max(0, health_ - damage);
 }
 
 bool GameObject::IsDead() const {
-  assert(health >= 0);
-  return health == 0;
+  assert(health_ >= 0);
+  return health_ == 0;
+}
+
+int GameObject::GetHealth() const {
+  return health_;
 }

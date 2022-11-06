@@ -171,7 +171,6 @@ void EventsController::StartActiveStage() {
   }
   CancelPurchase(buy_mode_);
   game_stage = Stage::kActive;
-  world_->UpdateCountAttackers();
   StartTimer();
 }
 

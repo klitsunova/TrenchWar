@@ -1,14 +1,11 @@
 #include "soldier.h"
+#include "Models/GameObjects/game_object.h"
 
 Soldier::Soldier(Side side, const QPoint& point)
-    : GameObject(point) {
+    : GroundMovingObject(side, point) {
   picture_ = PixmapLoader::GetSoldier();
   side_ = side;
   weapons_.emplace_back(Weapon(Weapon::WeaponType::Rifle));
-}
-
-Side Soldier::GetSide() const {
-  return side_;
 }
 
 int Soldier::GetVisibilityRange() const {

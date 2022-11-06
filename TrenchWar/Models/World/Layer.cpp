@@ -6,7 +6,10 @@ Layer::Layer(const std::shared_ptr<GameObject>& object,
     : object_(object),
       distances_(landscape_map.GetSize().height(),
                  std::vector<int>(landscape_map.GetSize().width())) {
-  GenerateNewDistances(landscape_map);
+  // DistanceGeneratingAlgorithm(landscape_map);
+  distance_loading_thread_.emplace(&Layer::DistanceGeneratingAlgorithm,
+                                   this,
+                                   std::ref(landscape_map));
 }
 
 Layer::~Layer() {
@@ -22,17 +25,7 @@ int Layer::GetDistance(const QPoint& pos) const {
   return distances_[pos.y()][pos.x()];
 }
 
-void Layer::GenerateNewDistances(const LandscapeMap& landscape_map) {
-  DistanceGeneratingAlgorithm(landscape_map);
-  // TODO(AZUAVCHIKOV) race condition in landscape_map: all threads access it
-  // TODO(AZUAVCHIKOV) remove redundant mutex in layer class
-  // distance_loading_thread_.emplace(&Layer::DistanceGeneratingAlgorithm,
-  //                                  this,
-  //                                  std::ref(landscape_map));
-}
-
 void Layer::DistanceGeneratingAlgorithm(const LandscapeMap& landscape_map) {
-  std::lock_guard<std::mutex> lock(distances_mutex_);
   for (auto& cells_colum : distances_) {
     for (auto& cell : cells_colum) {
       cell = std::numeric_limits<int>::max();

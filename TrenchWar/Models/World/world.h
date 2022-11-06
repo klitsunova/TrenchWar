@@ -16,9 +16,9 @@
 #include <thread>
 #include <vector>
 
-#include "Models/GameObjects/soldier.h"
-#include "Models/GameObjects/tower.h"
-#include "Models/GameObjects/bullet.h"
+#include "Models/GameObjects/MovingObjects/GroundMovingObjects/soldier.h"
+#include "Models/GameObjects/StableObjects/tower.h"
+#include "Models/GameObjects/MovingObjects/AirMovingObjects/bullet.h"
 #include "Models/Tools/pixmap_loader.h"
 #include "Models/World/Cell.h"
 #include "helpers/enum_helpers.h"
@@ -35,8 +35,6 @@ class World : public QObject {
   ~World() = default;
 
   const std::list<std::shared_ptr<Soldier>>& GetSoldiers() const;
-  const std::list<std::shared_ptr<Tower>>& GetTowers() const;
-  const std::list<std::shared_ptr<Bullet>>& GetBullets() const;
 
   const QSize& GetSize() const;
 
@@ -44,7 +42,7 @@ class World : public QObject {
   void MakeTrench(const QPoint& position);
   void RemoveTrench(const QPoint& position);
 
-  const QPixmap& GetPixmap();
+  QPixmap GetPixmap(const QSize&, bool);
 
   void AddSoldier(Side side);
   void AddSoldier(Side side, const QPoint& position);
@@ -61,7 +59,6 @@ class World : public QObject {
 
   void FireTower();
 
-  void UpdateCountAttackers();
   int GetCountAttackers() const;
   int GetCountTowers() const;
 
@@ -79,8 +76,6 @@ class World : public QObject {
 
   void LoadMap(const QString& path, GameMode mode, Side side);
 
-  int GetLag(const QPoint& position);
-  int GetDistance(const QPoint& position);
   void PutSoldierToCell(const std::shared_ptr<Soldier>& soldier);
   void RemoveSoldierFromCell(const std::shared_ptr<Soldier>& soldier);
 
@@ -88,4 +83,7 @@ class World : public QObject {
 
   std::optional<std::shared_ptr<Soldier>> FindNearest(
       const std::shared_ptr<Soldier>& soldier) const;
+
+  void DrawObject(QPainter* painter, const QPoint& pos,
+                  const QSize& size, const QPixmap& picture);
 };

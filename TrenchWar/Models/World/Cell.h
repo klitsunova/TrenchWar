@@ -3,17 +3,15 @@
 #include <memory>
 #include <set>
 
-#include "Models/GameObjects/soldier.h"
-#include "Models/World/Maps/Landscape/Landscape.h"
-class Cell : public Landscape {
+#include "Models/GameObjects/MovingObjects/GroundMovingObjects/soldier.h"
+class Cell {
  public:
-  explicit Cell(const QColor& color = Qt::white,
-                int move_lag = 0);
+  explicit Cell() = default;
 
   void InsertSoldier(const std::shared_ptr<Soldier>& soldier);
   void EraseSoldier(const std::shared_ptr<Soldier>& soldier);
-  const std::set<std::shared_ptr<Soldier>>& GetSoldiers() const;
+  const std::set<std::shared_ptr<Soldier>>& GetSoldiers();
 
  private:
-  std::set<std::shared_ptr<Soldier>> soldiers_;
+  std::set<std::shared_ptr<Soldier>> objects_;
 };

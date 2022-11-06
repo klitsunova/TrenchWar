@@ -12,10 +12,12 @@
 
 #include "Models/Tools/pixmap_loader.h"
 #include "Models/Tools/random_generator.h"
+#include "helpers/enum_helpers.h"
 
 class GameObject {
  public:
-  explicit GameObject(const QPoint&);
+  GameObject() = default;
+  explicit GameObject(Side side, const QPoint& position);
 
   virtual ~GameObject() = default;
 
@@ -29,14 +31,12 @@ class GameObject {
   QSize GetSize() const;
   void SetSize(const QSize&);
 
-  int GetTimeLag() const;
-  void SetTimeLag(int lag = 0);
-  void MakeTick();
+  Side GetSide() const;
 
   void TakeDamage(int damage);
-  // TODO remove
-  int GetHealth() const;
   bool IsDead() const;
+
+  int GetHealth() const;
 
  protected:
   static constexpr int kStep{1};
@@ -45,6 +45,6 @@ class GameObject {
   QSize size_{kStandardSize};
   QPoint position_;
   std::shared_ptr<QPixmap> picture_;
-  int time_lag_{0};
-  int health = 100;
+  int health_ = 100;
+  Side side_;
 };

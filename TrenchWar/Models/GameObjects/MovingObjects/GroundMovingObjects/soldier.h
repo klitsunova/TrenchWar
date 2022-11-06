@@ -7,17 +7,16 @@
 #include <vector>
 
 #include "Models/weapon.h"
-#include "game_object.h"
+#include "Models/GameObjects/MovingObjects/GroundMovingObjects/GroundMovingObject.h"
 #include "helpers/enum_helpers.h"
-#include "tower.h"
+#include "Models/GameObjects/StableObjects/tower.h"
 
-class Soldier : public GameObject {
+class Soldier : public GroundMovingObject {
  public:
   explicit Soldier(Side, const QPoint&);
 
   ~Soldier() override = default;
 
-  Side GetSide() const;
   int GetVisibilityRange() const;
 
   int GetTowerDamage() const;
@@ -31,5 +30,4 @@ class Soldier : public GameObject {
  private:
   std::vector<Weapon> weapons_;
   int visibility_range_;
-  Side side_;
 };
