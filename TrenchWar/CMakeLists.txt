@@ -20,8 +20,11 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 set(MODELS
-        Models/GameObjects/MovingObjects/AirMovingObjects/bullet.cpp
         Models/GameObjects/game_object.cpp
+        Models/GameObjects/MovingObjects/MovingObject.cpp
+        Models/GameObjects/MovingObjects/AirMovingObjects/AirMovingObject.cpp
+        Models/GameObjects/MovingObjects/AirMovingObjects/bullet.cpp
+        Models/GameObjects/MovingObjects/GroundMovingObjects/GroundMovingObject.cpp
         Models/GameObjects/MovingObjects/GroundMovingObjects/soldier.cpp
         Models/GameObjects/StableObjects/tower.cpp
         Models/Tools/pixmap_loader.cpp
