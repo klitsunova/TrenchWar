@@ -77,8 +77,7 @@ set(SOURCES
         ${MODELS}
         ${VIEWS}
         ${CONTROLLERS}
-        ${NETWORK}
-        Models/GameObjects/MovingObjects/GroundMovingObjects/GroundMovingObject.cpp Models/GameObjects/MovingObjects/GroundMovingObjects/GroundMovingObject.h Models/GameObjects/MovingObjects/MovingObject.cpp Models/GameObjects/MovingObjects/MovingObject.h Models/GameObjects/MovingObjects/AirMovingObjects/AirMovingObject.cpp Models/GameObjects/MovingObjects/AirMovingObjects/AirMovingObject.h)
+        ${NETWORK})
 
 set(LIBRARIES
         Qt::Core
