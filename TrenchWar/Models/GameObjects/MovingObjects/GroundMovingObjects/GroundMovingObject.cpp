@@ -1,5 +1,18 @@
 #include "GroundMovingObject.h"
 
+namespace {
+enum class Command {
+  MoveLeftDown,
+  MoveLeftUp,
+  MoveRightUp,
+  MoveRightDown,
+  MoveLeft,
+  MoveRight,
+  MoveUp,
+  MoveDown
+};
+}
+
 GroundMovingObject::GroundMovingObject(Side side, const QPoint& position)
     : MovingObject(side, position) {}
 
@@ -14,8 +27,8 @@ void GroundMovingObject::Move(const GroundDistancesMap& distances_map) {
 
   QPoint start_position = position_;
 
-  auto MoveIf = [&](int& current_dist,
-                    const QPoint& to, int lag = 0) {
+  auto MoveIf = [this, &distances_map](int& current_dist,
+                                       const QPoint& to, int lag = 0) {
     int new_dist = distances_map.GetDistance(to) + lag;
     if (current_dist > new_dist) {
       current_dist = new_dist;
@@ -24,19 +37,9 @@ void GroundMovingObject::Move(const GroundDistancesMap& distances_map) {
     }
   };
 
-  enum class Command {
-    MoveLeftDown,
-    MoveLeftUp,
-    MoveRightUp,
-    MoveRightDown,
-    MoveLeft,
-    MoveRight,
-    MoveUp,
-    MoveDown
-  };
-
-  auto IssueCommand = [&](const QPoint& from,
-                          int& current_dist, Command command) {
+  auto IssueCommand = [&distances_map, MoveIf](const QPoint& from,
+                                               int& current_dist,
+                                               Command command) {
     switch (command) {
       case Command::MoveLeft: {
         if (from.x() == 0) return;

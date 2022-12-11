@@ -4,6 +4,7 @@
 #include <set>
 
 #include "Models/GameObjects/MovingObjects/GroundMovingObjects/soldier.h"
+
 class Cell {
  public:
   Cell() = default;

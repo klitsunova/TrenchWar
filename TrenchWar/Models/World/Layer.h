@@ -7,6 +7,7 @@
 
 #include "Models/GameObjects/game_object.h"
 #include "Models/World/Maps/LandscapeMap.h"
+
 class Layer {
  public:
   Layer() = default;

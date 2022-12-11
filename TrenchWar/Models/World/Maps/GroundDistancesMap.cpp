@@ -29,7 +29,7 @@ void GroundDistancesMap::AddObject(const std::shared_ptr<GameObject>& object) {
 }
 
 void GroundDistancesMap::EraseDeadObjects() {
-  std::erase_if(object_layers_, [&](const Layer& layer) {
+  std::erase_if(object_layers_, [](const Layer& layer) {
     return layer.GetObject()->IsDead();
   });
 }

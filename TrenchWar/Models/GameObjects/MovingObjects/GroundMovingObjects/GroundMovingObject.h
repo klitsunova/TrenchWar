@@ -6,6 +6,7 @@
 #include "Models/GameObjects/MovingObjects/MovingObject.h"
 #include "Models/World/Maps/GroundDistancesMap.h"
 #include "Models/GameObjects/MovingObjects/AirMovingObjects/bullet.h"
+
 class GroundMovingObject : public MovingObject {
  public:
   GroundMovingObject() = default;
@@ -13,5 +14,4 @@ class GroundMovingObject : public MovingObject {
 
   void Move(const GroundDistancesMap& distances_map);
 
- private:
 };

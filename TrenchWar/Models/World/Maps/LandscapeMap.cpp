@@ -53,8 +53,10 @@ void LandscapeMap::DrawMap() {
   auto& picture = picture_.value();
   auto painter = QPainter(&picture);
   painter.save();
+
   int window_width = painter.window().width() - 1;
   int window_height = painter.window().height() - 1;
+
   for (int y = 0; y < size_.height(); ++y) {
     for (int x = 0; x < size_.width(); ++x) {
       int x_top = (window_width * x) / size_.width();
@@ -63,9 +65,12 @@ void LandscapeMap::DrawMap() {
       int y_bottom = ((window_height * (y + 1)) / size_.height());
       QRect cell_rect(QPoint(x_top, y_top),
                       QPoint(x_bottom, y_bottom));
+
       QColor color = landscapes_[y][x].GetColor();
+
       painter.setBrush(QBrush(color));
       painter.setPen(QPen(QColor(color), 1));
+
       painter.drawRect(cell_rect);
     }
   }

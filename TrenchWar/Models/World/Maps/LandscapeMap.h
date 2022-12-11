@@ -7,6 +7,7 @@
 
 #include "helpers/sizes.h"
 #include "Models/World/Maps/Landscape/Landscape.h"
+
 class LandscapeMap {
  public:
   LandscapeMap() = default;

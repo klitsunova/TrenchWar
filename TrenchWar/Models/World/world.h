@@ -76,6 +76,8 @@ class World : public QObject {
 
   void LoadMap(const QString& path, GameMode mode, Side side);
 
+  void PutNewSoldierToCell(const std::shared_ptr<Soldier>& soldier);
+  void PutNewTowerToMap(const std::shared_ptr<Tower>& soldier);
   void PutSoldierToCell(const std::shared_ptr<Soldier>& soldier);
   void RemoveSoldierFromCell(const std::shared_ptr<Soldier>& soldier);
 

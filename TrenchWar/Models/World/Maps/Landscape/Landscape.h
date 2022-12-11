@@ -3,11 +3,12 @@
 #include <QColor>
 
 #include "helpers/styles.h"
+
 class Landscape {
  public:
   enum class LandscapeType {
-    TRENCH,
-    STANDARD_LANDSCAPE
+    kTrench,
+    kStandardLandscape
   };
 
   explicit Landscape(const QColor& color = Qt::white,
@@ -22,7 +23,7 @@ class Landscape {
   void RemoveTrench();
 
  protected:
-  LandscapeType landscape_type_{LandscapeType::STANDARD_LANDSCAPE};
+  LandscapeType landscape_type_{LandscapeType::kStandardLandscape};
   QColor color_;
   int move_lag_;
 };

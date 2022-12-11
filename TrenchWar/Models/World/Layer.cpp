@@ -6,7 +6,6 @@ Layer::Layer(const std::shared_ptr<GameObject>& object,
     : object_(object),
       distances_(landscape_map.GetSize().height(),
                  std::vector<int>(landscape_map.GetSize().width())) {
-  // DistanceGeneratingAlgorithm(landscape_map);
   distance_loading_thread_.emplace(&Layer::DistanceGeneratingAlgorithm,
                                    this,
                                    std::ref(landscape_map));
@@ -26,16 +25,17 @@ int Layer::GetDistance(const QPoint& pos) const {
 }
 
 void Layer::DistanceGeneratingAlgorithm(const LandscapeMap& landscape_map) {
-  for (auto& cells_colum : distances_) {
-    for (auto& cell : cells_colum) {
-      cell = std::numeric_limits<int32_t>::max();
-    }
-  }
+  std::for_each(distances_.begin(), distances_.end(),
+                [](std::vector<int>& cells_colum) {
+                  std::fill(cells_colum.begin(),
+                            cells_colum.end(),
+                            std::numeric_limits<int32_t>::max());
+                });
   std::vector<std::vector<bool>>
       used_cells(landscape_map.GetSize().height(),
                  std::vector<bool>(landscape_map.GetSize().width()));
 
-  auto distance = [&](const QPoint& pos) -> int& {
+  auto distance = [this](const QPoint& pos) -> int& {
     return distances_[pos.y()][pos.x()];
   };
 
@@ -48,7 +48,9 @@ void Layer::DistanceGeneratingAlgorithm(const LandscapeMap& landscape_map) {
   distance(object_->GetPosition()) = 0;
   latest_at_ground.push(object_->GetPosition());
 
-  auto push_if = [&](const QPoint& pos, int dist, bool condition = true) {
+  auto push_if = [&distance, &landscape_map,
+      &used_cells,
+      &latest_at_ground](const QPoint& pos, int dist, bool condition = true) {
     if (!condition || used_cells[pos.y()][pos.x()]) {
       return;
     }
@@ -66,23 +68,17 @@ void Layer::DistanceGeneratingAlgorithm(const LandscapeMap& landscape_map) {
 
     // left neighbor
     push_if(pos - dx, current_dist, (pos.x() != 0));
-    // push_if(QPoint(x - 1, y), current_dist, (x != 0));
 
     // right neighbor
     push_if(pos + dx, current_dist,
             (pos.x() != landscape_map.GetSize().width() - 1));
-    // push_if(QPoint(x + 1, y), current_dist,
-    //         (x != landscape_map.GetSize().width() - 1));
 
     // upper neighbor
     push_if(pos - dy, current_dist, (pos.y() != 0));
-    // push_if(QPoint(x, y - 1), current_dist, (y != 0));
 
     // lower neighbor
     push_if(pos + dy, current_dist,
             (pos.y() != landscape_map.GetSize().height() - 1));
-    // push_if(QPoint(x, y + 1), current_dist,
-    //         (y != landscape_map.GetSize().height() - 1));
 
     used_cells[pos.y()][pos.x()] = true;
     latest_at_ground.pop();

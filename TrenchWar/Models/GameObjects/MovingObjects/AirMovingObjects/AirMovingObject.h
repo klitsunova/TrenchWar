@@ -4,6 +4,7 @@
 
 #include "helpers/enum_helpers.h"
 #include "Models/GameObjects/MovingObjects/MovingObject.h"
+
 class AirMovingObject : public MovingObject {
  public:
   AirMovingObject() = default;
@@ -20,4 +21,6 @@ class AirMovingObject : public MovingObject {
   QPoint from_;
   QPoint to_;
   bool is_used_{false};
+
+  QPoint ChangeCoordinates(int x_progress, int y_progress);
 };

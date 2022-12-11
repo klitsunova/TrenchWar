@@ -1,7 +1,7 @@
+#include "world.h"
+
 #include <random>
 #include <utility>
-
-#include "world.h"
 
 #include "Models/Tools/settings.h"
 
@@ -23,14 +23,12 @@ void World::AddSoldier(Side side) {
 void World::AddSoldier(Side side, const QPoint& position) {
   assert(position.y() >= 0 && position.y() < cells_.size());
   assert(position.x() >= 0 && position.x() < cells_[position.y()].size());
+
   auto new_object = std::make_shared<Soldier>(side, position);
   if (side == Side::kAttacker) {
     ++count_attackers_;
   }
-  Cell& cell =
-      cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
-  soldiers_.push_back(new_object);
-  cell.InsertSoldier(new_object);
+  PutNewSoldierToCell(new_object);
 }
 
 void World::AddTower() {
@@ -39,9 +37,7 @@ void World::AddTower() {
 }
 
 void World::AddTower(const QPoint& position) {
-  auto new_object = std::make_shared<Tower>(position);
-  towers_.push_back(new_object);
-  distances_map_.AddObject(new_object);
+  PutNewTowerToMap(std::make_shared<Tower>(position));
 }
 
 void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
@@ -52,7 +48,7 @@ void World::AddBullet(const std::shared_ptr<Bullet>& bullet) {
       static_cast<double>(Settings::kMaxVolume - Settings::kMinVolume));
   player->setSource(QUrl("qrc:Resources/Music/singleshot_voice.mp3"));
   player->play();
-  assert(bullet.get() != nullptr);
+  assert(bullet);
   bullets_.push_back(bullet);
 }
 
@@ -98,16 +94,17 @@ QPixmap World::GetPixmap(const QSize& size, bool are_objects_visible) {
     DrawObject(&painter, object->GetPosition(),
                object->GetSize(), object->GetPixmap());
   }
-  if (are_objects_visible) {
-    for (const auto& soldier : soldiers_) {
-      DrawObject(&painter, soldier->GetPosition(),
-                 soldier->GetSize(), soldier->GetPixmap());
-    }
+  if (!are_objects_visible) {
+    return buffer;
+  }
+  for (const auto& soldier : soldiers_) {
+    DrawObject(&painter, soldier->GetPosition(),
+               soldier->GetSize(), soldier->GetPixmap());
+  }
 
-    for (const auto& bullet : bullets_) {
-      DrawObject(&painter, bullet->GetPosition(),
-                 bullet->GetSize(), bullet->GetPixmap());
-    }
+  for (const auto& bullet : bullets_) {
+    DrawObject(&painter, bullet->GetPosition(),
+               bullet->GetSize(), bullet->GetPixmap());
   }
   return buffer;
 }
@@ -174,7 +171,8 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   QJsonArray terrain_objects = obj["Terrain objects"].toArray();
 
   auto add_soldier = [buffer = &bot_soldier_buffer_](const QJsonArray& array) {
-    int x, y;
+    int x;
+    int y;
     for (const auto& element : array) {
       x = element.toObject()["X"].toInt();
       y = element.toObject()["Y"].toInt();
@@ -197,6 +195,18 @@ void World::LoadMap(const QString& path, GameMode mode, Side side) {
   }
 
   file.close();
+}
+
+void World::PutNewSoldierToCell(const std::shared_ptr<Soldier>& new_object) {
+  Cell& cell =
+      cells_[new_object->GetPosition().y()][new_object->GetPosition().x()];
+  soldiers_.push_back(new_object);
+  cell.InsertSoldier(new_object);
+}
+
+void World::PutNewTowerToMap(const std::shared_ptr<Tower>& new_object) {
+  towers_.push_back(new_object);
+  distances_map_.AddObject(new_object);
 }
 
 void World::PutSoldierToCell(const std::shared_ptr<Soldier>& soldier) {
@@ -286,7 +296,8 @@ void World::MakeShots() {
 std::optional<std::shared_ptr<Soldier>> World::FindNearest(
     const std::shared_ptr<Soldier>& current_soldier) const {
   std::optional<std::shared_ptr<Soldier>> nearest_soldier;
-  int64_t dist = INT64_MAX, new_dist;
+  int64_t dist = std::numeric_limits<int64_t>::max();
+  int64_t new_dist;
   QPoint to;
   QPoint from = current_soldier->GetPosition();
 

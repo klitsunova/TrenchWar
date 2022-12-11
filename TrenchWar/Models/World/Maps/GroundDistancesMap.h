@@ -1,18 +1,6 @@
 #pragma once
-#include <QPainter>
-
-#include <algorithm>
-#include <limits>
-#include <list>
-#include <memory>
-#include <mutex>
-#include <queue>
-#include <vector>
-#include <thread>
 
 #include "Models/World/Maps/Landscape/Landscape.h"
-#include "helpers/sizes.h"
-#include "Models/GameObjects/StableObjects/tower.h"
 #include "LandscapeMap.h"
 #include "Models/World/Layer.h"
 
