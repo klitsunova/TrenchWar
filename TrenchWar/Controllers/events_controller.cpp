@@ -32,12 +32,19 @@ EventsController::EventsController(QWidget* parent, GameMode mode)
 }
 
 void EventsController::timerEvent(QTimerEvent*) {
+  // draw map with only towers
+  view_->SetObjectsVisibility(false);
+  view_->UpdateMap();
+
   world_->MoveSoldiers();
   world_->MakeShots();
   world_->MoveBullets();
   world_->FireTower();
+
+  // draw map with towers, soldiers and bullets
+  view_->SetObjectsVisibility(true);
   view_->UpdateMap();
-  world_->Update();
+
   CheckGameEnding();
 }
 
@@ -104,7 +111,7 @@ void EventsController::HideGame() {
 
 void EventsController::StartPreparationStage() {
   emit HideMainMenu();
-  world_ = std::make_shared<World>(":Resources/Maps/map2.txt",
+  world_ = std::make_shared<World>(":Resources/Maps/map123.json",
                                    game_mode_,
                                    player_side_);
   view_ = std::make_unique<GameView>(this, world_);
@@ -277,7 +284,6 @@ void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
                         / window_height);
 
         world_->AddSoldier(player_side_, game_point);
-        world_->Update();
         view_->UpdateMap();
       }
       break;

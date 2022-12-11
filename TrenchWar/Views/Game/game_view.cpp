@@ -9,7 +9,6 @@
 
 #include <utility>
 
-
 GameView::GameView(QWidget* parent, const std::shared_ptr<World>& world)
     : layout_(new QVBoxLayout(this)),
       map_(new MapView(this, world)),
@@ -93,4 +92,8 @@ void GameView::SetStoreDialog(QMouseEvent* event) {
 
 void GameView::SetStoreSideLabel(const QString& value) {
   store_->SetSideLabel(value);
+}
+
+void GameView::SetObjectsVisibility(bool are_objects_visible) {
+  map_->SetObjectsVisibility(are_objects_visible);
 }
