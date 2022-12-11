@@ -13,5 +13,4 @@ class GroundMovingObject : public MovingObject {
   explicit GroundMovingObject(Side side, const QPoint& position);
 
   void Move(const GroundDistancesMap& distances_map);
-
 };

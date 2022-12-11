@@ -1,5 +1,8 @@
 #include "GroundDistancesMap.h"
 
+#include <algorithm>
+#include <limits>
+
 // this empty constructors are need for threads:
 // may happen situation when LandscapeMap is deleted but using in Layers
 // that's why we need to first delete Layers and then LandscapeMap

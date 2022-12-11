@@ -1,5 +1,9 @@
 #pragma once
 
+#include <list>
+#include <memory>
+#include <vector>
+
 #include "Models/World/Maps/Landscape/Landscape.h"
 #include "LandscapeMap.h"
 #include "Models/World/Layer.h"

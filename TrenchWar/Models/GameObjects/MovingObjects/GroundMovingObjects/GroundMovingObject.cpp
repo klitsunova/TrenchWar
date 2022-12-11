@@ -11,7 +11,7 @@ enum class Command {
   MoveUp,
   MoveDown
 };
-}
+}  // namespace
 
 GroundMovingObject::GroundMovingObject(Side side, const QPoint& position)
     : MovingObject(side, position) {}
