@@ -1,5 +1,7 @@
 #include "weapon.h"
 
+#include "Models/Tools/MathHelper.h"
+
 Weapon::Weapon(Weapon::WeaponType type, int count_ammo) {
   weapon_type_ = type;
   switch (type) {
@@ -55,8 +57,7 @@ std::optional<std::shared_ptr<Bullet>> Weapon::Fire(const QPoint& from,
     --reload_lag_;
     return std::nullopt;
   }
-  int dist = (to.x() - from.x()) * (to.x() - from.x()) +
-      (to.y() - from.y()) * (to.y() - from.y());
+  int dist = MathHelper::SquareDistance(from, to);
   if (dist > range_) {
     return std::nullopt;
   }

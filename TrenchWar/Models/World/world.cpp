@@ -4,6 +4,7 @@
 #include <utility>
 
 #include "Models/Tools/settings.h"
+#include "Models/Tools/MathHelper.h"
 
 #include <QAudioOutput>
 #include <QJsonArray>
@@ -304,8 +305,7 @@ std::optional<std::shared_ptr<Soldier>> World::FindNearest(
   for (auto& soldier : soldiers_) {
     if (current_soldier->GetSide() == soldier->GetSide()) continue;
     to = soldier->GetPosition();
-    new_dist = (from.x() - to.x()) * (from.x() - to.x())
-        + (from.y() - to.y()) * (from.y() - to.y());
+    new_dist = MathHelper::SquareDistance(from, to);
     if (new_dist < dist) {
       dist = new_dist;
       nearest_soldier = soldier;

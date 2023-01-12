@@ -27,6 +27,7 @@ set(MODELS
         Models/GameObjects/MovingObjects/GroundMovingObjects/GroundMovingObject.cpp
         Models/GameObjects/MovingObjects/GroundMovingObjects/soldier.cpp
         Models/GameObjects/StableObjects/tower.cpp
+        Models/Tools/MathHelper.cpp
         Models/Tools/pixmap_loader.cpp
         Models/Tools/random_generator.cpp
         Models/Tools/settings.cpp
