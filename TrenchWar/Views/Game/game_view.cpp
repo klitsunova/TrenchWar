@@ -1,9 +1,7 @@
 #include "game_view.h"
 
-#include <QLabel>
 #include <QStyle>
 
-#include <helpers/fonts.h>
 #include <helpers/styles.h>
 #include "helpers/sizes.h"
 

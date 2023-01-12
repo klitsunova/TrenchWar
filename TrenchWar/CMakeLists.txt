@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(TrenchWar)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -20,15 +20,24 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 set(MODELS
-        Models/world.cpp
         Models/GameObjects/game_object.cpp
-        Models/GameObjects/soldier.cpp
-        Models/GameObjects/tower.cpp
+        Models/GameObjects/MovingObjects/MovingObject.cpp
+        Models/GameObjects/MovingObjects/AirMovingObjects/AirMovingObject.cpp
+        Models/GameObjects/MovingObjects/AirMovingObjects/bullet.cpp
+        Models/GameObjects/MovingObjects/GroundMovingObjects/GroundMovingObject.cpp
+        Models/GameObjects/MovingObjects/GroundMovingObjects/soldier.cpp
+        Models/GameObjects/StableObjects/tower.cpp
+        Models/Tools/MathHelper.cpp
         Models/Tools/pixmap_loader.cpp
         Models/Tools/random_generator.cpp
         Models/Tools/settings.cpp
         Models/weapon.cpp
-        Models/GameObjects/bullet.cpp
+        Models/World/world.cpp
+        Models/World/Cell.cpp
+        Models/World/Layer.cpp
+        Models/World/Maps/Landscape/Landscape.cpp
+        Models/World/Maps/GroundDistancesMap.cpp
+        Models/World/Maps/LandscapeMap.cpp
         )
 
 set(VIEWS
@@ -69,8 +78,7 @@ set(SOURCES
         ${MODELS}
         ${VIEWS}
         ${CONTROLLERS}
-        ${NETWORK}
-        )
+        ${NETWORK})
 
 set(LIBRARIES
         Qt::Core

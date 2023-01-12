@@ -7,22 +7,16 @@
 #include <vector>
 
 #include "Models/weapon.h"
-#include "game_object.h"
+#include "Models/GameObjects/MovingObjects/GroundMovingObjects/GroundMovingObject.h"
 #include "helpers/enum_helpers.h"
-#include "tower.h"
+#include "Models/GameObjects/StableObjects/tower.h"
 
-class Soldier : public GameObject {
-  using Health = int;
-
+class Soldier : public GroundMovingObject {
  public:
   explicit Soldier(Side, const QPoint&);
 
   ~Soldier() override = default;
 
-  Health GetHitPoints() const;
-  void SetHitPoints(Health);
-
-  Side GetSide() const;
   int GetVisibilityRange() const;
 
   int GetTowerDamage() const;
@@ -33,13 +27,7 @@ class Soldier : public GameObject {
   std::optional<std::shared_ptr<Bullet>> Fire(const QPoint& from,
                                               const QPoint& to);
 
-  void TakeDamage(int damage);
-
-  bool IsDead() const;
-
  private:
   std::vector<Weapon> weapons_;
   int visibility_range_;
-  Health hit_points_ = 100;
-  Side side_;
 };

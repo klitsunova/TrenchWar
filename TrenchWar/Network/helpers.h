@@ -7,8 +7,8 @@
 #include <QTcpSocket>
 #include <QVariant>
 
-#include "Models/GameObjects/bullet.h"
-#include "Models/GameObjects/soldier.h"
+#include "Models/GameObjects/MovingObjects/AirMovingObjects/bullet.h"
+#include "Models/GameObjects/MovingObjects/GroundMovingObjects/soldier.h"
 #include "Network/player_model.h"
 
 enum class MessageType {

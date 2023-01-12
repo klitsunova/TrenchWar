@@ -1,18 +1,11 @@
 #include "soldier.h"
+#include "Models/GameObjects/game_object.h"
 
 Soldier::Soldier(Side side, const QPoint& point)
-    : GameObject(point) {
+    : GroundMovingObject(side, point) {
   picture_ = PixmapLoader::GetSoldier();
   side_ = side;
   weapons_.emplace_back(Weapon(Weapon::WeaponType::Rifle));
-}
-
-Soldier::Health Soldier::GetHitPoints() const {
-  return hit_points_;
-}
-
-Side Soldier::GetSide() const {
-  return side_;
 }
 
 int Soldier::GetVisibilityRange() const {
@@ -44,22 +37,6 @@ std::optional<std::shared_ptr<Bullet>> Soldier::Fire(const QPoint& from,
                                                      const QPoint& to) {
   assert(!weapons_.empty());
   return weapons_[0].Fire(from, to, side_);
-}
-
-void Soldier::TakeDamage(int damage) {
-  hit_points_ -= damage;
-  if (hit_points_ <= 0) {
-    hit_points_ = 0;
-  }
-}
-
-bool Soldier::IsDead() const {
-  return hit_points_ <= 0;
-}
-
-
-void Soldier::SetHitPoints(int hit_points) {
-  hit_points_ = hit_points;
 }
 
 int Soldier::GetTowerDamage() const {

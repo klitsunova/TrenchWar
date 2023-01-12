@@ -171,7 +171,6 @@ void EventsController::StartActiveStage() {
   }
   CancelPurchase(buy_mode_);
   game_stage = Stage::kActive;
-  world_->UpdateCountAttackers();
   StartTimer();
 }
 
@@ -216,7 +215,6 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
 
       trench_controller_->SetSecondPoint(event->pos());
       trench_controller_->Update();
-      world_->TrenchUpdate();
       view_->UpdateMap();
 
       trench_controller_->SetMouseClicked(true);
@@ -228,7 +226,6 @@ void EventsController::MapReleaseHandler(QMouseEvent* event) {
 
       if (!trench_controller_->IsTrenchFixed()) {
         trench_controller_->SetSaveCellsState();
-        world_->TrenchUpdate();
         view_->UpdateMap();
         trench_controller_->ClearChangedCells();
         return;
@@ -256,7 +253,6 @@ void EventsController::ConfirmPurchase(BuyMode mode, QString name) {
     case BuyMode::kTrench: {
       if ((view_->GetStore()->SpendMoney(name))) {
         for (const auto& changed_cell : trench_controller_->GetChangedCells()) {
-          world_->GetCell(changed_cell.first).is_trench = true;
         }
         trench_controller_->ClearChangedCells();
         view_->GetStore()->HideTrenchButtons();
@@ -295,7 +291,6 @@ void EventsController::CancelPurchase(BuyMode mode, QString name) {
   switch (mode) {
     case BuyMode::kTrench: {
       trench_controller_->SetSaveCellsState();
-      world_->TrenchUpdate();
       view_->UpdateMap();
       trench_controller_->ClearChangedCells();
       view_->GetStore()->HideTrenchButtons();

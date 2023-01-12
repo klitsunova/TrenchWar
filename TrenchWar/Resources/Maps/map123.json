@@ -20,35 +20,35 @@
     "Colors and speed": [
         {
             "Color": 4294967295,
-            "Speed": 0
+            "Speed": 1
         },
         {
             "Color": 4282145870,
-            "Speed": 0
+            "Speed": 1
         },
         {
             "Color": 4287537251,
-            "Speed": 0
+            "Speed": 1
         },
         {
             "Color": 4285959262,
-            "Speed": 79
+            "Speed": 2
         },
         {
             "Color": 4284766284,
-            "Speed": 799
+            "Speed": 5
         },
         {
             "Color": 4282934595,
-            "Speed": 85
+            "Speed": 4
         },
         {
             "Color": 4292292882,
-            "Speed": 85
+            "Speed": 4
         },
         {
             "Color": 4281747759,
-            "Speed": 85
+            "Speed": 4
         }
     ],
     "Defenders": [

@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Models/GameObjects/bullet.h"
+#include "Models/GameObjects/MovingObjects/AirMovingObjects/bullet.h"
 #include "equipment.h"
 #include "helpers/enum_helpers.h"
 #include "helpers/weapons.h"

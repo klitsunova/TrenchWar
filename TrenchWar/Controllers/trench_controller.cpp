@@ -60,9 +60,8 @@ void TrenchController::DrawAndSaveTrench(const QPoint& pos) {
   if (!IsCorrectCell(pos)) {
     return;
   }
-  changed_cells_.emplace_back(pos,
-                              world_->GetCell(pos).landscape.color);
-  world_->GetCell(pos).landscape.color = colors::kTrenchColor;
+  changed_cells_.emplace_back(pos);
+  world_->MakeTrench(pos);
 }
 
 QPoint TrenchController::GlobalToCellsCoordinates(const QPoint& point) const {
@@ -121,7 +120,7 @@ QPoint TrenchController::TakeShiftDirection(const QPoint& start_point,
 
 void TrenchController::SetSaveCellsState() {
   for (const auto& changed_cell : changed_cells_) {
-    world_->GetCell(changed_cell.first).landscape.color = changed_cell.second;
+    world_->RemoveTrench(changed_cell);
   }
 }
 
@@ -137,8 +136,7 @@ void TrenchController::ClearChangedCells() {
   changed_cells_.clear();
 }
 
-const std::vector<std::pair<QPoint, QColor>>& TrenchController::
-    GetChangedCells() const {
+const std::vector<QPoint>& TrenchController::GetChangedCells() const {
   return changed_cells_;
 }
 

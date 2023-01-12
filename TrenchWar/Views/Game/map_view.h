@@ -5,7 +5,7 @@
 
 #include <memory>
 
-#include "Models/world.h"
+#include "Models/World/world.h"
 #include "Views/Game/buy_window.h"
 
 class MapView : public QWidget {
@@ -19,9 +19,6 @@ class MapView : public QWidget {
   int GetScale() const;
   BuyWindow* GetBuyWindow();
   void SetScale(int scale);
-
-  void DrawObject(QPainter* painter, const QPoint& pos,
-                  const QSize& size, const QPixmap& picture);
 
   void SetStoreDialog(QMouseEvent* event);
 
